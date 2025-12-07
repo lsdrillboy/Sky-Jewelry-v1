@@ -1,4 +1,5 @@
 import '../App.css';
+import HeroSection from './HeroSection';
 
 type Props = {
   onStart: () => void;
@@ -7,47 +8,42 @@ type Props = {
 export function Cover({ onStart }: Props) {
   return (
     <div className="screen cover-grid">
-      <div className="hero">
-        <div className="app-header">
-          <div className="logo-mark" />
-          <div>
-            <div className="tiny">SKY JEWELRY</div>
-            <h1>STONES THAT HEAR YOUR SOUL</h1>
-          </div>
-          <div className="pill">Telegram</div>
-        </div>
-        <p className="muted" style={{ maxWidth: 520 }}>
-          Бережный подбор минералов по дате рождения и ощущению. Каталог украшений, индивидуальные проекты и связь с
-          мастером в одном окне.
+      {/* Premium Hero Block with Eye Crystal */}
+      <HeroSection onStart={onStart} onCatalog={onStart} />
+
+      {/* Description */}
+      <div className="hero-description">
+        <p className="muted">
+          Бережный подбор минералов.
+          <br />
+          Каталог украшений и персональные проекты.
         </p>
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          <button className="button" onClick={onStart}>
-            ✨ Начать
-          </button>
-          <button className="button ghost" onClick={onStart}>
-            Смотреть каталог
-          </button>
-        </div>
       </div>
-      <div className="panel" style={{ display: 'grid', gap: 10 }}>
+
+      {/* Flow Cards */}
+      <div className="panel flow-panel">
         <div className="subtitle">Flow</div>
         <div className="grid two">
-          <div className="card">
+          <div className="card flow-card">
+            <div className="flow-icon">👤</div>
             <div className="floating-badge">1</div>
             <h3>Проверка профиля</h3>
             <p className="muted">Синхронизируемся с Telegram, подтягиваем дату рождения.</p>
           </div>
-          <div className="card">
+          <div className="card flow-card">
+            <div className="flow-icon">💎</div>
             <div className="floating-badge">2</div>
             <h3>Подбор камня</h3>
-            <p className="muted">Выбираем тему запроса и собираем камни через Supabase.</p>
+            <p className="muted">Выбираем тему запроса и подбираем минералы через базу Supabase.</p>
           </div>
-          <div className="card">
+          <div className="card flow-card">
+            <div className="flow-icon">💍</div>
             <div className="floating-badge">3</div>
-            <h3>Каталог</h3>
-            <p className="muted">Фильтр по камню и типу украшения, карточки с ценами.</p>
+            <h3>Каталог украшений</h3>
+            <p className="muted">Показываем украшения, созданные с участием выбранного камня.</p>
           </div>
-          <div className="card">
+          <div className="card flow-card">
+            <div className="flow-icon">✨</div>
             <div className="floating-badge">4</div>
             <h3>Индивидуальный проект</h3>
             <p className="muted">Оставляешь заявку — мастер получает уведомление.</p>
