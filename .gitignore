@@ -1,0 +1,28 @@
+# dependencies
+node_modules/
+webapp/node_modules/
+
+# builds
+dist/
+webapp/dist/
+
+# environment
+.env
+.env.local
+.env.*.local
+
+# logs
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# editors/OS
+.DS_Store
+.idea/
+.vscode/
+
+# vercel CLI metadata
+.vercel/
+
+# keep nested repo out of this git history
+Sky-Jewelry/
