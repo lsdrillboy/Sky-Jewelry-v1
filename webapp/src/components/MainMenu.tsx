@@ -24,7 +24,7 @@ export function MainMenu({ user, onNavigate, onChangeBirthdate }: Props) {
           <div className="logo-mark" />
           <div>
             <div className="tiny">Добро пожаловать, {user?.first_name ?? 'гость'}</div>
-            <h1>Sky Jewelry · WebApp</h1>
+            <h1>Sky Jewelry</h1>
           </div>
           <div className="pill">Supabase + Telegram</div>
         </div>

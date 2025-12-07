@@ -14,7 +14,7 @@ export function Cover({ onStart }: Props) {
             <div className="tiny">SKY JEWELRY</div>
             <h1>STONES THAT HEAR YOUR SOUL</h1>
           </div>
-          <div className="pill">WebApp · Telegram</div>
+          <div className="pill">Telegram</div>
         </div>
         <p className="muted" style={{ maxWidth: 520 }}>
           Бережный подбор минералов по дате рождения и ощущению. Каталог украшений, индивидуальные проекты и связь с
