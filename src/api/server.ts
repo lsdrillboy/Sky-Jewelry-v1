@@ -38,7 +38,10 @@ async function ensureUser(telegramUser: TelegramUser | null, extra?: { birthdate
     .upsert(payload, { onConflict: 'telegram_id' })
     .select('id, telegram_id, username, first_name, birthdate, life_path, language_code')
     .single();
-  if (error) throw error;
+  if (error) {
+    console.error('ensureUser error', error);
+    return null;
+  }
   return data as ApiUser;
 }
 
@@ -107,12 +110,18 @@ async function fetchProducts(filters: { type?: string | null; stoneId?: number |
     query = query.eq('type', filters.type);
   }
   if (filters.stoneId) {
-    query = query.overlaps('stone_ids', [filters.stoneId]);
+    // Try 'stones' first (more likely to exist in older schemas), then fallback to 'stone_ids'
+    query = query.overlaps('stones', [filters.stoneId]);
   }
   const { data, error } = await query.limit(30);
   if (error) {
-    if (error.message?.includes('column "stone_ids"')) {
-      const fallback = await supabase.from('products').select('*').eq('is_active', true).overlaps('stones', [filters.stoneId]);
+    // If 'stones' column doesn't exist, try 'stone_ids' as fallback
+    if (error.message?.includes('column "stones"') && filters.stoneId) {
+      const fallbackQuery = supabase.from('products').select('*').eq('is_active', true);
+      if (filters.type) {
+        fallbackQuery.eq('type', filters.type);
+      }
+      const fallback = await fallbackQuery.overlaps('stone_ids', [filters.stoneId]).limit(30);
       if (fallback.error) {
         console.error('fetchProducts fallback error', fallback.error);
         return [];
@@ -153,6 +162,23 @@ async function createCustomRequest(params: {
 function normalizeTelegramUser(validation: ReturnType<typeof validateInitData>): TelegramUser | null {
   if (!validation.ok) return null;
   return validation.data.user;
+}
+
+function formatSupabaseError(err: any): { message: string; status: number } {
+  // Supabase PostgREST errors have a specific format
+  if (err?.code === 'PGRST116' || err?.message?.includes('NOT_FOUND')) {
+    return { message: 'Запрашиваемый ресурс не найден', status: 404 };
+  }
+  if (err?.code === '23505') {
+    return { message: 'Дублирующаяся запись', status: 409 };
+  }
+  if (err?.code === '23503') {
+    return { message: 'Нарушение внешнего ключа', status: 400 };
+  }
+  if (err?.message) {
+    return { message: err.message, status: 500 };
+  }
+  return { message: 'Внутренняя ошибка сервера', status: 500 };
 }
 
 export function buildApiApp() {
@@ -212,46 +238,58 @@ export function buildApiApp() {
   });
 
   app.post('/api/stone-picker', async (req, res) => {
-    if (!hasSupabase) return res.status(503).json({ error: 'Supabase not configured' });
-    const { theme } = req.body as { telegram_init_data?: string; theme?: string };
-    if (!theme) return res.status(400).json({ error: 'theme is required' });
+    try {
+      if (!hasSupabase) return res.status(503).json({ error: 'Supabase not configured' });
+      const { theme } = req.body as { telegram_init_data?: string; theme?: string };
+      if (!theme) return res.status(400).json({ error: 'theme is required' });
 
-    const initData = getInitData(req);
-    const validation = validateInitData(initData ?? '', env.BOT_TOKEN);
-    if (!validation.ok && !env.ALLOW_DEV_INIT_DATA) {
-      return res.status(401).json({ error: validation.error });
-    }
-    const tgUser = normalizeTelegramUser(validation);
-    if (!tgUser && !env.ALLOW_DEV_INIT_DATA) return res.status(401).json({ error: 'initData invalid' });
-    const user = tgUser ? await getUserByTelegramId(tgUser.id) : null;
-    const birthdate = user?.birthdate;
-    if (!birthdate) {
-      return res.status(400).json({ error: 'birthdate_missing' });
-    }
-    const lifePath = user?.life_path ?? calculateLifePath(new Date(birthdate));
-    const stones = await fetchStones(theme, lifePath);
-    if (tgUser && user?.id) {
-      await insertStoneRequest({
-        userId: user.id,
-        birthdate,
-        lifePath,
+      const initData = getInitData(req);
+      const validation = validateInitData(initData ?? '', env.BOT_TOKEN);
+      if (!validation.ok && !env.ALLOW_DEV_INIT_DATA) {
+        return res.status(401).json({ error: validation.error });
+      }
+      const tgUser = normalizeTelegramUser(validation);
+      if (!tgUser && !env.ALLOW_DEV_INIT_DATA) return res.status(401).json({ error: 'initData invalid' });
+      const user = tgUser ? await getUserByTelegramId(tgUser.id) : null;
+      const birthdate = user?.birthdate;
+      if (!birthdate) {
+        return res.status(400).json({ error: 'birthdate_missing' });
+      }
+      const lifePath = user?.life_path ?? calculateLifePath(new Date(birthdate));
+      const stones = await fetchStones(theme, lifePath);
+      if (tgUser && user?.id) {
+        await insertStoneRequest({
+          userId: user.id,
+          birthdate,
+          lifePath,
+          theme,
+          stones: stones.map((s) => s.id),
+        });
+      }
+      return res.json({
+        life_path: lifePath,
         theme,
-        stones: stones.map((s) => s.id),
+        stones,
       });
+    } catch (err) {
+      console.error('stone-picker error', err);
+      const { message, status } = formatSupabaseError(err);
+      return res.status(status).json({ error: message });
     }
-    return res.json({
-      life_path: lifePath,
-      theme,
-      stones,
-    });
   });
 
   app.get('/api/products', async (req, res) => {
-    if (!hasSupabase) return res.status(503).json({ error: 'Supabase not configured' });
-    const stoneId = req.query.stone_id ? Number(req.query.stone_id) : null;
-    const type = req.query.type ? String(req.query.type) : null;
-    const products = await fetchProducts({ stoneId, type });
-    return res.json({ products });
+    try {
+      if (!hasSupabase) return res.status(503).json({ error: 'Supabase not configured' });
+      const stoneId = req.query.stone_id ? Number(req.query.stone_id) : null;
+      const type = req.query.type ? String(req.query.type) : null;
+      const products = await fetchProducts({ stoneId, type });
+      return res.json({ products });
+    } catch (err) {
+      console.error('GET /api/products error', err);
+      const { message, status } = formatSupabaseError(err);
+      return res.status(status).json({ error: message });
+    }
   });
 
   app.get('/api/stones', async (req, res) => {
@@ -275,33 +313,39 @@ export function buildApiApp() {
   });
 
   app.post('/api/custom-request', async (req, res) => {
-    if (!hasSupabase) return res.status(503).json({ error: 'Supabase not configured' });
-    const payload = req.body as {
-      telegram_init_data?: string;
-      stones?: number[];
-      type?: string;
-      budget_from?: number;
-      budget_to?: number;
-      comment?: string;
-    };
-    const initData = getInitData(req);
-    const validation = validateInitData(initData ?? '', env.BOT_TOKEN);
-    if (!validation.ok && !env.ALLOW_DEV_INIT_DATA) {
-      return res.status(401).json({ error: validation.error });
+    try {
+      if (!hasSupabase) return res.status(503).json({ error: 'Supabase not configured' });
+      const payload = req.body as {
+        telegram_init_data?: string;
+        stones?: number[];
+        type?: string;
+        budget_from?: number;
+        budget_to?: number;
+        comment?: string;
+      };
+      const initData = getInitData(req);
+      const validation = validateInitData(initData ?? '', env.BOT_TOKEN);
+      if (!validation.ok && !env.ALLOW_DEV_INIT_DATA) {
+        return res.status(401).json({ error: validation.error });
+      }
+      const tgUser = normalizeTelegramUser(validation);
+      if (!tgUser && !env.ALLOW_DEV_INIT_DATA) return res.status(401).json({ error: 'initData invalid' });
+      const user = await ensureUser(tgUser ?? { id: 0, username: 'demo', first_name: 'Sky Guest' });
+      if (!user) return res.status(500).json({ error: 'failed to upsert user' });
+      const record = await createCustomRequest({
+        userId: user.id,
+        stones: payload.stones ?? [],
+        type: payload.type ?? null,
+        budget_from: payload.budget_from ?? null,
+        budget_to: payload.budget_to ?? null,
+        comment: payload.comment ?? null,
+      });
+      return res.json({ ok: true, id: record?.id ?? null });
+    } catch (err) {
+      console.error('custom-request error', err);
+      const { message, status } = formatSupabaseError(err);
+      return res.status(status).json({ error: message });
     }
-    const tgUser = normalizeTelegramUser(validation);
-    if (!tgUser && !env.ALLOW_DEV_INIT_DATA) return res.status(401).json({ error: 'initData invalid' });
-    const user = await ensureUser(tgUser ?? { id: 0, username: 'demo', first_name: 'Sky Guest' });
-    if (!user) return res.status(500).json({ error: 'failed to upsert user' });
-    const record = await createCustomRequest({
-      userId: user.id,
-      stones: payload.stones ?? [],
-      type: payload.type ?? null,
-      budget_from: payload.budget_from ?? null,
-      budget_to: payload.budget_to ?? null,
-      comment: payload.comment ?? null,
-    });
-    return res.json({ ok: true, id: record?.id ?? null });
   });
 
   const distPath = path.join(process.cwd(), 'webapp', 'dist');
@@ -311,6 +355,13 @@ export function buildApiApp() {
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }
+
+  // Global error handler for unhandled errors
+  app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    console.error('Unhandled error:', err);
+    const { message, status } = formatSupabaseError(err);
+    return res.status(status).json({ error: message });
+  });
 
   return app;
 }

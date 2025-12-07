@@ -15,8 +15,29 @@ async function apiRequest<T>(path: string, initData?: string, options?: RequestI
   });
 
   if (!response.ok) {
-    const text = await response.text();
-    throw new Error(text || `Request failed with ${response.status}`);
+    let errorMessage = `Ошибка ${response.status}`;
+    try {
+      const text = await response.text();
+      // Try to parse as JSON first
+      try {
+        const json = JSON.parse(text);
+        if (json.error && typeof json.error === 'string') {
+          errorMessage = json.error;
+        } else {
+          errorMessage = text || errorMessage;
+        }
+      } catch {
+        // If not JSON, use the text as-is, but clean up Supabase error format
+        if (text.includes('NOT_FOUND') || text.includes('Code:')) {
+          errorMessage = 'Запрашиваемый ресурс не найден';
+        } else if (text) {
+          errorMessage = text;
+        }
+      }
+    } catch {
+      // If reading response fails, use default message
+    }
+    throw new Error(errorMessage);
   }
 
   return (await response.json()) as T;
