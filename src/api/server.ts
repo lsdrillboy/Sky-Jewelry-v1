@@ -166,8 +166,19 @@ function normalizeTelegramUser(validation: ReturnType<typeof validateInitData>):
 
 function formatSupabaseError(err: any): { message: string; status: number } {
   // Supabase PostgREST errors have a specific format
-  if (err?.code === 'PGRST116' || err?.message?.includes('NOT_FOUND')) {
+  console.error('Supabase error details:', {
+    code: err?.code,
+    message: err?.message,
+    details: err?.details,
+    hint: err?.hint,
+  });
+  
+  if (err?.code === 'PGRST116' || err?.message?.includes('NOT_FOUND') || err?.code === '42P01') {
     return { message: 'Запрашиваемый ресурс не найден', status: 404 };
+  }
+  if (err?.code === '42703') {
+    // Column does not exist
+    return { message: 'Ошибка структуры базы данных. Обратитесь к администратору.', status: 500 };
   }
   if (err?.code === '23505') {
     return { message: 'Дублирующаяся запись', status: 409 };
