@@ -1,0 +1,81 @@
+<svg width="640" height="640" viewBox="0 0 640 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bgGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(320 320) rotate(90) scale(360)">
+      <stop stop-color="#2E2414" stop-opacity="0.6"/>
+      <stop offset="0.55" stop-color="#0B0907"/>
+      <stop offset="1" stop-color="#050403"/>
+    </radialGradient>
+    <radialGradient id="iris" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(320 320) rotate(90) scale(160 220)">
+      <stop stop-color="#FFE4B3" stop-opacity="0.98"/>
+      <stop offset="0.45" stop-color="#E8C16E" stop-opacity="0.92"/>
+      <stop offset="0.75" stop-color="#B97821" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#0B0703" stop-opacity="0.05"/>
+    </radialGradient>
+    <linearGradient id="ring" x1="120" y1="200" x2="520" y2="440" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDE6B8" stop-opacity="0.92"/>
+      <stop offset="0.45" stop-color="#E6BB5E" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#B3701D" stop-opacity="0.85"/>
+    </linearGradient>
+    <linearGradient id="ray" x1="320" y1="50" x2="320" y2="200" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FBE9C9" stop-opacity="0.95"/>
+      <stop offset="0.55" stop-color="#E3B75D" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#7A4A0F" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="halo" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="30" result="glow"/>
+      <feColorMatrix in="glow" type="matrix" values="1 0 0 0 0  0.8 0.65 0 0 0  0.3 0.2 0 0 0  0 0 0 1 0"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="640" height="640" rx="320" fill="url(#bgGlow)"/>
+
+  <g filter="url(#halo)">
+    <circle cx="320" cy="320" r="110" fill="url(#iris)" opacity="0.4"/>
+  </g>
+
+  <g id="ray-group" filter="url(#softGlow)">
+    <rect x="318" y="46" width="4" height="116" rx="2" fill="url(#ray)"/>
+    <rect x="318" y="72" width="4" height="90" rx="2" fill="url(#ray)" opacity="0.8"/>
+    <rect x="318" y="104" width="4" height="60" rx="2" fill="url(#ray)" opacity="0.6"/>
+  </g>
+
+  <use href="#ray-group" transform="rotate(18 320 320)"/>
+  <use href="#ray-group" transform="rotate(36 320 320)"/>
+  <use href="#ray-group" transform="rotate(54 320 320)"/>
+  <use href="#ray-group" transform="rotate(72 320 320)"/>
+  <use href="#ray-group" transform="rotate(90 320 320)"/>
+  <use href="#ray-group" transform="rotate(108 320 320)"/>
+  <use href="#ray-group" transform="rotate(126 320 320)"/>
+  <use href="#ray-group" transform="rotate(144 320 320)"/>
+  <use href="#ray-group" transform="rotate(162 320 320)"/>
+  <use href="#ray-group" transform="rotate(180 320 320)"/>
+  <use href="#ray-group" transform="rotate(198 320 320)"/>
+  <use href="#ray-group" transform="rotate(216 320 320)"/>
+  <use href="#ray-group" transform="rotate(234 320 320)"/>
+  <use href="#ray-group" transform="rotate(252 320 320)"/>
+  <use href="#ray-group" transform="rotate(270 320 320)"/>
+  <use href="#ray-group" transform="rotate(288 320 320)"/>
+  <use href="#ray-group" transform="rotate(306 320 320)"/>
+  <use href="#ray-group" transform="rotate(324 320 320)"/>
+  <use href="#ray-group" transform="rotate(342 320 320)"/>
+
+  <path d="M80 320C140 212 224 148 320 148C416 148 500 212 560 320C500 428 416 492 320 492C224 492 140 428 80 320Z" fill="url(#iris)" opacity="0.22"/>
+  <path d="M100 320C154 226 232 170 320 170C408 170 486 226 540 320C486 414 408 470 320 470C232 470 154 414 100 320Z" stroke="url(#ring)" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M320 208C282 208 248 244 248 288C248 332 282 368 320 368C358 368 392 332 392 288C392 244 358 208 320 208Z" fill="url(#iris)" opacity="0.4"/>
+  <circle cx="320" cy="288" r="46" fill="url(#iris)" opacity="0.8"/>
+  <circle cx="320" cy="288" r="22" fill="url(#ring)"/>
+  <circle cx="320" cy="288" r="12" fill="#FFF7E6"/>
+  <circle cx="288" cy="270" r="12" fill="#FFF4DA" opacity="0.8"/>
+  <circle cx="352" cy="304" r="8" fill="#FFF4DA" opacity="0.7"/>
+</svg>

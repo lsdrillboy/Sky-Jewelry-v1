@@ -1,3 +1,4 @@
+import eyeLogo from '../assets/eye-logo.svg';
 import '../App.css';
 
 type Props = {
@@ -8,38 +9,9 @@ type Props = {
 export function HeroSection({ onStart, onCatalog }: Props) {
   return (
     <div className="hero">
-      {/* Eye Crystal with White Sapphire */}
-      <div className="eye-crystal">
-        <div className="eye-outer">
-          <div className="eye-inner">
-            <div className="sapphire-core"></div>
-            <div className="crystal-rays">
-              {Array.from({ length: 12 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="ray"
-                  style={{
-                    transform: `rotate(${i * 30}deg)`,
-                    animationDelay: `${i * 0.1}s`,
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="starfield">
-          {Array.from({ length: 20 }).map((_, i) => (
-            <div
-              key={i}
-              className="star"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-              }}
-            />
-          ))}
-        </div>
+      <div className="hero-logo">
+        <div className="hero-logo-glow" />
+        <img src={eyeLogo} alt="Sky Jewelry eye logo" />
       </div>
 
       {/* Text Content */}
@@ -62,4 +34,3 @@ export function HeroSection({ onStart, onCatalog }: Props) {
 }
 
 export default HeroSection;
-
