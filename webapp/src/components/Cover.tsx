@@ -13,10 +13,8 @@ export function Cover({ onStart }: Props) {
 
       {/* Description */}
       <div className="hero-description">
-        <p className="muted">
-          Бережный подбор минералов.
-          <br />
-          Каталог украшений и персональные проекты.
+        <p className="muted lead-text">
+          Я помогу найти камень, который отзовётся на твою душу, и создам украшение — личное, как амулет.
         </p>
       </div>
 

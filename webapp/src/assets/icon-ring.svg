@@ -1,0 +1,18 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="ringGold" x1="10" y1="12" x2="38" y2="36" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7E6C3"/>
+      <stop offset="0.5" stop-color="#D8B15C"/>
+      <stop offset="1" stop-color="#B87921"/>
+    </linearGradient>
+    <linearGradient id="ringShine" x1="18" y1="6" x2="30" y2="18" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#D8B15C" stop-opacity="0.6"/>
+    </linearGradient>
+  </defs>
+  <path d="M18 6h12l-3 6h-6l-3-6Z" fill="url(#ringShine)" stroke="url(#ringGold)" stroke-width="1.8" stroke-linejoin="round"/>
+  <path d="M24 14c7.18 0 13 5.82 13 13s-5.82 13-13 13-13-5.82-13-13 5.82-13 13-13Z" stroke="url(#ringGold)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M18.5 21.5c1.6-1.6 3.7-2.5 5.9-2.5s4.3.9 5.9 2.5" stroke="url(#ringGold)" stroke-width="1.6" stroke-linecap="round" opacity="0.7"/>
+  <path d="M24 17.5c4.14 0 7.5 3.36 7.5 7.5S28.14 32.5 24 32.5 16.5 29.14 16.5 25 19.86 17.5 24 17.5Z" stroke="url(#ringGold)" stroke-width="1.4" opacity="0.35"/>
+  <circle cx="24" cy="25" r="2.4" fill="url(#ringShine)" opacity="0.85"/>
+</svg>

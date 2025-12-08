@@ -2,6 +2,8 @@ import { useState } from 'react';
 import '../App.css';
 import { catalogTypes } from '../data/themes';
 import type { CustomRequestPayload, Stone } from '../types';
+import sendIcon from '../assets/icon-send.svg';
+import backIcon from '../assets/icon-arrow-left.svg';
 
 type Props = {
   stones: Stone[];
@@ -106,10 +108,12 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
         </div>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           <button className="button" onClick={handleSubmit} disabled={loading}>
+            <img className="btn-icon" src={sendIcon} alt="" />
             {loading ? 'Отправляю...' : 'Отправить заявку'}
           </button>
           <button className="button ghost" onClick={onBack}>
-            ⬅️ В меню
+            <img className="btn-icon" src={backIcon} alt="" />
+            В меню
           </button>
         </div>
       </div>

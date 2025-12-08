@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import '../App.css';
 import type { User } from '../types';
+import calendarIcon from '../assets/icon-calendar.svg';
+import backIcon from '../assets/icon-arrow-left.svg';
 
 type Props = {
   user: User | null;
@@ -54,10 +56,12 @@ export function BirthdateForm({ user, onSubmit, onBack }: Props) {
         <p className="muted">Дата сохранится в Supabase и будет использоваться при подборе камней.</p>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           <button className="button" onClick={handleSubmit} disabled={saving || !value}>
+            <img className="btn-icon" src={calendarIcon} alt="" />
             {saving ? 'Сохраняю...' : 'Сохранить и продолжить'}
           </button>
           <button className="button ghost" onClick={onBack}>
-            ⬅️ В меню
+            <img className="btn-icon" src={backIcon} alt="" />
+            В меню
           </button>
         </div>
       </div>

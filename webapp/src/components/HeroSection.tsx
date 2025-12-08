@@ -1,5 +1,7 @@
 import eyeLogo from '../assets/eye-logo.svg';
 import '../App.css';
+import stoneIcon from '../assets/icon-stone.svg';
+import ringIcon from '../assets/icon-ring.svg';
 
 type Props = {
   onStart: () => void;
@@ -22,11 +24,13 @@ export function HeroSection({ onStart, onCatalog }: Props) {
 
       {/* Action Buttons */}
       <div className="hero-actions">
-        <button className="button" onClick={onStart}>
-          ✨ Начать
+        <button className="button nav-button nav-primary" onClick={onStart}>
+          <img className="btn-icon" src={stoneIcon} alt="" />
+          Начать
         </button>
-        <button className="button ghost" onClick={onCatalog}>
-          💎 Каталог
+        <button className="button nav-button nav-muted" onClick={onCatalog}>
+          <img className="btn-icon" src={ringIcon} alt="" />
+          Каталог
         </button>
       </div>
     </div>

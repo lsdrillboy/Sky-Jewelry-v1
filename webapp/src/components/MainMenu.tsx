@@ -1,5 +1,10 @@
 import '../App.css';
 import type { User, Screen } from '../types';
+import stoneIcon from '../assets/icon-stone.svg';
+import ringIcon from '../assets/icon-ring.svg';
+import customIcon from '../assets/icon-custom.svg';
+import bookIcon from '../assets/icon-book.svg';
+import calendarIcon from '../assets/icon-calendar.svg';
 
 type Props = {
   user: User | null;
@@ -26,10 +31,9 @@ export function MainMenu({ user, onNavigate, onChangeBirthdate }: Props) {
             <div className="tiny">Добро пожаловать, {user?.first_name ?? 'гость'}</div>
             <h1>Sky Jewelry</h1>
           </div>
-          <div className="pill">Supabase + Telegram</div>
         </div>
-        <p className="muted" style={{ margin: '8px 0 0' }}>
-          Подберу камень под запрос, покажу украшения и приму заявку в один клик.
+        <p className="muted lead-text" style={{ margin: '10px 0 0' }}>
+          Подберу минералы по твоей энергии, покажу украшения Sky Jewelry и помогу собрать индивидуальное изделие.
         </p>
       </div>
 
@@ -47,25 +51,30 @@ export function MainMenu({ user, onNavigate, onChangeBirthdate }: Props) {
             </div>
           </div>
           <button className="button ghost" onClick={onChangeBirthdate}>
-            📅 Изменить дату
+            <img className="btn-icon" src={calendarIcon} alt="" />
+            Изменить дату
           </button>
         </div>
       </div>
 
       <div className="panel">
         <div className="subtitle">Навигация</div>
-        <div className="menu-grid">
-          <button className="button full" onClick={() => onNavigate('stone')}>
-            🔮 Подбор камня
+        <div className="menu-grid nav-grid">
+          <button className="button full nav-button nav-primary" onClick={() => onNavigate('stone')}>
+            <img className="nav-icon" src={stoneIcon} alt="" />
+            <span className="nav-label">Подбор камня</span>
           </button>
-          <button className="button full secondary" onClick={() => onNavigate('catalog')}>
-            💍 Каталог украшений
+          <button className="button full nav-button nav-muted" onClick={() => onNavigate('catalog')}>
+            <img className="nav-icon" src={ringIcon} alt="" />
+            <span className="nav-label">Каталог украшений</span>
           </button>
-          <button className="button full secondary" onClick={() => onNavigate('custom')}>
-            ✨ Индивидуальное украшение
+          <button className="button full nav-button nav-muted" onClick={() => onNavigate('custom')}>
+            <img className="nav-icon" src={customIcon} alt="" />
+            <span className="nav-label">Индивидуальное украшение</span>
           </button>
-          <button className="button full ghost" onClick={() => onNavigate('library')}>
-            📖 Энергия камней
+          <button className="button full nav-button nav-muted" onClick={() => onNavigate('library')}>
+            <img className="nav-icon" src={bookIcon} alt="" />
+            <span className="nav-label">Энергия камней</span>
           </button>
         </div>
       </div>

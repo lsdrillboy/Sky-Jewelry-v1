@@ -1,0 +1,19 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="stoneGold" x1="6" y1="6" x2="42" y2="42" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6E0BC"/>
+      <stop offset="0.5" stop-color="#D8B15C"/>
+      <stop offset="1" stop-color="#B97A23"/>
+    </linearGradient>
+    <linearGradient id="stoneEdge" x1="12" y1="12" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDF5E3" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#D0A756" stop-opacity="0.8"/>
+    </linearGradient>
+  </defs>
+  <path d="M10.5 17.5L21 7h6l10.5 10.5V30L27 41h-6L10.5 30V17.5Z" stroke="url(#stoneGold)" stroke-width="2.2" stroke-linejoin="round" fill="rgba(0,0,0,0.1)"/>
+  <path d="M24 10l-8 8h16l-8-8Z" fill="url(#stoneEdge)" opacity="0.9"/>
+  <path d="M16 18l-2 5 6 13h8l6-13-2-5H16Z" fill="url(#stoneGold)" opacity="0.22"/>
+  <circle cx="24" cy="24" r="5.5" fill="url(#stoneEdge)" opacity="0.95"/>
+  <circle cx="22" cy="22" r="2.2" fill="#FFF7E8" opacity="0.9"/>
+  <circle cx="26.5" cy="25.5" r="1.2" fill="#F3DFB7" opacity="0.85"/>
+</svg>

@@ -1,6 +1,8 @@
 import '../App.css';
 import { themes as themeList } from '../data/themes';
 import type { Stone, StonePickerResult } from '../types';
+import ringIcon from '../assets/icon-ring.svg';
+import backIcon from '../assets/icon-arrow-left.svg';
 
 type Props = {
   result: StonePickerResult | null;
@@ -59,12 +61,23 @@ export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, 
               <div key={stone.id} className="card stone-card">
                 <div className="floating-badge">{idx === 0 ? 'главный' : 'дополнительный'}</div>
                 {stone.photo_url ? <img src={stone.photo_url} alt={stone.name_ru} /> : null}
-                <h3>{stone.name_ru}</h3>
+                <div className="stone-meta">
+                  <div
+                    className="stone-thumb"
+                    style={{
+                      backgroundImage: stone.photo_url
+                        ? `linear-gradient(135deg, rgba(216, 177, 92, 0.2), rgba(0,0,0,0.7)), url(${stone.photo_url})`
+                        : undefined,
+                    }}
+                  />
+                  <h3 style={{ margin: 0 }}>{stone.name_ru}</h3>
+                </div>
                 <p className="muted" style={{ minHeight: 48 }}>
                   {stone.description_short ?? 'Описание появится позже.'}
                 </p>
-                <button className="button ghost" onClick={() => onOpenCatalog(stone.id)}>
-                  💍 Показать украшения с этим камнем
+                <button className="button luxe nav-button" onClick={() => onOpenCatalog(stone.id)}>
+                  <img className="btn-icon" src={ringIcon} alt="" />
+                  Показать украшения с этим камнем
                 </button>
               </div>
             ))}
@@ -74,7 +87,8 @@ export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, 
 
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
         <button className="button ghost" onClick={onBack}>
-          ⬅️ В меню
+          <img className="btn-icon" src={backIcon} alt="" />
+          В меню
         </button>
       </div>
     </div>

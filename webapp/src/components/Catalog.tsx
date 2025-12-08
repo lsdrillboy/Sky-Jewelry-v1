@@ -1,6 +1,8 @@
 import '../App.css';
 import { catalogTypes } from '../data/themes';
 import type { Product, Stone } from '../types';
+import searchIcon from '../assets/icon-search.svg';
+import backIcon from '../assets/icon-arrow-left.svg';
 
 type Filters = {
   stone_id?: number;
@@ -96,10 +98,12 @@ export function Catalog({
         </div>
         <div style={{ display: 'flex', gap: 10, marginTop: 10, flexWrap: 'wrap' }}>
           <button className="button" onClick={onRefresh}>
-            🔎 Применить
+            <img className="btn-icon" src={searchIcon} alt="" />
+            Применить
           </button>
           <button className="button ghost" onClick={onBack}>
-            ⬅️ В меню
+            <img className="btn-icon" src={backIcon} alt="" />
+            В меню
           </button>
         </div>
       </div>

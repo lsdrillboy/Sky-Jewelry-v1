@@ -1,5 +1,6 @@
 import '../App.css';
 import type { Stone } from '../types';
+import backIcon from '../assets/icon-arrow-left.svg';
 
 type Props = {
   stones: Stone[];
@@ -60,7 +61,8 @@ export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
 
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
         <button className="button ghost" onClick={onBack}>
-          ⬅️ В меню
+          <img className="btn-icon" src={backIcon} alt="" />
+          В меню
         </button>
       </div>
     </div>
