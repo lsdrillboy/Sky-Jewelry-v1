@@ -1,4 +1,5 @@
-import eyeLogo from '../assets/eye-logo.svg';
+const logoUrl =
+  'https://kyxztleagpawfhkvxvwa.supabase.co/storage/v1/object/sign/Cover/Screenshot%202025-12-08%20at%2014.03.52.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8wMGI3NGEwZi1jMTViLTRmYzQtYWIzMS0yMzdiMTE3OGY0MWEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJDb3Zlci9TY3JlZW5zaG90IDIwMjUtMTItMDggYXQgMTQuMDMuNTIucG5nIiwiaWF0IjoxNzY1MTg0NzczLCJleHAiOjE3OTY3MjA3NzN9.SESh415rSamSCkp_s0acWxZZhEUHwRi56foUpLIa0YU';
 import '../App.css';
 import stoneIcon from '../assets/icon-stone.svg';
 import ringIcon from '../assets/icon-ring.svg';
@@ -10,10 +11,10 @@ type Props = {
 
 export function HeroSection({ onStart, onCatalog }: Props) {
   return (
-    <div className="hero">
+    <div className="hero cover-hero">
       <div className="hero-logo">
         <div className="hero-logo-glow" />
-        <img src={eyeLogo} alt="Sky Jewelry eye logo" />
+        <img src={logoUrl} alt="Sky Jewelry eye logo" />
       </div>
 
       {/* Text Content */}

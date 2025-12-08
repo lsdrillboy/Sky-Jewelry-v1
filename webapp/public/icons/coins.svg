@@ -1,0 +1,13 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="coinsGold" x1="5" y1="5" x2="19" y2="19" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDE9C9"/>
+      <stop offset="0.5" stop-color="#D8B15C"/>
+      <stop offset="1" stop-color="#B87921"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="12" cy="8" rx="6.5" ry="2.8" stroke="url(#coinsGold)" stroke-width="1.6" fill="rgba(0,0,0,0.1)"/>
+  <path d="M5.5 9.5v6c0 1.6 2.9 2.9 6.5 2.9s6.5-1.3 6.5-2.9v-6" stroke="url(#coinsGold)" stroke-width="1.6" fill="rgba(0,0,0,0.05)"/>
+  <path d="M5.5 11.5c0 1.6 2.9 2.9 6.5 2.9s6.5-1.3 6.5-2.9" stroke="url(#coinsGold)" stroke-width="1.4"/>
+  <path d="M5.5 13.5c0 1.6 2.9 2.9 6.5 2.9s6.5-1.3 6.5-2.9" stroke="url(#coinsGold)" stroke-width="1.2"/>
+</svg>

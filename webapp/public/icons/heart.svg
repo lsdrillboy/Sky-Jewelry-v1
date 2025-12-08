@@ -1,0 +1,10 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="heartGold" x1="6" y1="6" x2="18" y2="18" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDE9C9"/>
+      <stop offset="0.5" stop-color="#D8B15C"/>
+      <stop offset="1" stop-color="#B87921"/>
+    </linearGradient>
+  </defs>
+  <path d="M12 20s-7-4-7-10a4 4 0 0 1 7-2.2A4 4 0 0 1 19 10c0 6-7 10-7 10Z" stroke="url(#heartGold)" stroke-width="1.6" fill="rgba(0,0,0,0.1)" stroke-linejoin="round"/>
+</svg>

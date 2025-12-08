@@ -14,6 +14,15 @@ type Props = {
 };
 
 export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, onBack }: Props) {
+  const iconMap: Record<string, string> = {
+    money: '/icons/coins.svg',
+    love: '/icons/heart.svg',
+    protection: '/icons/shield-strong.svg',
+    mind: '/icons/brain.svg',
+    transformation: '/icons/arrows.svg',
+    custom: '/icons/custom.svg',
+  };
+
   return (
     <div className="screen">
       <div className="hero">
@@ -32,10 +41,10 @@ export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, 
 
       <div className="panel">
         <div className="subtitle">Выбери тему</div>
-        <div className="chips">
+        <div className="chips chips-grid">
           {themeList.map((theme) => (
             <button key={theme.code} className="chip" onClick={() => onPick(theme.code)}>
-              <span>{theme.emoji}</span>
+              {iconMap[theme.code] ? <img className="chip-icon" src={iconMap[theme.code]} alt={theme.label} draggable={false} /> : null}
               <span>{theme.label}</span>
             </button>
           ))}

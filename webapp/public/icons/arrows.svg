@@ -1,0 +1,11 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="arrowsGold" x1="6" y1="6" x2="18" y2="18" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDE9C9"/>
+      <stop offset="0.5" stop-color="#D8B15C"/>
+      <stop offset="1" stop-color="#B87921"/>
+    </linearGradient>
+  </defs>
+  <path d="M7 10.5h7.5V7l3.5 3.5-3.5 3.5v-3.5H7" stroke="url(#arrowsGold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M17 13.5H9.5V17L6 13.5 9.5 10v3.5H17" stroke="url(#arrowsGold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+</svg>

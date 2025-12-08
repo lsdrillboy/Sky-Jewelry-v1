@@ -151,7 +151,8 @@ function App() {
 
   const content = useMemo(() => {
     if (loading) return <Preloader text="Проверяю подпись Telegram и прогреваю Supabase" />;
-    if (screen === 'cover') return <Cover onStart={() => setScreen('main')} />;
+    if (screen === 'cover')
+      return <Cover onStart={() => setScreen('main')} onCatalog={() => setScreen('catalog')} />;
     if (screen === 'main') return <MainMenu user={user} onNavigate={setScreen} onChangeBirthdate={() => setScreen('birthdate')} />;
     if (screen === 'birthdate')
       return <BirthdateForm user={user} onSubmit={handleBirthdateUpdate} onBack={() => setScreen('main')} />;
