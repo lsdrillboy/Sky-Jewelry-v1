@@ -8,6 +8,7 @@
     "build": "tsc -p .",
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit",
+    "postinstall": "npm --prefix webapp install",
     "dev:webapp": "npm --prefix webapp run dev",
     "dev:all": "concurrently -k \"npm run dev\" \"npm --prefix webapp run dev -- --host --port 5173\"",
     "build:webapp": "npm --prefix webapp run build"
