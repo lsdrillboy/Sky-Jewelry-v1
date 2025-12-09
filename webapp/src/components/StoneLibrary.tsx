@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import '../App.css';
 import type { Stone } from '../types';
 import backIcon from '../assets/icon-arrow-left.svg';
+import stoneIcon from '../assets/icon-stone.svg';
 
 type Props = {
   stones: Stone[];
@@ -10,6 +12,15 @@ type Props = {
 };
 
 export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
+  const [openedId, setOpenedId] = useState<number | null>(null);
+
+  const toggle = (id: number) => {
+    setOpenedId((prev) => (prev === id ? null : id));
+  };
+
+  const isEmpty = !loading && stones.length === 0;
+  const displayStones = stones;
+
   return (
     <div className="screen">
       <div className="hero">
@@ -38,24 +49,42 @@ export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
             <div className="muted">Загружаю...</div>
           </div>
         ) : null}
-        <div className="grid two">
-          {stones.map((stone) => (
-            <div key={stone.id} className="card stone-card">
-              <h3>{stone.name_ru}</h3>
-              <p className="muted" style={{ minHeight: 48 }}>
-                {stone.description_short ?? 'Описание появится позже.'}
-              </p>
-              {stone.themes?.length ? (
-                <div className="chips">
-                  {stone.themes.map((theme) => (
-                    <span key={theme} className="tag">
-                      {theme}
-                    </span>
-                  ))}
-                </div>
-              ) : null}
+        <div className="stone-accordion">
+          {isEmpty ? (
+            <div className="muted" style={{ marginBottom: 10 }}>
+              Не удалось загрузить список камней. Попробуй позже.
             </div>
-          ))}
+          ) : null}
+          {displayStones.map((stone) => {
+            const opened = openedId === stone.id;
+            return (
+              <div key={stone.id} className={`stone-item ${opened ? 'opened' : ''}`}>
+                <button className="stone-head" onClick={() => toggle(stone.id)}>
+                  <div className="stone-head-left">
+                    <div className="stone-chip">
+                      <img src={stoneIcon} alt="" />
+                    </div>
+                    <span className="stone-title">{stone.name_ru}</span>
+                  </div>
+                  <span className="stone-toggle">{opened ? '−' : '+'}</span>
+                </button>
+                {opened ? (
+                  <div className="stone-body">
+                    <p className="muted">{stone.description_short ?? 'Описание появится позже.'}</p>
+                    {stone.themes?.length ? (
+                      <div className="chips">
+                        {stone.themes.map((theme) => (
+                          <span key={theme} className="tag">
+                            {theme}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
       </div>
 

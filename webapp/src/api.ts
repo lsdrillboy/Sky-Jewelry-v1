@@ -1,8 +1,10 @@
 import type { CustomRequestPayload, Product, Stone, StonePickerResult, User } from './types';
 
-const defaultHost = `${window.location.protocol}//${window.location.host}`;
-const devFallback = window.location.port === '5173' ? 'http://localhost:3000' : defaultHost;
-const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) || devFallback;
+const API_BASE = import.meta.env.VITE_API_URL as string;
+if (!API_BASE) {
+  // Fail fast in dev if переменная не задана
+  throw new Error('VITE_API_URL is not defined');
+}
 
 async function apiRequest<T>(path: string, initData?: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {

@@ -1,6 +1,7 @@
 import '../App.css';
 import { catalogTypes } from '../data/themes';
 import type { Product, Stone } from '../types';
+import stoneIcon from '../assets/icon-stone.svg';
 import searchIcon from '../assets/icon-search.svg';
 import backIcon from '../assets/icon-arrow-left.svg';
 
@@ -118,19 +119,34 @@ export function Catalog({
         ) : null}
         {!loading && !products.length ? <p className="muted">Не нашла украшения под этот фильтр.</p> : null}
         <div className="catalog-grid">
-          {products.map((product) => (
-            <div key={product.id} className="card product-card">
-              {product.main_photo_url || product.photo_url ? (
-                <img src={product.main_photo_url ?? product.photo_url!} alt={product.name} />
-              ) : null}
-              <h3>{product.name}</h3>
-              <p className="muted" style={{ minHeight: 44 }}>
-                {product.description ?? 'Описание появится позже.'}
-              </p>
-              <div className="pill">{formatPrice(product)}</div>
-              <div className="tiny">Камни: {(product.stone_ids ?? product.stones)?.join(', ') ?? '—'}</div>
-            </div>
-          ))}
+          {products.map((product) => {
+            const image = product.main_photo_url ?? product.photo_url ?? '';
+            const stoneList = product.stone_ids ?? product.stones ?? [];
+            return (
+              <div key={product.id} className="card product-card premium-product">
+                <div className="product-cover">
+                  {image ? <img src={image} alt={product.name} loading="lazy" /> : <div className="product-placeholder">Фото скоро</div>}
+                  {product.type ? <span className="floating-badge product-type">{product.type}</span> : null}
+                  <div className="product-overlay" />
+                </div>
+                <div className="product-body">
+                  <h3>{product.name}</h3>
+                  <p className="muted" style={{ minHeight: 52 }}>
+                    {product.description ?? 'Описание появится позже.'}
+                  </p>
+                  <div className="product-meta">
+                    <div className="pill">
+                      {formatPrice(product)}
+                    </div>
+                    <div className="pill ghost-pill">
+                      <img src={stoneIcon} className="btn-icon" alt="" />
+                      Камни: {stoneList.length ? stoneList.join(', ') : '—'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
