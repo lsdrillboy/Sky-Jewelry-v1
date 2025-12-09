@@ -192,6 +192,25 @@ function formatSupabaseError(err: any): { message: string; status: number } {
   return { message: 'Внутренняя ошибка сервера', status: 500 };
 }
 
+async function sendOrderToTelegram(text: string) {
+  const chatId = env.ORDER_CHAT_ID ?? 5035730676; // fallback на указанный групповой чат
+  if (!env.BOT_TOKEN || !chatId) return;
+  try {
+    await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text,
+        parse_mode: 'HTML',
+        disable_web_page_preview: true,
+      }),
+    });
+  } catch (err) {
+    console.error('Failed to send order to Telegram', err);
+  }
+}
+
 export function buildApiApp() {
   const app = express();
   app.use(cors());
@@ -351,6 +370,17 @@ export function buildApiApp() {
         budget_to: payload.budget_to ?? null,
         comment: payload.comment ?? null,
       });
+      const textLines = [
+        '🪡 Новая заявка на индивидуальное украшение',
+        `Имя: ${user.first_name ?? '—'}`,
+        `Username: ${user.username ? '@' + user.username : '—'}`,
+        `Telegram ID: ${tgUser?.id ?? '—'}`,
+        `Тип: ${payload.type ?? '—'}`,
+        `Камни: ${payload.stones?.length ? payload.stones.join(', ') : '—'}`,
+        `Бюджет: от ${payload.budget_from ?? '—'} до ${payload.budget_to ?? '—'}`,
+        `Комментарий: ${payload.comment ?? '—'}`,
+      ].join('\n');
+      await sendOrderToTelegram(textLines);
       return res.json({ ok: true, id: record?.id ?? null });
     } catch (err) {
       console.error('custom-request error', err);
