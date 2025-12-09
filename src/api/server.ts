@@ -345,6 +345,7 @@ export function buildApiApp() {
   app.post('/api/custom-request', async (req, res) => {
     try {
       if (!hasSupabase) return res.status(503).json({ error: 'Supabase not configured' });
+      const allowAnonymous = env.ALLOW_DEV_INIT_DATA || !env.BOT_TOKEN;
       const payload = req.body as {
         telegram_init_data?: string;
         stones?: number[];
@@ -355,11 +356,11 @@ export function buildApiApp() {
       };
       const initData = getInitData(req);
       const validation = validateInitData(initData ?? '', env.BOT_TOKEN);
-      if (!validation.ok && !env.ALLOW_DEV_INIT_DATA) {
+      if (!validation.ok && !allowAnonymous) {
         return res.status(401).json({ error: validation.error });
       }
       const tgUser = normalizeTelegramUser(validation);
-      if (!tgUser && !env.ALLOW_DEV_INIT_DATA) return res.status(401).json({ error: 'initData invalid' });
+      if (!tgUser && !allowAnonymous) return res.status(401).json({ error: 'initData invalid' });
       const user = await ensureUser(tgUser ?? { id: 0, username: 'demo', first_name: 'Sky Guest' });
       if (!user) return res.status(500).json({ error: 'failed to upsert user' });
       const record = await createCustomRequest({
