@@ -48,7 +48,7 @@ function App() {
       setUser({
         id: String(tgUser.id),
         telegram_id: tgUser.id,
-        first_name: tgUser.first_name ?? 'Sky Guest',
+        first_name: tgUser.first_name ?? '',
         last_name: tgUser.last_name ?? null,
         username: tgUser.username ?? null,
       });
@@ -63,14 +63,11 @@ function App() {
         setUser(user);
       } catch (err) {
         console.error('initSession failed', err);
-        setUser({
-          id: tgUser ? String(tgUser.id) : 'demo',
-          telegram_id: tgUser?.id,
-          first_name: tgUser?.first_name ?? 'Sky Guest',
-          last_name: tgUser?.last_name ?? null,
-          username: tgUser?.username ?? 'demo',
-        });
-        setToast('Dev режим: initData не передан, использую мок-пользователя.');
+        if (!tgUser) {
+          setToast('Не удалось получить initData из Telegram. Открой WebApp из чата.');
+        } else {
+          setToast('Не удалось инициализировать сессию. Проверь подключение к API.');
+        }
       } finally {
         setLoading(false);
       }
