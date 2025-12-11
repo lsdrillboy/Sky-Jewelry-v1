@@ -43,6 +43,16 @@ function App() {
 
   useEffect(() => {
     const tg = (window as any).Telegram?.WebApp;
+    const tgUser = tg?.initDataUnsafe?.user;
+    if (tgUser) {
+      setUser({
+        id: String(tgUser.id),
+        telegram_id: tgUser.id,
+        first_name: tgUser.first_name ?? 'Sky Guest',
+        last_name: tgUser.last_name ?? null,
+        username: tgUser.username ?? null,
+      });
+    }
     tg?.ready?.();
     tg?.expand?.();
     const data = extractInitData();
@@ -53,7 +63,13 @@ function App() {
         setUser(user);
       } catch (err) {
         console.error('initSession failed', err);
-        setUser({ id: 'demo', first_name: 'Sky Guest', username: 'demo' });
+        setUser({
+          id: tgUser ? String(tgUser.id) : 'demo',
+          telegram_id: tgUser?.id,
+          first_name: tgUser?.first_name ?? 'Sky Guest',
+          last_name: tgUser?.last_name ?? null,
+          username: tgUser?.username ?? 'demo',
+        });
         setToast('Dev режим: initData не передан, использую мок-пользователя.');
       } finally {
         setLoading(false);

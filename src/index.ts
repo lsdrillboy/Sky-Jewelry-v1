@@ -215,6 +215,7 @@ async function ensureUser(ctx: MyContext, extra?: { birthdate?: string }) {
     telegram_id: ctx.from.id,
     username: ctx.from.username,
     first_name: ctx.from.first_name,
+    last_name: ctx.from.last_name,
     language_code: ctx.from.language_code,
     birthdate: extra?.birthdate ?? null,
   };
@@ -234,7 +235,7 @@ async function getUserByTelegramId(ctx: MyContext): Promise<DbUser | null> {
   if (!supabase || !ctx.from) return null;
   const { data, error } = await supabase
     .from('users')
-    .select('id, birthdate, life_path')
+    .select('id, birthdate, life_path, last_name, first_name, username')
     .eq('telegram_id', ctx.from.id)
     .maybeSingle();
   if (error) {

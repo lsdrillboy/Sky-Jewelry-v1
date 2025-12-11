@@ -13,6 +13,7 @@ type ApiUser = {
   telegram_id: number;
   username?: string | null;
   first_name?: string | null;
+  last_name?: string | null;
   birthdate?: string | null;
   life_path?: number | null;
   language_code?: string | null;
@@ -28,28 +29,52 @@ async function ensureUser(telegramUser: TelegramUser | null, extra?: { birthdate
     telegram_id: telegramUser.id,
     username: telegramUser.username,
     first_name: telegramUser.first_name,
+    last_name: telegramUser.last_name,
     language_code: telegramUser.language_code,
   };
   if (extra?.birthdate) payload.birthdate = extra.birthdate;
   if (typeof extra?.life_path === 'number') payload.life_path = extra.life_path;
 
-  const { data, error } = await supabase
+  const attempt = await supabase
     .from('users')
     .upsert(payload, { onConflict: 'telegram_id' })
-    .select('id, telegram_id, username, first_name, birthdate, life_path, language_code')
+    .select('id, telegram_id, username, first_name, last_name, birthdate, life_path, language_code')
     .single();
-  if (error) {
-    console.error('ensureUser error', error);
+  if (attempt.error) {
+    console.error('ensureUser error', attempt.error);
+    if (attempt.error.message?.includes('last_name')) {
+      // fallback for schemas без колонки last_name
+      const { data, error } = await supabase
+        .from('users')
+        .upsert(
+          {
+            telegram_id: telegramUser.id,
+            username: telegramUser.username,
+            first_name: telegramUser.first_name,
+            language_code: telegramUser.language_code,
+            ...(extra?.birthdate ? { birthdate: extra.birthdate } : {}),
+            ...(typeof extra?.life_path === 'number' ? { life_path: extra.life_path } : {}),
+          },
+          { onConflict: 'telegram_id' },
+        )
+        .select('id, telegram_id, username, first_name, birthdate, life_path, language_code')
+        .single();
+      if (error) {
+        console.error('ensureUser fallback error', error);
+        return null;
+      }
+      return data as ApiUser;
+    }
     return null;
   }
-  return data as ApiUser;
+  return attempt.data as ApiUser;
 }
 
 async function getUserByTelegramId(telegramId: number): Promise<ApiUser | null> {
   if (!supabase) return null;
   const { data, error } = await supabase
     .from('users')
-    .select('id, telegram_id, username, first_name, birthdate, life_path, language_code')
+    .select('id, telegram_id, username, first_name, last_name, birthdate, life_path, language_code')
     .eq('telegram_id', telegramId)
     .maybeSingle();
   if (error) {
@@ -374,6 +399,7 @@ export function buildApiApp() {
       const textLines = [
         '🪡 Новая заявка на индивидуальное украшение',
         `Имя: ${user.first_name ?? '—'}`,
+        `Фамилия: ${user.last_name ?? '—'}`,
         `Username: ${user.username ? '@' + user.username : '—'}`,
         `Telegram ID: ${tgUser?.id ?? '—'}`,
         `Тип: ${payload.type ?? '—'}`,

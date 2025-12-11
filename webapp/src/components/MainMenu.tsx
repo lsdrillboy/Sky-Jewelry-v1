@@ -21,6 +21,8 @@ function formatDate(date?: string | null) {
 
 export function MainMenu({ user, onNavigate, onChangeBirthdate }: Props) {
   const birthdate = formatDate(user?.birthdate);
+  const fullName = [user?.first_name, user?.last_name].filter(Boolean).join(' ');
+  const username = user?.username ? `@${user.username}` : '—';
 
   return (
     <div className="screen">
@@ -43,7 +45,8 @@ export function MainMenu({ user, onNavigate, onChangeBirthdate }: Props) {
             <div className="subtitle">Твой профиль</div>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               <span className="pill">ID: {user?.telegram_id ?? '—'}</span>
-              <span className="pill">Имя: {user?.first_name ?? '—'}</span>
+              <span className="pill">Имя: {fullName || '—'}</span>
+              <span className="pill">Username: {username}</span>
               <span className="pill">
                 Дата рождения: {birthdate ?? 'не указана'}
               </span>

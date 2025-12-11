@@ -3,6 +3,7 @@ export type User = {
   telegram_id?: number;
   username?: string | null;
   first_name?: string | null;
+  last_name?: string | null;
   birthdate?: string | null;
   life_path?: number | null;
   language?: string | null;

@@ -26,26 +26,26 @@ export function Cover({ onStart, onCatalog }: Props) {
           <div className="card flow-card">
             <div className="flow-icon flow-icon-img profile" />
             <div className="floating-badge">1</div>
-            <h3>Проверка профиля</h3>
-            <p className="muted">Синхронизируемся с Telegram, подтягиваем дату рождения.</p>
+            <h3>Точка входа</h3>
+            <p className="muted">Опираемся на твою дату рождения и состояние, чтобы считать твой текущий энергетический код.</p>
           </div>
           <div className="card flow-card">
             <div className="flow-icon flow-icon-img stone" />
             <div className="floating-badge">2</div>
             <h3>Подбор камня</h3>
-            <p className="muted">Выбираем тему запроса и подбираем минералы через базу Supabase.</p>
+            <p className="muted">Выбираем минералы, которые поддержат тебя в текущем запросе: деньги, любовь, защита, путь.</p>
           </div>
           <div className="card flow-card">
             <div className="flow-icon flow-icon-img ring" />
             <div className="floating-badge">3</div>
             <h3>Каталог украшений</h3>
-            <p className="muted">Показываем украшения, созданные с участием выбранного камня.</p>
+            <p className="muted">Показываем готовые украшения с подобранными камнями — можно сразу выбрать то, что откликается.</p>
           </div>
           <div className="card flow-card">
             <div className="flow-icon flow-icon-img custom" />
             <div className="floating-badge">4</div>
             <h3>Индивидуальный проект</h3>
-            <p className="muted">Оставляешь заявку — мастер получает уведомление.</p>
+            <p className="muted">Создаём украшение под тебя: ты описываешь запрос — мастер собирает личный амулет.</p>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 const logoUrl =
-  'https://kyxztleagpawfhkvxvwa.supabase.co/storage/v1/object/sign/Cover/logogo.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8wMGI3NGEwZi1jMTViLTRmYzQtYWIzMS0yMzdiMTE3OGY0MWEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJDb3Zlci9sb2dvZ28ucG5nIiwiaWF0IjoxNzY1MjY0NTgxLCJleHAiOjE3OTY4MDA1ODF9.dghMfJU-hb3DY1ocd4SAbWZwqu6GxJY4dTAs2QgyqTA';
+  'https://kyxztleagpawfhkvxvwa.supabase.co/storage/v1/object/sign/Cover/logogo.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8wMGI3NGEwZi1jMTViLTRmYzQtYWIzMS0yMzdiMTE3OGY0MWEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJDb3Zlci9sb2dvZ28ucG5nIiwiaWF0IjoxNzY1MzQ2ODc1LCJleHAiOjE3OTY4ODI4NzV9.EJMm8s1YUK6cfIO-y3x7S04GrJ4IX_SP5CnHRf9I5zE';
 import '../App.css';
 import stoneIcon from '../assets/icon-stone.svg';
 import ringIcon from '../assets/icon-ring.svg';
