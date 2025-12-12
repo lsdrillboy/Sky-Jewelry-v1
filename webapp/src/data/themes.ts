@@ -1,10 +1,14 @@
 export const themes = [
-  { code: 'money', label: 'Деньги и изобилие', icon: '/src/assets/icon-money.svg', note: 'поддержка в деньгах, бизнесе и ресурсах' },
-  { code: 'love', label: 'Любовь и отношения', icon: '/src/assets/icon-love.svg', note: 'мягкость, принятие, гармония в контактах' },
-  { code: 'protection', label: 'Защита и границы', icon: '/src/assets/icon-shield.svg', note: 'экранирование, grounding и устойчивость' },
-  { code: 'mind', label: 'Психика и спокойствие', icon: '/src/assets/icon-mind.svg', note: 'уменьшить тревогу, вернуть фокус' },
-  { code: 'transformation', label: 'Переходы и перемены', icon: '/src/assets/icon-change.svg', note: 'плавные перемены, новая среда' },
-  { code: 'custom', label: 'Свой запрос', icon: '/src/assets/icon-custom.svg', note: 'опиши словами, что происходит' },
+  { code: 'energy_resource', label: 'Энергия и ресурс' },
+  { code: 'inner_strength', label: 'Внутренняя сила' },
+  { code: 'clarity_focus', label: 'Ясность и фокус' },
+  { code: 'intuition_path', label: 'Интуиция и путь' },
+  { code: 'confidence_charisma', label: 'Уверенность и харизма' },
+  { code: 'balance_harmony', label: 'Баланс и гармония' },
+  { code: 'healing_restore', label: 'Исцеление и восстановление' },
+  { code: 'luck_flow', label: 'Удача и поток' },
+  { code: 'energy_protection', label: 'Защита энергии' },
+  { code: 'selflove', label: 'Самооценка и любовь к себе' },
 ];
 
 export const catalogTypes = [

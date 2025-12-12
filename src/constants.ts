@@ -16,7 +16,6 @@ export const STONE_THEMES: { code: string; label: string; emoji: string }[] = [
   { code: 'luck_flow', label: 'Удача и поток', emoji: '🍀' },
   { code: 'energy_protection', label: 'Защита энергии', emoji: '🛡️' },
   { code: 'selflove', label: 'Самооценка и любовь к себе', emoji: '💛' },
-  { code: 'custom', label: 'Свой вариант', emoji: '✨' },
 ];
 
 export const THEME_SUBOPTIONS: Record<

@@ -14,14 +14,7 @@ type Props = {
 };
 
 export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, onBack }: Props) {
-  const iconMap: Record<string, string> = {
-    money: '/icons/coins.svg',
-    love: '/icons/heart.svg',
-    protection: '/icons/shield-strong.svg',
-    mind: '/icons/brain.svg',
-    transformation: '/icons/arrows.svg',
-    custom: '/icons/custom.svg',
-  };
+  const iconMap: Record<string, string> = {};
 
   return (
     <div className="screen">
