@@ -122,7 +122,7 @@ function App() {
     }
   };
 
-  const handleBirthdateUpdate = async (birthdate: string, nextScreen?: Screen) => {
+  const handleBirthdateUpdate = async (birthdate: string, nextScreen?: Screen): Promise<void> => {
     try {
       const { user } = await updateBirthdate(initData, birthdate);
       setUser((prev) => ({
@@ -131,11 +131,9 @@ function App() {
       }));
       setToast('Дата рождения сохранена');
       if (nextScreen) setScreen(nextScreen);
-      return true;
     } catch (err) {
       console.error('updateBirthdate failed', err);
       setToast('Не удалось сохранить дату. Проверь подключение.');
-      return false;
     }
   };
 

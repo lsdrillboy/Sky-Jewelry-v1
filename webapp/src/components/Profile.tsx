@@ -6,7 +6,7 @@ import backIcon from '../assets/icon-arrow-left.svg';
 
 type Props = {
   user: User | null;
-  onSaveBirthdate: (birthdate: string) => Promise<boolean>;
+  onSaveBirthdate: (birthdate: string) => Promise<void> | void;
   onBack: () => void;
 };
 
@@ -58,11 +58,12 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
   const handleSave = async () => {
     if (!birthdate) return;
     setSaving(true);
-    const ok = await onSaveBirthdate(birthdate);
-    if (ok) {
+    try {
+      await onSaveBirthdate(birthdate);
       setNote('Дата обновлена и сохранена в Supabase.');
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   };
 
   const fullName = useMemo(
