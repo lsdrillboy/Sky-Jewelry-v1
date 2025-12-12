@@ -64,7 +64,9 @@ function App() {
       try {
         const { user } = await initSession(data);
         setUser((prev) => ({
+          ...prev,
           ...user,
+          // если API не вернул фото, оставляем то, что пришло из Telegram
           photo_url: prev?.photo_url ?? (user as any)?.photo_url ?? null,
         }));
       } catch (err) {
@@ -126,6 +128,7 @@ function App() {
     try {
       const { user } = await updateBirthdate(initData, birthdate);
       setUser((prev) => ({
+        ...prev,
         ...user,
         photo_url: prev?.photo_url ?? (user as any)?.photo_url ?? null,
       }));

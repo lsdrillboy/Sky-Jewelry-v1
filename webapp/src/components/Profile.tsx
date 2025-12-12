@@ -78,9 +78,7 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
     <div className="screen">
       <div className="hero profile-hero-card">
         <div className="profile-avatar-wrap">
-          <div className="profile-avatar-circle">
-            <img src={avatarUrl} alt="" />
-          </div>
+          <div className="profile-avatar-circle" style={{ backgroundImage: `url(${avatarUrl})` }} />
           <div className="profile-avatar-glow" />
         </div>
         <div className="profile-hero-copy">
@@ -148,7 +146,7 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
         </div>
         {note ? (
           <p className="muted profile-note" style={{ marginTop: 12 }}>
-            {note}
+            Данные обновлены.
           </p>
         ) : null}
         <div className="trust-note">
