@@ -14,10 +14,12 @@ import Preloader from './components/Preloader';
 import Cover from './components/Cover';
 import MainMenu from './components/MainMenu';
 import BirthdateForm from './components/BirthdateForm';
+import Profile from './components/Profile';
 import StonePicker from './components/StonePicker';
 import Catalog from './components/Catalog';
 import CustomRequest from './components/CustomRequest';
 import StoneLibrary from './components/StoneLibrary';
+import InfoSection from './components/InfoSection';
 
 function extractInitData() {
   const tg = (window as any).Telegram?.WebApp;
@@ -51,6 +53,7 @@ function App() {
         first_name: tgUser.first_name ?? '',
         last_name: tgUser.last_name ?? null,
         username: tgUser.username ?? null,
+        photo_url: tgUser.photo_url ?? null,
       });
     }
     tg?.ready?.();
@@ -60,7 +63,10 @@ function App() {
     (async () => {
       try {
         const { user } = await initSession(data);
-        setUser(user);
+        setUser((prev) => ({
+          ...user,
+          photo_url: prev?.photo_url ?? (user as any)?.photo_url ?? null,
+        }));
       } catch (err) {
         console.error('initSession failed', err);
         if (!tgUser) {
@@ -116,14 +122,20 @@ function App() {
     }
   };
 
-  const handleBirthdateUpdate = async (birthdate: string) => {
+  const handleBirthdateUpdate = async (birthdate: string, nextScreen?: Screen) => {
     try {
       const { user } = await updateBirthdate(initData, birthdate);
-      setUser(user);
-      setScreen('stone');
+      setUser((prev) => ({
+        ...user,
+        photo_url: prev?.photo_url ?? (user as any)?.photo_url ?? null,
+      }));
+      setToast('Дата рождения сохранена');
+      if (nextScreen) setScreen(nextScreen);
+      return true;
     } catch (err) {
       console.error('updateBirthdate failed', err);
       setToast('Не удалось сохранить дату. Проверь подключение.');
+      return false;
     }
   };
 
@@ -166,9 +178,11 @@ function App() {
     if (loading) return <Preloader text="Проверяю подпись Telegram и прогреваю Supabase" />;
     if (screen === 'cover')
       return <Cover onStart={() => setScreen('main')} onCatalog={() => setScreen('catalog')} />;
-    if (screen === 'main') return <MainMenu user={user} onNavigate={setScreen} onChangeBirthdate={() => setScreen('birthdate')} />;
+    if (screen === 'main') return <MainMenu user={user} onNavigate={setScreen} />;
     if (screen === 'birthdate')
-      return <BirthdateForm user={user} onSubmit={handleBirthdateUpdate} onBack={() => setScreen('main')} />;
+      return <BirthdateForm user={user} onSubmit={(date) => handleBirthdateUpdate(date, 'stone')} onBack={() => setScreen('main')} />;
+    if (screen === 'profile')
+      return <Profile user={user} onSaveBirthdate={(date) => handleBirthdateUpdate(date, 'profile')} onBack={() => setScreen('main')} />;
     if (screen === 'stone')
       return (
         <StonePicker
@@ -207,6 +221,37 @@ function App() {
           stones={stones}
           loading={stonesLoading}
           onSearch={(q) => refreshStones(q)}
+          onBack={() => setScreen('main')}
+        />
+      );
+    if (screen === 'reviews')
+      return (
+        <InfoSection
+          title="Отзывы"
+          subtitle="Что говорят клиенты Sky Jewelry."
+          bullets={['Теплые слова клиентов', 'Истории трансформации', 'Как камни помогли в делах и чувствах']}
+          onBack={() => setScreen('main')}
+        />
+      );
+    if (screen === 'history')
+      return (
+        <InfoSection
+          title="История бренда / Мастерская"
+          subtitle="О мастерской Sky Jewelry: ручная работа, смысл, энергия."
+          bullets={[
+            'О мастерской Sky Jewelry',
+            'Ручная работа / смысл / энергия',
+          ]}
+          onBack={() => setScreen('main')}
+        />
+      );
+    if (screen === 'favorites')
+      return (
+        <InfoSection
+          title="Избранное"
+          subtitle="Сохраняй камни и украшения, чтобы вернуться к ним позже."
+          bullets={['Избранные камни', 'Сохранённые украшения']}
+          note="Функция избранного запомнит то, что тебе откликнулось."
           onBack={() => setScreen('main')}
         />
       );

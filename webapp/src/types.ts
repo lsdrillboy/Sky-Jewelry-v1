@@ -7,6 +7,7 @@ export type User = {
   birthdate?: string | null;
   life_path?: number | null;
   language?: string | null;
+  photo_url?: string | null;
 };
 
 export type Stone = {
@@ -53,4 +54,15 @@ export type CustomRequestPayload = {
   comment?: string;
 };
 
-export type Screen = 'cover' | 'main' | 'birthdate' | 'stone' | 'catalog' | 'custom' | 'library';
+export type Screen =
+  | 'cover'
+  | 'main'
+  | 'birthdate'
+  | 'profile'
+  | 'stone'
+  | 'catalog'
+  | 'custom'
+  | 'library'
+  | 'history'
+  | 'favorites'
+  | 'reviews';
