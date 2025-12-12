@@ -271,6 +271,17 @@ export function buildApiApp() {
     if (!hasSupabase) return res.status(503).json({ error: 'Supabase not configured' });
     const { birthdate } = req.body as { telegram_init_data?: string; birthdate?: string };
     if (!birthdate) return res.status(400).json({ error: 'birthdate is required' });
+    // Проверка формата YYYY-MM-DD, чтобы не писать некорректную дату
+    const isoMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(birthdate);
+    if (!isoMatch) {
+      console.error('user/update invalid birthdate format', birthdate);
+      return res.status(400).json({ error: 'birthdate_format_invalid' });
+    }
+    const parsed = new Date(`${isoMatch[1]}-${isoMatch[2]}-${isoMatch[3]}T00:00:00Z`);
+    if (Number.isNaN(parsed.getTime())) {
+      console.error('user/update failed to parse birthdate', birthdate);
+      return res.status(400).json({ error: 'birthdate_invalid' });
+    }
     const initData = getInitData(req);
     const validation = validateInitData(initData ?? '', env.BOT_TOKEN);
     if (!validation.ok && !env.ALLOW_DEV_INIT_DATA) {
@@ -288,7 +299,10 @@ export function buildApiApp() {
       return res.json({ user });
     } catch (err) {
       console.error('user/update error', err);
-      return res.status(500).json({ error: 'failed to save birthdate' });
+      return res.status(500).json({
+        error: 'failed_to_save_birthdate',
+        detail: process.env.NODE_ENV !== 'production' ? String(err) : undefined,
+      });
     }
   });
 
