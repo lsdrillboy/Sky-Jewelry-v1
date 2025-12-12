@@ -28,6 +28,38 @@ function extractInitData() {
   return tg?.initData ?? fromUrl ?? (import.meta.env.VITE_DEV_INIT_DATA as string) ?? '';
 }
 
+function parseUserFromInitData(initData: string): Partial<User> | null {
+  if (!initData) return null;
+  const params = new URLSearchParams(initData);
+  const userStr = params.get('user');
+  if (!userStr) return null;
+  try {
+    const tgUser = JSON.parse(userStr);
+    return {
+      id: tgUser?.id ? String(tgUser.id) : undefined,
+      telegram_id: tgUser?.id,
+      first_name: tgUser?.first_name,
+      last_name: tgUser?.last_name,
+      username: tgUser?.username,
+      photo_url: tgUser?.photo_url ?? null,
+    };
+  } catch (err) {
+    console.error('Failed to parse user from initData', err);
+    return null;
+  }
+}
+
+function mergeUser(prev: User | null, next?: Partial<User> | null): User | null {
+  if (!next && !prev) return null;
+  const merged = {
+    ...prev,
+    ...next,
+  };
+  merged.id = merged.id ?? (merged.telegram_id ? String(merged.telegram_id) : prev?.id ?? '');
+  merged.photo_url = prev?.photo_url ?? next?.photo_url ?? null;
+  return merged as User;
+}
+
 function App() {
   const [initData, setInitData] = useState('');
   const [screen, setScreen] = useState<Screen>('cover');
@@ -60,15 +92,14 @@ function App() {
     tg?.expand?.();
     const data = extractInitData();
     setInitData(data);
+    const parsedUser = parseUserFromInitData(data);
+    if (parsedUser) {
+      setUser((prev) => mergeUser(prev, parsedUser));
+    }
     (async () => {
       try {
         const { user } = await initSession(data);
-        setUser((prev) => ({
-          ...prev,
-          ...user,
-          // если API не вернул фото, оставляем то, что пришло из Telegram
-          photo_url: prev?.photo_url ?? (user as any)?.photo_url ?? null,
-        }));
+        setUser((prev) => mergeUser(prev, { ...user, photo_url: (user as any)?.photo_url ?? prev?.photo_url ?? null }));
       } catch (err) {
         console.error('initSession failed', err);
         if (!tgUser) {
@@ -127,16 +158,13 @@ function App() {
   const handleBirthdateUpdate = async (birthdate: string, nextScreen?: Screen): Promise<void> => {
     try {
       const { user } = await updateBirthdate(initData, birthdate);
-      setUser((prev) => ({
-        ...prev,
-        ...user,
-        photo_url: prev?.photo_url ?? (user as any)?.photo_url ?? null,
-      }));
+      setUser((prev) => mergeUser(prev, { ...user, photo_url: (user as any)?.photo_url ?? prev?.photo_url ?? null }));
       setToast('Дата рождения сохранена');
       if (nextScreen) setScreen(nextScreen);
     } catch (err) {
       console.error('updateBirthdate failed', err);
       setToast('Не удалось сохранить дату. Проверь подключение.');
+      throw err;
     }
   };
 

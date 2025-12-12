@@ -60,7 +60,10 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
     setSaving(true);
     try {
       await onSaveBirthdate(birthdate);
-      setNote('Дата обновлена и сохранена в Supabase.');
+      setNote('Данные обновлены.');
+    } catch (err) {
+      // toast об ошибке уже ставится выше
+      setNote(null);
     } finally {
       setSaving(false);
     }
@@ -73,12 +76,13 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
   const fallbackLogo =
     'https://kyxztleagpawfhkvxvwa.supabase.co/storage/v1/object/sign/Cover/logogo.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8wMGI3NGEwZi1jMTViLTRmYzQtYWIzMS0yMzdiMTE3OGY0MWEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJDb3Zlci9sb2dvZ28ucG5nIiwiaWF0IjoxNzY1NTEzNTU0LCJleHAiOjE3OTcwNDk1NTR9.9TdJwuwKWZeh6bREP2ei8FwDjTT-hbhJxF4DMDyBpf4';
   const avatarUrl = user?.photo_url ?? fallbackLogo;
+  const avatarBackground = `radial-gradient(circle at 40% 40%, rgba(216, 177, 92, 0.18), rgba(0, 0, 0, 0.75)), url(${avatarUrl})`;
 
   return (
     <div className="screen">
       <div className="hero profile-hero-card">
         <div className="profile-avatar-wrap">
-          <div className="profile-avatar-circle" style={{ backgroundImage: `url(${avatarUrl})` }} />
+          <div className="profile-avatar-circle" style={{ backgroundImage: avatarBackground }} />
           <div className="profile-avatar-glow" />
         </div>
         <div className="profile-hero-copy">
