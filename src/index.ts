@@ -639,32 +639,25 @@ async function customOrderConversation(conversation: MyConversation, ctx: MyCont
 
 async function fetchStones(theme: string | null, lifePath: number | null): Promise<Stone[]> {
   if (!supabase) return [];
-  let query = supabase.from('stones').select('*').eq('is_active', true);
-  if (theme && theme !== 'custom') {
-    query = query.overlaps('themes', [theme]);
+  // Работаем с новой схемой jyotish_* (stones + связующая таблица тем)
+  let query = supabase
+    .from('jyotish_stones')
+    .select('*, jyotish_stone_theme!inner(theme_code,intensity)')
+    .eq('is_active', true);
+  if (theme) {
+    query = query.eq('jyotish_stone_theme.theme_code', theme);
   }
   if (lifePath) {
     query = query.or(`life_path.is.null,life_path.cs.{${lifePath}}`);
   }
-  console.log('stones query filters', { theme, lifePath });
-  const { data, error } = await query.order('intensity', { ascending: false }).limit(5);
-  console.log('stones query result', { rows: data?.length ?? 0, error });
+  console.log('jyotish stones query filters', { theme, lifePath });
+  const { data, error } = await query.order('jyotish_stone_theme.intensity', { ascending: false }).limit(5);
+  console.log('jyotish stones query result', { rows: data?.length ?? 0, error });
   if (error) {
-    console.error('Failed to fetch stones', error);
+    console.error('Failed to fetch jyotish stones', error);
     return [];
   }
-  if (data && data.length > 0) return data as Stone[];
-  const { data: fallback, error: fallbackError } = await supabase
-    .from('stones')
-    .select('*')
-    .eq('is_active', true)
-    .limit(5);
-  console.log('stones fallback result', { rows: fallback?.length ?? 0, error: fallbackError });
-  if (fallbackError) {
-    console.error('Fallback stones fetch failed', fallbackError);
-    return [];
-  }
-  return (fallback ?? []) as Stone[];
+  return (data ?? []) as Stone[];
 }
 
 async function fetchProducts(filters: {

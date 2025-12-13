@@ -86,25 +86,22 @@ async function getUserByTelegramId(telegramId: number): Promise<ApiUser | null> 
 
 async function fetchStones(theme: string | null, lifePath: number | null): Promise<Stone[]> {
   if (!supabase) return [];
-  let query = supabase.from('stones').select('*').eq('is_active', true);
-  if (theme && theme !== 'custom') {
-    query = query.overlaps('themes', [theme]);
+  let query = supabase
+    .from('jyotish_stones')
+    .select('*, jyotish_stone_theme!inner(theme_code,intensity)')
+    .eq('is_active', true);
+  if (theme) {
+    query = query.eq('jyotish_stone_theme.theme_code', theme);
   }
   if (lifePath) {
     query = query.or(`life_path.is.null,life_path.cs.{${lifePath}}`);
   }
-  const { data, error } = await query.order('intensity', { ascending: false }).limit(5);
+  const { data, error } = await query.order('jyotish_stone_theme.intensity', { ascending: false }).limit(5);
   if (error) {
-    console.error('fetchStones error', error);
+    console.error('fetchStones error (jyotish)', error);
     return [];
   }
-  if (data?.length) return data as Stone[];
-  const fallback = await supabase.from('stones').select('*').eq('is_active', true).limit(5);
-  if (fallback.error) {
-    console.error('fetchStones fallback error', fallback.error);
-    return [];
-  }
-  return (fallback.data ?? []) as Stone[];
+  return (data ?? []) as Stone[];
 }
 
 async function insertStoneRequest(params: {
