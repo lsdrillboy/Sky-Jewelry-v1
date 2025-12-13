@@ -651,8 +651,23 @@ async function fetchStones(theme: string | null, lifePath: number | null): Promi
     query = query.or(`life_path.is.null,life_path.cs.{${lifePath}}`);
   }
   console.log('jyotish stones query filters', { theme, lifePath });
-  const { data, error } = await query.order('jyotish_stone_theme.intensity', { ascending: false }).limit(5);
+  let { data, error } = await query.order('jyotish_stone_theme.intensity', { ascending: false }).limit(5);
   console.log('jyotish stones query result', { rows: data?.length ?? 0, error });
+
+  // Если фильтр по life_path ничего не вернул или колонка отсутствует, пробуем без life_path
+  if ((error || !data?.length) && lifePath) {
+    console.warn('Retry jyotish stones without life_path filter');
+    let retry = supabase
+      .from('jyotish_stones')
+      .select('*, jyotish_stone_theme!inner(theme_code,intensity)')
+      .eq('is_active', true);
+    if (theme) retry = retry.eq('jyotish_stone_theme.theme_code', theme);
+    const retryRes = await retry.order('jyotish_stone_theme.intensity', { ascending: false }).limit(5);
+    data = retryRes.data;
+    error = retryRes.error;
+    console.log('retry result', { rows: data?.length ?? 0, error });
+  }
+
   if (error) {
     console.error('Failed to fetch jyotish stones', error);
     return [];

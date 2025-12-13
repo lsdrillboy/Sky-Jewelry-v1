@@ -96,7 +96,19 @@ async function fetchStones(theme: string | null, lifePath: number | null): Promi
   if (lifePath) {
     query = query.or(`life_path.is.null,life_path.cs.{${lifePath}}`);
   }
-  const { data, error } = await query.order('jyotish_stone_theme.intensity', { ascending: false }).limit(5);
+  let { data, error } = await query.order('jyotish_stone_theme.intensity', { ascending: false }).limit(5);
+  // Retry без фильтра life_path, если ничего не вернулось или колонка отсутствует
+  if ((error || !data?.length) && lifePath) {
+    console.warn('fetchStones retry without life_path filter');
+    let retry = supabase
+      .from('jyotish_stones')
+      .select('*, jyotish_stone_theme!inner(theme_code,intensity)')
+      .eq('is_active', true);
+    if (theme) retry = retry.eq('jyotish_stone_theme.theme_code', theme);
+    const retryRes = await retry.order('jyotish_stone_theme.intensity', { ascending: false }).limit(5);
+    data = retryRes.data;
+    error = retryRes.error;
+  }
   if (error) {
     console.error('fetchStones error (jyotish)', error);
     return [];
