@@ -10,7 +10,6 @@ import type {
   StonePickerResult,
   User,
 } from './types';
-import Preloader from './components/Preloader';
 import Cover from './components/Cover';
 import MainMenu from './components/MainMenu';
 import BirthdateForm from './components/BirthdateForm';
@@ -19,6 +18,7 @@ import StonePicker from './components/StonePicker';
 import Catalog from './components/Catalog';
 import CustomRequest from './components/CustomRequest';
 import StoneLibrary from './components/StoneLibrary';
+import PreAuth from './components/PreAuth';
 import InfoSection from './components/InfoSection';
 
 function extractInitData() {
@@ -60,11 +60,26 @@ function mergeUser(prev: User | null, next?: Partial<User> | null): User | null 
   return merged as User;
 }
 
+function isInitDataValid(data: string | null | undefined) {
+  if (!data) return false;
+  if (data === 'true') return false;
+  return data.length > 10;
+}
+
+type PreAuthStage =
+  | 'init'
+  | 'checking'
+  | 'connecting'
+  | 'done'
+  | 'error-auth'
+  | 'error-network'
+  | 'error-unknown';
+
 function App() {
   const [initData, setInitData] = useState('');
   const [screen, setScreen] = useState<Screen>('cover');
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [preAuthStage, setPreAuthStage] = useState<PreAuthStage>('init');
   const [stoneResult, setStoneResult] = useState<StonePickerResult | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [stones, setStones] = useState<Stone[]>([]);
@@ -76,42 +91,55 @@ function App() {
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
-    const tg = (window as any).Telegram?.WebApp;
-    const tgUser = tg?.initDataUnsafe?.user;
-    if (tgUser) {
-      setUser({
-        id: String(tgUser.id),
-        telegram_id: tgUser.id,
-        first_name: tgUser.first_name ?? '',
-        last_name: tgUser.last_name ?? null,
-        username: tgUser.username ?? null,
-        photo_url: tgUser.photo_url ?? null,
-      });
+    bootstrap();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const ensureMinDelay = async (startedAt: number, minDelay = 450) => {
+    const elapsed = Date.now() - startedAt;
+    if (elapsed < minDelay) {
+      await new Promise((r) => setTimeout(r, minDelay - elapsed));
     }
+  };
+
+  const bootstrap = async () => {
+    const startedAt = Date.now();
+    setPreAuthStage('checking');
+    const tg = (window as any).Telegram?.WebApp;
     tg?.ready?.();
     tg?.expand?.();
     const data = extractInitData();
     setInitData(data);
+    const validInit = isInitDataValid(data);
     const parsedUser = parseUserFromInitData(data);
     if (parsedUser) {
       setUser((prev) => mergeUser(prev, parsedUser));
     }
-    (async () => {
-      try {
-        const { user } = await initSession(data);
-        setUser((prev) => mergeUser(prev, { ...user, photo_url: (user as any)?.photo_url ?? prev?.photo_url ?? null }));
-      } catch (err) {
-        console.error('initSession failed', err);
-        if (!tgUser) {
-          setToast('Не удалось получить initData из Telegram. Открой WebApp из чата.');
-        } else {
-          setToast('Не удалось инициализировать сессию. Проверь подключение к API.');
-        }
-      } finally {
-        setLoading(false);
+    if (!validInit) {
+      await ensureMinDelay(startedAt);
+      setPreAuthStage('error-auth');
+      return;
+    }
+    setPreAuthStage('connecting');
+    try {
+      const { user } = await initSession(data);
+      setUser((prev) => mergeUser(prev, { ...user, photo_url: (user as any)?.photo_url ?? prev?.photo_url ?? null }));
+      await ensureMinDelay(startedAt);
+      setPreAuthStage('done');
+      setTimeout(() => setScreen('main'), 300);
+    } catch (err: any) {
+      console.error('initSession failed', err);
+      await ensureMinDelay(startedAt);
+      const msg = err?.message?.toLowerCase?.() ?? '';
+      if (msg.includes('initdata') || msg.includes('401') || msg.includes('403') || msg.includes('empty')) {
+        setPreAuthStage('error-auth');
+      } else if (msg.includes('fetch') || msg.includes('network') || msg.includes('timeout')) {
+        setPreAuthStage('error-network');
+      } else {
+        setPreAuthStage('error-unknown');
       }
-    })();
-  }, []);
+    }
+  };
 
   useEffect(() => {
     if (screen === 'catalog') {
@@ -204,7 +232,7 @@ function App() {
   };
 
   const content = useMemo(() => {
-    if (loading) return <Preloader text="Проверяю подпись Telegram и прогреваю Supabase" />;
+    if (preAuthStage !== 'done') return null;
     if (screen === 'cover')
       return <Cover onStart={() => setScreen('main')} onCatalog={() => setScreen('catalog')} />;
     if (screen === 'main') return <MainMenu user={user} onNavigate={setScreen} />;
@@ -286,7 +314,7 @@ function App() {
       );
     return null;
   }, [
-    loading,
+    preAuthStage,
     screen,
     user,
     stoneResult,
@@ -301,6 +329,16 @@ function App() {
 
   return (
     <div className="app-shell">
+      {preAuthStage !== 'done' ? (
+        <PreAuth
+          stage={preAuthStage}
+          onRetry={bootstrap}
+          onOpenBot={() => {
+            const url = 'https://t.me/'; // подсказка; при желании заменить на deep link
+            window.open(url, '_blank');
+          }}
+        />
+      ) : null}
       {content}
       {toast ? <div className="toast">{toast}</div> : null}
     </div>
