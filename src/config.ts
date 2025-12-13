@@ -15,7 +15,7 @@ export const env = {
   SUPABASE_ANON_KEY: trimmed(process.env.SUPABASE_ANON_KEY),
   ALLOW_DEV_INIT_DATA: process.env.ALLOW_DEV_INIT_DATA === 'true',
   DISABLE_API: process.env.DISABLE_API === 'true',
-  ORDER_CHAT_ID: process.env.ORDER_CHAT_ID ? Number(process.env.ORDER_CHAT_ID) : undefined,
+  ORDER_CHAT_ID: process.env.ORDER_CHAT_ID ? Number(process.env.ORDER_CHAT_ID) : 3662210811,
 };
 
 export const hasSupabase =
