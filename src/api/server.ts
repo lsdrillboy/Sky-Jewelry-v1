@@ -374,12 +374,16 @@ export function buildApiApp() {
     const search = req.query.search ? String(req.query.search) : null;
     const theme = req.query.theme ? String(req.query.theme) : null;
     const client = supabase!;
-    let query = client.from('stones').select('*').eq('is_active', true).limit(40);
+    // По умолчанию — левый join, чтобы вернуть все камни; если указан theme, делаем inner join по связующей таблице
+    const baseSelect = theme
+      ? '*, jyotish_stone_theme!inner(theme_code,intensity)'
+      : '*, jyotish_stone_theme(theme_code,intensity)';
+    let query = client.from('jyotish_stones').select(baseSelect).limit(40);
     if (search) {
       query = query.ilike('name_ru', `%${search}%`);
     }
     if (theme) {
-      query = query.overlaps('themes', [theme]);
+      query = query.eq('jyotish_stone_theme.theme_code', theme);
     }
     const { data, error } = await query;
     if (error) {
