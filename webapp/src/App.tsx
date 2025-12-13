@@ -217,7 +217,7 @@ function App() {
     try {
       await submitCustomRequest(initData, payload);
       setToast('Заявка отправлена мастеру');
-      setScreen('main');
+      // остаёмся на экране заявки
     } catch (err) {
       console.error('custom request failed', err);
       setToast('Не удалось отправить заявку');

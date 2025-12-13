@@ -86,32 +86,28 @@ async function getUserByTelegramId(telegramId: number): Promise<ApiUser | null> 
 
 async function fetchStones(theme: string | null, lifePath: number | null): Promise<Stone[]> {
   if (!supabase) return [];
-  const buildQuery = () => {
-    let q: any = supabase.from('jyotish_stones').select('*, jyotish_stone_theme!inner(theme_code,intensity)');
-    if (theme) q = q.eq('jyotish_stone_theme.theme_code', theme);
-    return q;
-  };
-
-  const runQuery = async (withLifePath: boolean) => {
-    let q = buildQuery();
-    if (withLifePath && lifePath) {
-      q = q.contains('life_path', [lifePath]);
-    }
-    return q.order('intensity', { ascending: false, foreignTable: 'jyotish_stone_theme' }).limit(5);
-  };
-
-  let { data, error } = await runQuery(true);
-  if ((!data || data.length === 0 || error) && lifePath) {
-    const retry = await runQuery(false);
-    data = retry.data;
-    error = retry.error;
-  }
-
+  // Получаем связки тема-камень и фильтруем по life_path на стороне кода, чтобы избежать ошибок order/contains
+  const { data, error } = await supabase
+    .from('jyotish_stone_theme')
+    .select('intensity, theme_code, stone:stone_id(*)')
+    .match(theme ? { theme_code: theme } : {})
+    .order('intensity', { ascending: false })
+    .limit(20);
   if (error) {
     console.error('fetchStones error (jyotish)', error);
     return [];
   }
-  return (data ?? []) as Stone[];
+  const rows = (data ?? []).filter((row) => row.stone) as any[];
+  let filtered = rows;
+  if (lifePath) {
+    filtered = rows.filter(
+      (row) => Array.isArray(row.stone.life_path) && row.stone.life_path.includes(lifePath),
+    );
+  }
+  if (!filtered.length) {
+    filtered = rows; // fallback без life_path
+  }
+  return filtered.slice(0, 5).map((row) => row.stone as Stone);
 }
 
 async function insertStoneRequest(params: {

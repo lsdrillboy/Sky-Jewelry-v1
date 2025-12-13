@@ -639,35 +639,28 @@ async function customOrderConversation(conversation: MyConversation, ctx: MyCont
 
 async function fetchStones(theme: string | null, lifePath: number | null): Promise<Stone[]> {
   if (!supabase) return [];
-  console.log('jyotish stones query filters', { theme, lifePath });
-  const buildQuery = () => {
-    let q: any = supabase.from('jyotish_stones').select('*, jyotish_stone_theme!inner(theme_code,intensity)');
-    if (theme) q = q.eq('jyotish_stone_theme.theme_code', theme);
-    return q;
-  };
-
-  const runQuery = async (withLifePath: boolean) => {
-    let q = buildQuery();
-    if (withLifePath && lifePath) {
-      q = q.contains('life_path', [lifePath]);
-    }
-    return q.order('intensity', { ascending: false, foreignTable: 'jyotish_stone_theme' }).limit(5);
-  };
-
-  let { data, error } = await runQuery(true);
-  console.log('jyotish stones primary', { rows: data?.length ?? 0, error });
-  if ((!data || data.length === 0 || error) && lifePath) {
-    const retry = await runQuery(false);
-    data = retry.data;
-    error = retry.error;
-    console.log('jyotish stones retry (no life_path)', { rows: data?.length ?? 0, error });
-  }
-
+  const { data, error } = await supabase
+    .from('jyotish_stone_theme')
+    .select('intensity, theme_code, stone:stone_id(*)')
+    .match(theme ? { theme_code: theme } : {})
+    .order('intensity', { ascending: false })
+    .limit(20);
+  console.log('jyotish stones raw result', { rows: data?.length ?? 0, error });
   if (error) {
     console.error('Failed to fetch jyotish stones', error);
     return [];
   }
-  return (data ?? []) as Stone[];
+  const rows = (data ?? []).filter((row) => row.stone) as any[];
+  let filtered = rows;
+  if (lifePath) {
+    filtered = rows.filter(
+      (row) => Array.isArray(row.stone.life_path) && row.stone.life_path.includes(lifePath),
+    );
+  }
+  if (!filtered.length) {
+    filtered = rows;
+  }
+  return filtered.slice(0, 5).map((row) => row.stone as Stone);
 }
 
 async function fetchProducts(filters: {
