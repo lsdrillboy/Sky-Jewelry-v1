@@ -191,6 +191,33 @@ async function createCustomRequest(params: {
   return data;
 }
 
+async function createOrderFromCustom(params: {
+  userId: string;
+  stones?: number[] | null;
+  type?: string | null;
+  budget_from?: number | null;
+  budget_to?: number | null;
+  comment?: string | null;
+}) {
+  if (!supabase) return null;
+  const payload = {
+    user_id: params.userId,
+    order_type: 'custom' as const,
+    stones: params.stones ?? null,
+    type: params.type ?? null,
+    budget_from: params.budget_from ?? null,
+    budget_to: params.budget_to ?? null,
+    comment: params.comment ?? null,
+    status: 'new',
+  };
+  const { data, error } = await supabase.from('orders').insert(payload).select('id').single();
+  if (error) {
+    console.error('createOrderFromCustom error', error);
+    return null;
+  }
+  return data;
+}
+
 function normalizeTelegramUser(validation: ReturnType<typeof validateInitData>): TelegramUser | null {
   if (!validation.ok) return null;
   return validation.data.user;
@@ -413,7 +440,7 @@ export function buildApiApp() {
       if (!tgUser && !allowAnonymous) return res.status(401).json({ error: 'initData invalid' });
       const user = await ensureUser(tgUser ?? { id: 0, username: 'demo', first_name: 'Sky Guest' });
       if (!user) return res.status(500).json({ error: 'failed to upsert user' });
-      const record = await createCustomRequest({
+      const record = await createOrderFromCustom({
         userId: user.id,
         stones: payload.stones ?? [],
         type: payload.type ?? null,
@@ -421,6 +448,9 @@ export function buildApiApp() {
         budget_to: payload.budget_to ?? null,
         comment: payload.comment ?? null,
       });
+      if (!record) {
+        return res.status(500).json({ error: 'failed_to_create_order' });
+      }
       const textLines = [
         '🪡 Новая заявка на индивидуальное украшение',
         `Имя: ${user.first_name ?? '—'}`,
