@@ -640,33 +640,27 @@ async function customOrderConversation(conversation: MyConversation, ctx: MyCont
 async function fetchStones(theme: string | null, lifePath: number | null): Promise<Stone[]> {
   if (!supabase) return [];
   console.log('jyotish stones query filters', { theme, lifePath });
-  const base = supabase.from('jyotish_stones').select('*, jyotish_stone_theme!inner(theme_code,intensity)');
-  const applyTheme = theme ? (q: any) => q.eq('jyotish_stone_theme.theme_code', theme) : (q: any) => q;
+  const buildQuery = () => {
+    let q: any = supabase.from('jyotish_stones').select('*, jyotish_stone_theme!inner(theme_code,intensity)');
+    if (theme) q = q.eq('jyotish_stone_theme.theme_code', theme);
+    return q;
+  };
 
-  let data: any[] | null = null;
-  let error: any = null;
-
-  if (lifePath) {
-    const primary = await applyTheme(base)
-      .contains('life_path', [lifePath])
-      .order('jyotish_stone_theme.intensity', { ascending: false })
-      .limit(5);
-    data = primary.data;
-    error = primary.error;
-    console.log('jyotish stones primary', { rows: data?.length ?? 0, error });
-    if ((!data || data.length === 0 || error)) {
-      const retry = await applyTheme(base)
-        .order('jyotish_stone_theme.intensity', { ascending: false })
-        .limit(5);
-      data = retry.data;
-      error = retry.error;
-      console.log('jyotish stones retry (no life_path)', { rows: data?.length ?? 0, error });
+  const runQuery = async (withLifePath: boolean) => {
+    let q = buildQuery();
+    if (withLifePath && lifePath) {
+      q = q.contains('life_path', [lifePath]);
     }
-  } else {
-    const res = await applyTheme(base).order('jyotish_stone_theme.intensity', { ascending: false }).limit(5);
-    data = res.data;
-    error = res.error;
-    console.log('jyotish stones no-life-path', { rows: data?.length ?? 0, error });
+    return q.order('intensity', { ascending: false, foreignTable: 'jyotish_stone_theme' }).limit(5);
+  };
+
+  let { data, error } = await runQuery(true);
+  console.log('jyotish stones primary', { rows: data?.length ?? 0, error });
+  if ((!data || data.length === 0 || error) && lifePath) {
+    const retry = await runQuery(false);
+    data = retry.data;
+    error = retry.error;
+    console.log('jyotish stones retry (no life_path)', { rows: data?.length ?? 0, error });
   }
 
   if (error) {
