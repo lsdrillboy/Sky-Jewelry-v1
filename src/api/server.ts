@@ -86,28 +86,32 @@ async function getUserByTelegramId(telegramId: number): Promise<ApiUser | null> 
 
 async function fetchStones(theme: string | null, lifePath: number | null): Promise<Stone[]> {
   if (!supabase) return [];
-  let query = supabase
-    .from('jyotish_stones')
-    .select('*, jyotish_stone_theme!inner(theme_code,intensity)');
-  if (theme) {
-    query = query.eq('jyotish_stone_theme.theme_code', theme);
-  }
+  const base = supabase.from('jyotish_stones').select('*, jyotish_stone_theme!inner(theme_code,intensity)');
+  const applyTheme = theme ? (q: any) => q.eq('jyotish_stone_theme.theme_code', theme) : (q: any) => q;
+
+  let data: any[] | null = null;
+  let error: any = null;
+
   if (lifePath) {
-    query = query.or(`life_path.is.null,life_path.cs.{${lifePath}}`);
+    const primary = await applyTheme(base)
+      .contains('life_path', [lifePath])
+      .order('jyotish_stone_theme.intensity', { ascending: false })
+      .limit(5);
+    data = primary.data;
+    error = primary.error;
+    if ((!data || data.length === 0 || error)) {
+      const retry = await applyTheme(base)
+        .order('jyotish_stone_theme.intensity', { ascending: false })
+        .limit(5);
+      data = retry.data;
+      error = retry.error;
+    }
+  } else {
+    const res = await applyTheme(base).order('jyotish_stone_theme.intensity', { ascending: false }).limit(5);
+    data = res.data;
+    error = res.error;
   }
-  let { data, error } = await query.order('jyotish_stone_theme.intensity', { ascending: false }).limit(5);
-  // Retry без фильтра life_path, если ничего не вернулось или колонка отсутствует
-  if ((error || !data?.length) && lifePath) {
-    console.warn('fetchStones retry without life_path filter');
-    let retry = supabase
-      .from('jyotish_stones')
-      .select('*, jyotish_stone_theme!inner(theme_code,intensity)')
-      .eq('is_active', true);
-    if (theme) retry = retry.eq('jyotish_stone_theme.theme_code', theme);
-    const retryRes = await retry.order('jyotish_stone_theme.intensity', { ascending: false }).limit(5);
-    data = retryRes.data;
-    error = retryRes.error;
-  }
+
   if (error) {
     console.error('fetchStones error (jyotish)', error);
     return [];

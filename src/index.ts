@@ -639,32 +639,34 @@ async function customOrderConversation(conversation: MyConversation, ctx: MyCont
 
 async function fetchStones(theme: string | null, lifePath: number | null): Promise<Stone[]> {
   if (!supabase) return [];
-  // Работаем с новой схемой jyotish_* (stones + связующая таблица тем)
-  let query = supabase
-    .from('jyotish_stones')
-    .select('*, jyotish_stone_theme!inner(theme_code,intensity)');
-  if (theme) {
-    query = query.eq('jyotish_stone_theme.theme_code', theme);
-  }
-  if (lifePath) {
-    query = query.or(`life_path.is.null,life_path.cs.{${lifePath}}`);
-  }
   console.log('jyotish stones query filters', { theme, lifePath });
-  let { data, error } = await query.order('jyotish_stone_theme.intensity', { ascending: false }).limit(5);
-  console.log('jyotish stones query result', { rows: data?.length ?? 0, error });
+  const base = supabase.from('jyotish_stones').select('*, jyotish_stone_theme!inner(theme_code,intensity)');
+  const applyTheme = theme ? (q: any) => q.eq('jyotish_stone_theme.theme_code', theme) : (q: any) => q;
 
-  // Если фильтр по life_path ничего не вернул или колонка отсутствует, пробуем без life_path
-  if ((error || !data?.length) && lifePath) {
-    console.warn('Retry jyotish stones without life_path filter');
-    let retry = supabase
-      .from('jyotish_stones')
-      .select('*, jyotish_stone_theme!inner(theme_code,intensity)')
-      .eq('is_active', true);
-    if (theme) retry = retry.eq('jyotish_stone_theme.theme_code', theme);
-    const retryRes = await retry.order('jyotish_stone_theme.intensity', { ascending: false }).limit(5);
-    data = retryRes.data;
-    error = retryRes.error;
-    console.log('retry result', { rows: data?.length ?? 0, error });
+  let data: any[] | null = null;
+  let error: any = null;
+
+  if (lifePath) {
+    const primary = await applyTheme(base)
+      .contains('life_path', [lifePath])
+      .order('jyotish_stone_theme.intensity', { ascending: false })
+      .limit(5);
+    data = primary.data;
+    error = primary.error;
+    console.log('jyotish stones primary', { rows: data?.length ?? 0, error });
+    if ((!data || data.length === 0 || error)) {
+      const retry = await applyTheme(base)
+        .order('jyotish_stone_theme.intensity', { ascending: false })
+        .limit(5);
+      data = retry.data;
+      error = retry.error;
+      console.log('jyotish stones retry (no life_path)', { rows: data?.length ?? 0, error });
+    }
+  } else {
+    const res = await applyTheme(base).order('jyotish_stone_theme.intensity', { ascending: false }).limit(5);
+    data = res.data;
+    error = res.error;
+    console.log('jyotish stones no-life-path', { rows: data?.length ?? 0, error });
   }
 
   if (error) {
