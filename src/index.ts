@@ -642,8 +642,7 @@ async function fetchStones(theme: string | null, lifePath: number | null): Promi
   // Работаем с новой схемой jyotish_* (stones + связующая таблица тем)
   let query = supabase
     .from('jyotish_stones')
-    .select('*, jyotish_stone_theme!inner(theme_code,intensity)')
-    .eq('is_active', true);
+    .select('*, jyotish_stone_theme!inner(theme_code,intensity)');
   if (theme) {
     query = query.eq('jyotish_stone_theme.theme_code', theme);
   }

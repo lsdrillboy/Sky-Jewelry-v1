@@ -88,8 +88,7 @@ async function fetchStones(theme: string | null, lifePath: number | null): Promi
   if (!supabase) return [];
   let query = supabase
     .from('jyotish_stones')
-    .select('*, jyotish_stone_theme!inner(theme_code,intensity)')
-    .eq('is_active', true);
+    .select('*, jyotish_stone_theme!inner(theme_code,intensity)');
   if (theme) {
     query = query.eq('jyotish_stone_theme.theme_code', theme);
   }
