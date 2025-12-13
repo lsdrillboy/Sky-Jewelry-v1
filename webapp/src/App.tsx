@@ -126,7 +126,7 @@ function App() {
       setUser((prev) => mergeUser(prev, { ...user, photo_url: (user as any)?.photo_url ?? prev?.photo_url ?? null }));
       await ensureMinDelay(startedAt);
       setPreAuthStage('done');
-      setTimeout(() => setScreen('main'), 300);
+      setTimeout(() => setScreen('cover'), 300);
     } catch (err: any) {
       console.error('initSession failed', err);
       await ensureMinDelay(startedAt);
