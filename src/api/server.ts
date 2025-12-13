@@ -194,7 +194,6 @@ async function createCustomRequest(params: {
 async function createOrderFromCustom(params: {
   userId: string;
   stones?: number[] | null;
-  type?: string | null;
   budget_from?: number | null;
   budget_to?: number | null;
   comment?: string | null;
@@ -204,7 +203,6 @@ async function createOrderFromCustom(params: {
     user_id: params.userId,
     order_type: 'custom' as const,
     stones: params.stones ?? null,
-    type: params.type ?? null,
     budget_from: params.budget_from ?? null,
     budget_to: params.budget_to ?? null,
     comment: params.comment ?? null,
@@ -443,7 +441,6 @@ export function buildApiApp() {
       const record = await createOrderFromCustom({
         userId: user.id,
         stones: payload.stones ?? [],
-        type: payload.type ?? null,
         budget_from: payload.budget_from ?? null,
         budget_to: payload.budget_to ?? null,
         comment: payload.comment ?? null,
