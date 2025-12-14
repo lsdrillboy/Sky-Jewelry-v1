@@ -651,11 +651,14 @@ async function fetchStones(theme: string | null, lifePath: number | null): Promi
     return [];
   }
   const rows = (data ?? []).filter((row) => row.stone) as any[];
+  const matchLifePath = (stoneLifePath: unknown[] | null | undefined, lp: number | null) => {
+    if (!lp || !stoneLifePath) return false;
+    return stoneLifePath.some((v) => Number(v) === Number(lp));
+  };
+
   let filtered = rows;
   if (lifePath) {
-    filtered = rows.filter(
-      (row) => Array.isArray(row.stone.life_path) && row.stone.life_path.includes(lifePath),
-    );
+    filtered = rows.filter((row) => matchLifePath(row.stone.life_path as any[], lifePath));
   }
   if (!filtered.length) {
     filtered = rows;
