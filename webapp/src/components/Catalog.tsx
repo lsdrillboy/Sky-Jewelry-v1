@@ -1,4 +1,5 @@
 import '../App.css';
+import { useMemo, useState } from 'react';
 import { catalogTypes } from '../data/themes';
 import type { Product, Stone } from '../types';
 import stoneIcon from '../assets/icon-stone.svg';
@@ -39,6 +40,27 @@ export function Catalog({
   onRefresh,
   onBack,
 }: Props) {
+  const [expanded, setExpanded] = useState<Set<number>>(() => new Set());
+  const [favorites, setFavorites] = useState<Set<number>>(() => new Set());
+
+  const toggleExpanded = (id: number) => {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const toggleFavorite = (id: number) => {
+    setFavorites((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const sortedProducts = useMemo(() => products, [products]);
+
   return (
     <div className="screen">
       <div className="hero">
@@ -119,9 +141,11 @@ export function Catalog({
         ) : null}
         {!loading && !products.length ? <p className="muted">Не нашла украшения под этот фильтр.</p> : null}
         <div className="catalog-grid">
-          {products.map((product) => {
+          {sortedProducts.map((product) => {
             const image = product.main_photo_url ?? product.photo_url ?? '';
             const stoneList = product.stone_ids ?? product.stones ?? [];
+            const isExpanded = expanded.has(product.id);
+            const isFav = favorites.has(product.id);
             return (
               <div key={product.id} className="card product-card premium-product">
                 <div className="product-cover">
@@ -131,9 +155,14 @@ export function Catalog({
                 </div>
                 <div className="product-body">
                   <h3>{product.name}</h3>
-                  <p className="muted" style={{ minHeight: 52 }}>
+                  <p className={`muted product-description ${isExpanded ? 'expanded' : ''}`}>
                     {product.description ?? 'Описание появится позже.'}
                   </p>
+                  {product.description ? (
+                    <button className="link-button" onClick={() => toggleExpanded(product.id)}>
+                      {isExpanded ? 'Свернуть' : 'Показать больше'}
+                    </button>
+                  ) : null}
                   <div className="product-meta">
                     <div className="pill">
                       {formatPrice(product)}
@@ -142,6 +171,15 @@ export function Catalog({
                       <img src={stoneIcon} className="btn-icon" alt="" />
                       Камни: {stoneList.length ? stoneList.join(', ') : '—'}
                     </div>
+                  </div>
+                  <div className="product-actions">
+                    <button
+                      className={`button ghost minimal ${isFav ? 'active' : ''}`}
+                      onClick={() => toggleFavorite(product.id)}
+                    >
+                      {isFav ? 'В избранном' : 'В избранное'}
+                    </button>
+                    <button className="button minimal primary">Заказать</button>
                   </div>
                 </div>
               </div>
