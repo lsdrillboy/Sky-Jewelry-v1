@@ -15,32 +15,12 @@ type Props = {
   onOpenBot?: () => void;
 };
 
-function stageText(stage: Stage) {
-  switch (stage) {
-    case 'checking':
-      return { title: 'Sky Jewelry', subtitle: 'Проверяю доступ…' };
-    case 'connecting':
-      return { title: 'Настраиваю подбор', subtitle: 'Подключаю профиль…' };
-    case 'done':
-      return { title: 'Готово', subtitle: 'Запускаю приложение' };
-    case 'error-auth':
-      return {
-        title: 'Не удалось войти',
-        subtitle: 'Открой мини-приложение через кнопку в чате бота и попробуй снова.',
-      };
-    case 'error-network':
-      return { title: 'Нет соединения', subtitle: 'Проверь интернет и попробуй снова.' };
-    case 'error-unknown':
-      return { title: 'Что-то пошло не так', subtitle: 'Попробуй повторить запуск.' };
-    case 'init':
-    default:
-      return { title: 'Sky Jewelry', subtitle: 'Запускаю…' };
-  }
+function stageText(_stage: Stage) {
+  return { title: 'Вход', subtitle: 'Подключаю профиль…' };
 }
 
 export default function PreAuth({ stage, onRetry, onOpenBot }: Props) {
   const { title, subtitle } = stageText(stage);
-  const isError = stage.startsWith('error');
   const logoUrl =
     'https://kyxztleagpawfhkvxvwa.supabase.co/storage/v1/object/sign/Cover/logogo.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8wMGI3NGEwZi1jMTViLTRmYzQtYWIzMS0yMzdiMTE3OGY0MWEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJDb3Zlci9sb2dvZ28ucG5nIiwiaWF0IjoxNzY1NjgyOTYwLCJleHAiOjE3OTcyMTg5NjB9.8dtOi_KfgKaqFwzz5qi2CBJGsReZ1Ob90QOSRtqQwnk';
 
@@ -51,25 +31,12 @@ export default function PreAuth({ stage, onRetry, onOpenBot }: Props) {
         <div className="preauth-logo" style={{ backgroundImage: `url(${logoUrl})` }} />
         <div className="preauth-title">{title}</div>
         <div className="preauth-subtitle">{subtitle}</div>
-        {!isError ? (
-          <div className="preauth-progress">
-            <div className={`preauth-ring ${stage === 'done' ? 'preauth-ring-done' : ''}`}>
-              <span />
-            </div>
-            <div className="tiny">Займёт несколько секунд</div>
+        <div className="preauth-progress">
+          <div className={`preauth-ring ${stage === 'done' ? 'preauth-ring-done' : ''}`}>
+            <span />
           </div>
-        ) : (
-          <div className="preauth-actions">
-            <button className="button" onClick={onRetry}>
-              Повторить
-            </button>
-            {onOpenBot ? (
-              <button className="button ghost" onClick={onOpenBot}>
-                Открыть в боте
-              </button>
-            ) : null}
-          </div>
-        )}
+          <div className="tiny">Займёт несколько секунд</div>
+        </div>
       </div>
     </div>
   );
