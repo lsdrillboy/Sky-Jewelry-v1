@@ -573,6 +573,10 @@
   flex-direction: column;
   gap: 8px;
   height: 100%;
+  border: 1px solid rgba(216, 177, 92, 0.18);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.75),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .stone-meta {
@@ -616,11 +620,26 @@
   height: 100%;
 }
 
+.product-headline {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.product-price {
+  color: var(--color-gold-primary);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  font-size: 16px;
+}
+
 .product-description {
-  max-height: 4.5em;
+  max-height: 4.8em;
   overflow: hidden;
   position: relative;
-  line-height: 1.45;
+  line-height: 1.55;
+  color: #d9d9d9;
 }
 
 .product-description:not(.expanded)::after {
@@ -640,6 +659,7 @@
   flex-wrap: wrap;
   gap: 8px;
   width: 100%;
+  margin-top: 6px;
 }
 
 .product-actions {
@@ -655,6 +675,7 @@
   padding: 10px 14px;
   font-weight: 600;
   letter-spacing: 0.01em;
+  min-height: 44px;
 }
 
 .button.minimal.primary {
@@ -673,6 +694,12 @@
   color: var(--color-gold-primary);
 }
 
+.button.minimal.ghost.fav {
+  display: inline-flex;
+  justify-content: center;
+  gap: 8px;
+}
+
 .button.minimal.ghost.active {
   border-color: rgba(216, 177, 92, 0.6);
   background: linear-gradient(135deg, rgba(216, 177, 92, 0.14), rgba(0, 0, 0, 0.45));
@@ -688,6 +715,12 @@
   font-weight: 600;
   padding: 0;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 .shadowed {

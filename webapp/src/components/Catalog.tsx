@@ -146,6 +146,7 @@ export function Catalog({
             const stoneList = product.stone_ids ?? product.stones ?? [];
             const isExpanded = expanded.has(product.id);
             const isFav = favorites.has(product.id);
+            const price = formatPrice(product);
             return (
               <div key={product.id} className="card product-card premium-product">
                 <div className="product-cover">
@@ -154,30 +155,30 @@ export function Catalog({
                   <div className="product-overlay" />
                 </div>
                 <div className="product-body">
-                  <h3>{product.name}</h3>
+                  <div className="product-headline">
+                    <h3>{product.name}</h3>
+                    {price ? <div className="product-price">{price.replace('BHT', 'THB')}</div> : null}
+                  </div>
                   <p className={`muted product-description ${isExpanded ? 'expanded' : ''}`}>
                     {product.description ?? 'Описание появится позже.'}
                   </p>
                   {product.description ? (
                     <button className="link-button" onClick={() => toggleExpanded(product.id)}>
-                      {isExpanded ? 'Свернуть' : 'Показать больше'}
+                      {isExpanded ? 'Свернуть ▲' : 'Показать больше ▼'}
                     </button>
                   ) : null}
                   <div className="product-meta">
-                    <div className="pill">
-                      {formatPrice(product)}
-                    </div>
                     <div className="pill ghost-pill">
                       <img src={stoneIcon} className="btn-icon" alt="" />
-                      Камни: {stoneList.length ? stoneList.join(', ') : '—'}
+                      Камни: {stoneList.length ? stoneList.join(', ') : 'нет'}
                     </div>
                   </div>
                   <div className="product-actions">
                     <button
-                      className={`button ghost minimal ${isFav ? 'active' : ''}`}
+                      className={`button ghost minimal fav ${isFav ? 'active' : ''}`}
                       onClick={() => toggleFavorite(product.id)}
                     >
-                      {isFav ? 'В избранном' : 'В избранное'}
+                      {isFav ? '♥ В избранном' : '♡ В избранное'}
                     </button>
                     <button className="button minimal primary">Заказать</button>
                   </div>
