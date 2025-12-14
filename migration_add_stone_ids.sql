@@ -17,4 +17,3 @@ BEGIN
     RAISE NOTICE 'Column stone_ids already exists';
   END IF;
 END $$;
-

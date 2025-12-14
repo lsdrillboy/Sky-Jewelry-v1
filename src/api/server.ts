@@ -245,16 +245,20 @@ function formatSupabaseError(err: any): { message: string; status: number } {
   return { message: 'Внутренняя ошибка сервера', status: 500 };
 }
 
-async function sendOrderToTelegram(text: string) {
+async function sendOrderToTelegram(text: string, meta?: { username?: string; telegramId?: number | string }) {
   const chatId = env.ORDER_CHAT_ID ?? 5035730676; // fallback на указанный групповой чат
   if (!env.BOT_TOKEN || !chatId) return;
+  const senderLabel =
+    meta?.username || meta?.telegramId
+      ? `От: ${meta?.username ? '@' + meta.username : '—'} (id: ${meta?.telegramId ?? '—'})\n`
+      : '';
   try {
     await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         chat_id: chatId,
-        text,
+        text: `${senderLabel}${text}`,
         parse_mode: 'HTML',
         disable_web_page_preview: true,
       }),
@@ -455,7 +459,7 @@ export function buildApiApp() {
         `Бюджет: от ${payload.budget_from ?? '—'} до ${payload.budget_to ?? '—'}`,
         `Комментарий: ${payload.comment ?? '—'}`,
       ].join('\n');
-      await sendOrderToTelegram(textLines);
+      await sendOrderToTelegram(textLines, { username: user.username ?? undefined, telegramId: tgUser?.id });
       return res.json({ ok: true, id: record?.id ?? null });
     } catch (err) {
       console.error('custom-request error', err);

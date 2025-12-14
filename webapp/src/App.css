@@ -657,10 +657,16 @@
 }
 
 .preauth-logo {
-  width: 64px;
-  height: 64px;
+  width: 82px;
+  height: 82px;
   margin: 0 auto 12px;
-  filter: drop-shadow(0 12px 28px rgba(216, 177, 92, 0.4));
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow:
+    0 12px 28px rgba(216, 177, 92, 0.4),
+    0 0 40px rgba(216, 177, 92, 0.2);
 }
 
 .preauth-title {
