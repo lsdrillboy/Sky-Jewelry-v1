@@ -249,7 +249,8 @@ function formatSupabaseError(err: any): { message: string; status: number } {
 }
 
 async function sendOrderToTelegram(text: string, meta?: { username?: string; telegramId?: number | string }) {
-  const chatId = env.ORDER_CHAT_ID ?? 5035730676; // fallback на указанный групповой чат
+  // Отчётный чат по заявкам: по умолчанию 3662210811, можно переопределить через env.ORDER_CHAT_ID
+  const chatId = env.ORDER_CHAT_ID ?? 3662210811;
   if (!env.BOT_TOKEN || !chatId) return;
   const senderLabel =
     meta?.username || meta?.telegramId
