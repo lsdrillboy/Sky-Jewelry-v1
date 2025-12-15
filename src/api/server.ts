@@ -249,30 +249,49 @@ function formatSupabaseError(err: any): { message: string; status: number } {
 }
 
 async function sendOrderToTelegram(text: string, meta?: { username?: string; telegramId?: number | string }) {
-  // Отчётный чат по заявкам: по умолчанию 3662210811, можно переопределить через env.ORDER_CHAT_ID
-  const chatId = env.ORDER_CHAT_ID ?? 3662210811;
-  if (!env.BOT_TOKEN || !chatId) {
-    console.warn('sendOrderToTelegram skipped: BOT_TOKEN or chatId missing', { chatId, hasToken: Boolean(env.BOT_TOKEN) });
+  // Отчётный чат по заявкам. В Telegram для супергрупп нужен отрицательный id (-100XXXXXXXXXX).
+  // Пользовательский peer id: 3662210811 => chat_id чаще всего -1003662210811.
+  const configured = env.ORDER_CHAT_ID ?? 3662210811;
+  const candidates = [
+    configured,
+    configured > 0 ? -configured : configured,
+    configured > 0 ? Number(`-100${configured}`) : configured,
+  ].filter((v, idx, arr) => arr.indexOf(v) === idx); // уникальные
+
+  if (!env.BOT_TOKEN) {
+    console.warn('sendOrderToTelegram skipped: BOT_TOKEN missing');
     return;
   }
+
   const senderLabel =
     meta?.username || meta?.telegramId
       ? `От: ${meta?.username ? '@' + meta.username : '—'} (id: ${meta?.telegramId ?? '—'})\n`
       : '';
-  try {
-    await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: `${senderLabel}${text}`,
-        parse_mode: 'HTML',
-        disable_web_page_preview: true,
-      }),
-    });
-  } catch (err) {
-    console.error('Failed to send order to Telegram', err);
+
+  for (const chatId of candidates) {
+    if (!chatId) continue;
+    try {
+      const resp = await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: `${senderLabel}${text}`,
+          parse_mode: 'HTML',
+          disable_web_page_preview: true,
+        }),
+      });
+      if (!resp.ok) {
+        const body = await resp.text();
+        console.warn('sendOrderToTelegram failed', { chatId, status: resp.status, body });
+        continue;
+      }
+      return; // success
+    } catch (err) {
+      console.error('Failed to send order to Telegram', { chatId, err });
+    }
   }
+  console.error('All attempts to send order to Telegram failed', { candidates });
 }
 
 export function buildApiApp() {
