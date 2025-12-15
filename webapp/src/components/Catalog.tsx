@@ -2,7 +2,6 @@ import '../App.css';
 import { useMemo, useState } from 'react';
 import { catalogTypes } from '../data/themes';
 import type { Product, Stone } from '../types';
-import stoneIcon from '../assets/icon-stone.svg';
 import searchIcon from '../assets/icon-search.svg';
 import backIcon from '../assets/icon-arrow-left.svg';
 
@@ -141,11 +140,10 @@ export function Catalog({
             <div className="muted">Загружаю...</div>
           </div>
         ) : null}
-        {!loading && !products.length ? <p className="muted">Не нашла украшения под этот фильтр.</p> : null}
+        {!loading && !products.length ? <p className="muted">Не нашел украшения под этот фильтр.</p> : null}
         <div className="catalog-grid">
           {sortedProducts.map((product) => {
             const image = product.main_photo_url ?? product.photo_url ?? '';
-            const stoneList = product.stone_ids ?? product.stones ?? [];
             const isExpanded = expanded.has(product.id);
             const isFav = favorites.has(product.id);
             const price = formatPrice(product);
