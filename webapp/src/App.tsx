@@ -281,19 +281,6 @@ function App() {
     });
   };
 
-  const handleToggleFavorite = (product: Product) => {
-    setFavoriteProducts((prev) => {
-      if (prev.some((p) => p.id === product.id)) {
-        const next = prev.filter((p) => p.id !== product.id);
-        persistFavorites(next);
-        return next;
-      }
-      const next = [...prev, product];
-      persistFavorites(next);
-      return next;
-    });
-  };
-
   const handleOpenCatalogWithStone = (stoneId: number) => {
     setCatalogFilters((prev) => ({ ...prev, stone_id: stoneId }));
     setScreen('catalog');
