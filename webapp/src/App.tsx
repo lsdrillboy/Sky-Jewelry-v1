@@ -18,6 +18,8 @@ import StonePicker from './components/StonePicker';
 import Catalog from './components/Catalog';
 import CustomRequest from './components/CustomRequest';
 import StoneLibrary from './components/StoneLibrary';
+import BrandStory from './components/BrandStory';
+import Favorites from './components/Favorites';
 import PreAuth from './components/PreAuth';
 import InfoSection from './components/InfoSection';
 
@@ -88,7 +90,28 @@ function App() {
   const [stonesLoading, setStonesLoading] = useState(false);
   const [pickerLoading, setPickerLoading] = useState(false);
   const [requestLoading, setRequestLoading] = useState(false);
+  const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
   const [toast, setToast] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('sj_favorites');
+      if (raw) {
+        setFavoriteProducts(JSON.parse(raw) as Product[]);
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const persistFavorites = (items: Product[]) => {
+    setFavoriteProducts(items);
+    try {
+      localStorage.setItem('sj_favorites', JSON.stringify(items));
+    } catch {
+      // ignore
+    }
+  };
 
   useEffect(() => {
     bootstrap();
@@ -216,7 +239,7 @@ function App() {
     setRequestLoading(true);
     try {
       await submitCustomRequest(initData, payload);
-      setToast('Заявка отправлена мастеру');
+      setToast('Ваш заказ успешно отправлен. С вами скоро свяжется менеджер.');
       // остаёмся на экране заявки
     } catch (err) {
       console.error('custom request failed', err);
@@ -236,13 +259,39 @@ function App() {
         budget_to: product.price_max ?? product.price ?? null,
         comment: `Каталог: ${product.name} (id ${product.id})`,
       });
-      setToast('Заявка отправлена мастеру');
+      setToast('Ваш заказ успешно отправлен. С вами скоро свяжется менеджер.');
     } catch (err) {
       console.error('catalog order failed', err);
       setToast('Не удалось отправить заявку');
     } finally {
       setRequestLoading(false);
     }
+  };
+
+  const handleToggleFavorite = (product: Product) => {
+    setFavoriteProducts((prev) => {
+      if (prev.some((p) => p.id === product.id)) {
+        const next = prev.filter((p) => p.id !== product.id);
+        persistFavorites(next);
+        return next;
+      }
+      const next = [...prev, product];
+      persistFavorites(next);
+      return next;
+    });
+  };
+
+  const handleToggleFavorite = (product: Product) => {
+    setFavoriteProducts((prev) => {
+      if (prev.some((p) => p.id === product.id)) {
+        const next = prev.filter((p) => p.id !== product.id);
+        persistFavorites(next);
+        return next;
+      }
+      const next = [...prev, product];
+      persistFavorites(next);
+      return next;
+    });
   };
 
   const handleOpenCatalogWithStone = (stoneId: number) => {
@@ -279,6 +328,8 @@ function App() {
           loading={catalogLoading}
           onChangeFilters={setCatalogFilters}
           onRefresh={refreshCatalog}
+          favorites={new Set(favoriteProducts.map((p) => p.id))}
+          onToggleFavorite={handleToggleFavorite}
           onOrder={handleProductOrder}
           onBack={() => setScreen('main')}
         />
@@ -311,24 +362,13 @@ function App() {
         />
       );
     if (screen === 'history')
-      return (
-        <InfoSection
-          title="История бренда / Мастерская"
-          subtitle="О мастерской Sky Jewelry: ручная работа, смысл, энергия."
-          bullets={[
-            'О мастерской Sky Jewelry',
-            'Ручная работа / смысл / энергия',
-          ]}
-          onBack={() => setScreen('main')}
-        />
-      );
+      return <BrandStory onBack={() => setScreen('main')} />;
     if (screen === 'favorites')
       return (
-        <InfoSection
-          title="Избранное"
-          subtitle="Сохраняй камни и украшения, чтобы вернуться к ним позже."
-          bullets={['Избранные камни', 'Сохранённые украшения']}
-          note="Функция избранного запомнит то, что тебе откликнулось."
+        <Favorites
+          products={favoriteProducts}
+          onOrder={handleProductOrder}
+          onToggleFavorite={handleToggleFavorite}
           onBack={() => setScreen('main')}
         />
       );
@@ -345,6 +385,7 @@ function App() {
     catalogLoading,
     stonesLoading,
     requestLoading,
+    favoriteProducts,
   ]);
 
   return (

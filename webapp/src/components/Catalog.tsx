@@ -17,6 +17,8 @@ type Props = {
   loading: boolean;
   onChangeFilters: (filters: Filters) => void;
   onRefresh: () => void;
+  favorites: Set<number>;
+  onToggleFavorite: (product: Product) => void;
   onOrder: (product: Product) => void;
   onBack: () => void;
 };
@@ -38,22 +40,15 @@ export function Catalog({
   loading,
   onChangeFilters,
   onRefresh,
+  favorites,
+  onToggleFavorite,
   onOrder,
   onBack,
 }: Props) {
   const [expanded, setExpanded] = useState<Set<number>>(() => new Set());
-  const [favorites, setFavorites] = useState<Set<number>>(() => new Set());
 
   const toggleExpanded = (id: number) => {
     setExpanded((prev) => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
-  };
-
-  const toggleFavorite = (id: number) => {
-    setFavorites((prev) => {
       const next = new Set(prev);
       next.has(id) ? next.delete(id) : next.add(id);
       return next;
@@ -170,7 +165,7 @@ export function Catalog({
                   <div className="product-actions">
                     <button
                       className={`button ghost minimal fav ${isFav ? 'active' : ''}`}
-                      onClick={() => toggleFavorite(product.id)}
+                      onClick={() => onToggleFavorite(product)}
                     >
                       {isFav ? '♥ В избранном' : '♡ В избранное'}
                     </button>

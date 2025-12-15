@@ -640,6 +640,7 @@
   position: relative;
   line-height: 1.55;
   color: #d9d9d9;
+  font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .product-description:not(.expanded)::after {
@@ -721,6 +722,120 @@
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
+}
+
+/* Brand Story */
+.story-screen {
+  gap: 18px;
+}
+
+.story-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.story-hero-text h1 {
+  margin: 4px 0 0;
+}
+
+.story-author {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 12px;
+  align-items: center;
+  background: linear-gradient(145deg, rgba(216, 177, 92, 0.08), rgba(0, 0, 0, 0.5));
+  border: 1px solid rgba(216, 177, 92, 0.25);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.story-photo-frame {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  border-radius: 20px;
+  background: radial-gradient(circle at 30% 30%, rgba(216, 177, 92, 0.16), rgba(0, 0, 0, 0.9));
+  border: 1px solid rgba(216, 177, 92, 0.35);
+  overflow: hidden;
+}
+
+.story-photo {
+  position: absolute;
+  inset: 6px;
+  border-radius: 16px;
+  background-size: cover;
+  background-position: center;
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.55),
+    0 0 22px rgba(216, 177, 92, 0.25);
+}
+
+.story-photo-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: radial-gradient(circle at 50% 50%, rgba(216, 177, 92, 0.2), transparent 70%);
+  pointer-events: none;
+}
+
+.story-author-name {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--color-gold-primary);
+}
+
+.story-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.story-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.story-card {
+  border: 1px solid rgba(216, 177, 92, 0.25);
+  border-radius: 16px;
+  padding: 14px;
+  background: linear-gradient(165deg, rgba(255, 231, 199, 0.05), rgba(0, 0, 0, 0.8));
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.story-card-title {
+  color: var(--color-gold-primary);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.story-card-text {
+  color: #e0dfda;
+  line-height: 1.58;
+  margin: 0;
+}
+
+@media (min-width: 720px) {
+  .story-hero {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .story-author {
+    max-width: 420px;
+  }
+
+  .story-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .shadowed {
