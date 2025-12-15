@@ -167,12 +167,6 @@ export function Catalog({
                       {isExpanded ? 'Свернуть ▲' : 'Показать больше ▼'}
                     </button>
                   ) : null}
-                  <div className="product-meta">
-                    <div className="pill ghost-pill">
-                      <img src={stoneIcon} className="btn-icon" alt="" />
-                      Камни: {stoneList.length ? stoneList.join(', ') : 'нет'}
-                    </div>
-                  </div>
                   <div className="product-actions">
                     <button
                       className={`button ghost minimal fav ${isFav ? 'active' : ''}`}
