@@ -251,7 +251,10 @@ function formatSupabaseError(err: any): { message: string; status: number } {
 async function sendOrderToTelegram(text: string, meta?: { username?: string; telegramId?: number | string }) {
   // Отчётный чат по заявкам: по умолчанию 3662210811, можно переопределить через env.ORDER_CHAT_ID
   const chatId = env.ORDER_CHAT_ID ?? 3662210811;
-  if (!env.BOT_TOKEN || !chatId) return;
+  if (!env.BOT_TOKEN || !chatId) {
+    console.warn('sendOrderToTelegram skipped: BOT_TOKEN or chatId missing', { chatId, hasToken: Boolean(env.BOT_TOKEN) });
+    return;
+  }
   const senderLabel =
     meta?.username || meta?.telegramId
       ? `От: ${meta?.username ? '@' + meta.username : '—'} (id: ${meta?.telegramId ?? '—'})\n`

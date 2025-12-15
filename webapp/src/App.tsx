@@ -226,6 +226,25 @@ function App() {
     }
   };
 
+  const handleProductOrder = async (product: Product) => {
+    setRequestLoading(true);
+    try {
+      await submitCustomRequest(initData, {
+        type: 'catalog',
+        stones: product.stone_ids ?? product.stones ?? [],
+        budget_from: product.price_min ?? product.price ?? null,
+        budget_to: product.price_max ?? product.price ?? null,
+        comment: `Каталог: ${product.name} (id ${product.id})`,
+      });
+      setToast('Заявка отправлена мастеру');
+    } catch (err) {
+      console.error('catalog order failed', err);
+      setToast('Не удалось отправить заявку');
+    } finally {
+      setRequestLoading(false);
+    }
+  };
+
   const handleOpenCatalogWithStone = (stoneId: number) => {
     setCatalogFilters((prev) => ({ ...prev, stone_id: stoneId }));
     setScreen('catalog');
@@ -260,6 +279,7 @@ function App() {
           loading={catalogLoading}
           onChangeFilters={setCatalogFilters}
           onRefresh={refreshCatalog}
+          onOrder={handleProductOrder}
           onBack={() => setScreen('main')}
         />
       );

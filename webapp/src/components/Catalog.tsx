@@ -18,6 +18,7 @@ type Props = {
   loading: boolean;
   onChangeFilters: (filters: Filters) => void;
   onRefresh: () => void;
+  onOrder: (product: Product) => void;
   onBack: () => void;
 };
 
@@ -38,6 +39,7 @@ export function Catalog({
   loading,
   onChangeFilters,
   onRefresh,
+  onOrder,
   onBack,
 }: Props) {
   const [expanded, setExpanded] = useState<Set<number>>(() => new Set());
@@ -174,7 +176,9 @@ export function Catalog({
                     >
                       {isFav ? '♥ В избранном' : '♡ В избранное'}
                     </button>
-                    <button className="button minimal primary">Заказать</button>
+                    <button className="button minimal primary" onClick={() => onOrder(product)}>
+                      Заказать
+                    </button>
                   </div>
                 </div>
               </div>
