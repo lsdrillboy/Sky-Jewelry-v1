@@ -329,16 +329,7 @@ function App() {
 
   return (
     <div className="app-shell">
-      {preAuthStage !== 'done' ? (
-        <PreAuth
-          stage={preAuthStage}
-          onRetry={bootstrap}
-          onOpenBot={() => {
-            const url = 'https://t.me/'; // подсказка; при желании заменить на deep link
-            window.open(url, '_blank');
-          }}
-        />
-      ) : null}
+      {preAuthStage !== 'done' ? <PreAuth stage={preAuthStage} /> : null}
       {content}
       {toast ? <div className="toast">{toast}</div> : null}
     </div>
