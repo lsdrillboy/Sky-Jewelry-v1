@@ -6,7 +6,7 @@ type Props = {
 };
 
 const authorPhoto =
-  'https://kyxztleagpawfhkvxvwa.supabase.co/storage/v1/object/sign/Cover/logogo.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8wMGI3NGEwZi1jMTViLTRmYzQtYWIzMS0yMzdiMTE3OGY0MWEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJDb3Zlci9sb2dvZ28ucG5nIiwiaWF0IjoxNzY1NjgyOTYwLCJleHAiOjE3OTcyMTg5NjB9.8dtOi_KfgKaqFwzz5qi2CBJGsReZ1Ob90QOSRtqQwnk';
+  'https://kyxztleagpawfhkvxvwa.supabase.co/storage/v1/object/sign/Cover/Autor.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8wMGI3NGEwZi1jMTViLTRmYzQtYWIzMS0yMzdiMTE3OGY0MWEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJDb3Zlci9BdXRvci5qcGVnIiwiaWF0IjoxNzY1Nzk0NTYxLCJleHAiOjE3OTczMzA1NjF9.cSvZNla8uLWxTvTukrsY6TVNRVji_yIaLFtA0YbXu0o';
 
 const storyBlocks = [
   {
