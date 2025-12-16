@@ -7,6 +7,14 @@
   text-align: center;
 }
 
+.hero {
+  text-align: center;
+}
+
+.hero p {
+  text-align: center;
+}
+
 .center-hero .app-header {
   flex-direction: column;
 }
@@ -51,8 +59,10 @@
   padding: 10px 12px;
   border-radius: 12px;
   border: 1px solid rgba(216, 177, 92, 0.3);
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.2);
   color: var(--color-gold-soft);
+  font-size: 16px;
+  appearance: none;
 }
 
 /* Eye / Logo */
