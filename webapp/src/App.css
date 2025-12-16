@@ -709,6 +709,13 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
+.button.narrow {
+  width: fit-content;
+  min-width: 0;
+  padding: 10px 16px;
+  align-self: flex-start;
+}
+
 .link-button {
   background: none;
   border: none;
