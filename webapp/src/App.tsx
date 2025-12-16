@@ -290,7 +290,7 @@ function App() {
     if (preAuthStage !== 'done') return null;
     if (screen === 'cover')
       return <Cover onStart={() => setScreen('main')} onCatalog={() => setScreen('catalog')} />;
-    if (screen === 'main') return <MainMenu user={user} onNavigate={setScreen} />;
+    if (screen === 'main') return <MainMenu user={user} onNavigate={setScreen} onBackToCover={() => setScreen('cover')} />;
     if (screen === 'birthdate')
       return <BirthdateForm user={user} onSubmit={(date) => handleBirthdateUpdate(date, 'stone')} onBack={() => setScreen('main')} />;
     if (screen === 'profile')

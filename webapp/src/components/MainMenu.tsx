@@ -9,9 +9,10 @@ import bookIcon from '../assets/icon-book.svg';
 type Props = {
   user: User | null;
   onNavigate: (screen: Screen) => void;
+  onBackToCover?: () => void;
 };
 
-export function MainMenu({ user, onNavigate }: Props) {
+export function MainMenu({ user, onNavigate, onBackToCover }: Props) {
   return (
     <div className="screen">
       <div className="hero">
@@ -25,6 +26,13 @@ export function MainMenu({ user, onNavigate }: Props) {
         <p className="muted lead-text" style={{ margin: '10px 0 0' }}>
           Подберу минералы по твоей энергии, покажу украшения Sky Jewelry и помогу собрать индивидуальное изделие.
         </p>
+        {onBackToCover ? (
+          <div style={{ marginTop: 10 }}>
+            <button className="button ghost" onClick={onBackToCover}>
+              Вернуться на обложку
+            </button>
+          </div>
+        ) : null}
       </div>
 
       <div className="panel">
