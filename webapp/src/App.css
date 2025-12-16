@@ -7,6 +7,17 @@
   text-align: center;
 }
 
+.center-hero .app-header {
+  flex-direction: column;
+}
+
+.center-hero .app-header h1,
+.center-hero .app-header p,
+.center-hero .app-header .tiny {
+  text-align: center;
+  width: 100%;
+}
+
 .back-fab {
   position: absolute;
   top: 12px;
@@ -32,6 +43,16 @@
   border-bottom: 2px solid rgba(216, 177, 92, 0.9);
   transform: rotate(45deg);
   margin-left: 2px;
+}
+
+.stone-select {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(216, 177, 92, 0.3);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--color-gold-soft);
 }
 
 /* Eye / Logo */

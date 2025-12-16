@@ -31,7 +31,7 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
 
   return (
     <div className="screen">
-      <div className="hero">
+      <div className="hero center-hero">
         <div className="app-header">
           <div className="logo-mark" />
           <div>
@@ -47,7 +47,7 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
       <div className="panel">
         <div className="subtitle">Камни</div>
         <select
-          className="input"
+          className="input stone-select"
           multiple
           size={6}
           value={selectedStones.map(String)}
