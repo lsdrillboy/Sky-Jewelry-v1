@@ -19,10 +19,6 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
   const [budgetTo, setBudgetTo] = useState('');
   const [comment, setComment] = useState('');
 
-  const toggleStone = (id: number) => {
-    setSelectedStones((prev) => (prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]));
-  };
-
   const handleSubmit = () => {
     onSubmit({
       stones: selectedStones,
@@ -50,17 +46,25 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
 
       <div className="panel">
         <div className="subtitle">Камни</div>
-        <div className="chips">
+        <select
+          className="input"
+          multiple
+          size={6}
+          value={selectedStones.map(String)}
+          onChange={(e) => {
+            const options = Array.from(e.target.selectedOptions).map((o) => Number(o.value));
+            setSelectedStones(options);
+          }}
+        >
           {stones.map((stone) => (
-            <button
-              key={stone.id}
-              className={`chip ${selectedStones.includes(stone.id) ? 'active' : ''}`}
-              onClick={() => toggleStone(stone.id)}
-            >
+            <option key={stone.id} value={stone.id}>
               {stone.name_ru}
-            </button>
+            </option>
           ))}
-        </div>
+        </select>
+        <p className="muted" style={{ marginTop: 6 }}>
+          Выбери один или несколько камней. На телефоне список откроется во всплывающем окне.
+        </p>
       </div>
 
       <div className="panel">

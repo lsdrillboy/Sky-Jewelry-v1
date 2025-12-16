@@ -46,8 +46,8 @@ export default function BrandStory({ onBack }: Props) {
             Ручная работа, смысл и энергия, прожитые в тишине и готовые к твоей истории.
           </p>
         </div>
-        <div className="story-author">
-          <div className="story-photo-frame large">
+        <div className="story-author full">
+          <div className="story-photo-frame large full">
             <div className="story-photo" style={{ backgroundImage: `url(${authorPhoto})` }} />
             <div className="story-photo-glow" />
           </div>

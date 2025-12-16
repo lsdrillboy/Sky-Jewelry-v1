@@ -714,6 +714,7 @@
   min-width: 0;
   padding: 10px 16px;
   align-self: flex-start;
+  max-width: 240px;
 }
 
 .link-button {
@@ -757,8 +758,8 @@
 
 .story-author {
   display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 12px;
+  grid-template-columns: 1fr;
+  gap: 14px;
   align-items: center;
   background: linear-gradient(145deg, rgba(216, 177, 92, 0.08), rgba(0, 0, 0, 0.5));
   border: 1px solid rgba(216, 177, 92, 0.25);
@@ -771,8 +772,9 @@
 
 .story-photo-frame {
   position: relative;
-  width: 140px;
-  height: 140px;
+  width: 100%;
+  padding-top: 72%;
+  height: auto;
   border-radius: 20px;
   background: radial-gradient(circle at 30% 30%, rgba(216, 177, 92, 0.16), rgba(0, 0, 0, 0.9));
   border: 1px solid rgba(216, 177, 92, 0.35);
@@ -846,7 +848,7 @@
   }
 
   .story-author {
-    max-width: 420px;
+    max-width: 480px;
   }
 
   .story-grid {

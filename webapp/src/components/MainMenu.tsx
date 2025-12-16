@@ -46,19 +46,19 @@ export function MainMenu({ user, onNavigate }: Props) {
             <span className="nav-label">Индивидуальное украшение</span>
           </button>
           <button className="button full nav-button nav-muted" onClick={() => onNavigate('library')}>
-            <span className="nav-icon nav-icon-emoji">🌌</span>
+            <span className="nav-icon nav-icon-emoji" aria-hidden="true">🌌</span>
             <span className="nav-label">Энергия камней</span>
           </button>
           <button className="button full nav-button nav-muted" onClick={() => onNavigate('reviews')}>
-            <span className="nav-icon nav-icon-emoji">⭐</span>
+            <span className="nav-icon nav-icon-emoji" aria-hidden="true">⭐</span>
             <span className="nav-label">Отзывы</span>
           </button>
           <button className="button full nav-button nav-muted" onClick={() => onNavigate('history')}>
-            <span className="nav-icon nav-icon-emoji">📜</span>
+            <span className="nav-icon nav-icon-emoji" aria-hidden="true">📜</span>
             <span className="nav-label">История бренда</span>
           </button>
           <button className="button full nav-button nav-muted" onClick={() => onNavigate('favorites')}>
-            <span className="nav-icon nav-icon-emoji">❤️</span>
+            <span className="nav-icon nav-icon-emoji" aria-hidden="true">❤️</span>
             <span className="nav-label">Избранное</span>
           </button>
         </div>
