@@ -14,8 +14,6 @@ type Props = {
 };
 
 export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, onBack }: Props) {
-  const iconMap: Record<string, string> = {};
-
   return (
     <div className="screen">
       <div className="hero">
@@ -34,14 +32,20 @@ export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, 
 
       <div className="panel">
         <div className="subtitle">Выбери тему</div>
-        <div className="chips chips-grid">
+        <select
+          className="input"
+          onChange={(e) => e.target.value && onPick(e.target.value)}
+          defaultValue=""
+        >
+          <option value="" disabled>
+            Выбери тему под запрос
+          </option>
           {themeList.map((theme) => (
-            <button key={theme.code} className="chip" onClick={() => onPick(theme.code)}>
-              {iconMap[theme.code] ? <img className="chip-icon" src={iconMap[theme.code]} alt={theme.label} draggable={false} /> : null}
-              <span>{theme.label}</span>
-            </button>
+            <option key={theme.code} value={theme.code}>
+              {theme.label}
+            </option>
           ))}
-        </div>
+        </select>
         {loading ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 12 }}>
             <div className="spinner" style={{ width: 30, height: 30 }} />
@@ -77,7 +81,7 @@ export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, 
                 <p className="muted" style={{ minHeight: 48 }}>
                   {stone.description_short ?? 'Описание появится позже.'}
                 </p>
-                <button className="button luxe nav-button narrow" onClick={() => onOpenCatalog(stone.id)}>
+                <button className="button luxe nav-button narrow stone-cta" onClick={() => onOpenCatalog(stone.id)}>
                   <img className="btn-icon" src={ringIcon} alt="" />
                   Показать украшения с этим камнем
                 </button>

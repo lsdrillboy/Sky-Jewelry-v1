@@ -4,6 +4,7 @@ import ringIcon from '../assets/icon-ring.svg';
 import customIcon from '../assets/icon-custom.svg';
 import profileIcon from '../assets/icon-profile.svg';
 import stoneIcon from '../assets/icon-stone.svg';
+import bookIcon from '../assets/icon-book.svg';
 
 type Props = {
   user: User | null;
@@ -46,19 +47,19 @@ export function MainMenu({ user, onNavigate }: Props) {
             <span className="nav-label">Индивидуальное украшение</span>
           </button>
           <button className="button full nav-button nav-muted" onClick={() => onNavigate('library')}>
-            <span className="nav-icon nav-icon-emoji" aria-hidden="true">🌌</span>
+            <img className="nav-icon" src={bookIcon} alt="" />
             <span className="nav-label">Энергия камней</span>
           </button>
           <button className="button full nav-button nav-muted" onClick={() => onNavigate('reviews')}>
-            <span className="nav-icon nav-icon-emoji" aria-hidden="true">⭐</span>
+            <img className="nav-icon" src={bookIcon} alt="" />
             <span className="nav-label">Отзывы</span>
           </button>
           <button className="button full nav-button nav-muted" onClick={() => onNavigate('history')}>
-            <span className="nav-icon nav-icon-emoji" aria-hidden="true">📜</span>
+            <img className="nav-icon" src={bookIcon} alt="" />
             <span className="nav-label">История бренда</span>
           </button>
           <button className="button full nav-button nav-muted" onClick={() => onNavigate('favorites')}>
-            <span className="nav-icon nav-icon-emoji" aria-hidden="true">❤️</span>
+            <img className="nav-icon" src={ringIcon} alt="" />
             <span className="nav-label">Избранное</span>
           </button>
         </div>
