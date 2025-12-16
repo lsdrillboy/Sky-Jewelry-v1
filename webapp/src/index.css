@@ -334,6 +334,8 @@ option {
 .muted {
   color: var(--color-gold-soft);
   opacity: 0.9;
+  font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+  text-align: left;
 }
 
 .stone-accordion {

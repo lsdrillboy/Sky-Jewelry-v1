@@ -731,6 +731,15 @@
   text-underline-offset: 3px;
 }
 
+.nav-icon-emoji {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
 /* Brand Story */
 .story-screen {
   gap: 18px;
@@ -762,8 +771,8 @@
 
 .story-photo-frame {
   position: relative;
-  width: 110px;
-  height: 110px;
+  width: 140px;
+  height: 140px;
   border-radius: 20px;
   background: radial-gradient(circle at 30% 30%, rgba(216, 177, 92, 0.16), rgba(0, 0, 0, 0.9));
   border: 1px solid rgba(216, 177, 92, 0.35);
