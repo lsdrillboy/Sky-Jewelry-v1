@@ -16,7 +16,7 @@ type Props = {
 export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, onBack }: Props) {
   return (
     <div className="screen">
-      <div className="hero">
+      <div className="hero center-hero">
         <div className="app-header">
           <div className="logo-mark" />
           <div>

@@ -713,14 +713,14 @@
 .button.narrow {
   width: fit-content;
   min-width: 0;
-  padding: 8px 14px;
+  padding: 6px 10px;
   align-self: flex-start;
-  max-width: 150px;
+  max-width: 110px;
 }
 
 .stone-cta {
-  font-size: 12px;
-  letter-spacing: 0.02em;
+  font-size: 10px;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
