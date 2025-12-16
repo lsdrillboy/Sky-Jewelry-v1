@@ -36,7 +36,7 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
           <div className="logo-mark" />
           <div>
             <div className="tiny">Индивидуальное украшение</div>
-            <h1>Соберём под твой запрос</h1>
+            <h1 className="break-title">Соберём под твой запрос</h1>
             <p className="muted" style={{ margin: 0 }}>
               Выбери камни, тип украшения и бюджет. Мастер получит заявку в Telegram.
             </p>
