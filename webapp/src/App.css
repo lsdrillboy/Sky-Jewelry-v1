@@ -7,6 +7,33 @@
   text-align: center;
 }
 
+.back-fab {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(216, 177, 92, 0.5);
+  background: rgba(0, 0, 0, 0.4);
+  display: grid;
+  place-items: center;
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+}
+
+.back-fab span {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-left: 2px solid rgba(216, 177, 92, 0.9);
+  border-bottom: 2px solid rgba(216, 177, 92, 0.9);
+  transform: rotate(45deg);
+  margin-left: 2px;
+}
+
 /* Eye / Logo */
 .hero-logo {
   position: relative;
@@ -710,18 +737,12 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-.button.narrow {
-  width: fit-content;
-  min-width: 0;
-  padding: 6px 10px;
-  align-self: flex-start;
-  max-width: 110px;
-}
-
 .stone-cta {
-  font-size: 10px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  width: 150px;
+  min-width: 0;
+  padding: 8px 12px;
+  font-size: 12px;
+  letter-spacing: 0.03em;
 }
 
 .link-button {

@@ -81,7 +81,7 @@ export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, 
                 <p className="muted" style={{ minHeight: 48 }}>
                   {stone.description_short ?? 'Описание появится позже.'}
                 </p>
-                <button className="button luxe nav-button narrow stone-cta" onClick={() => onOpenCatalog(stone.id)}>
+                <button className="button minimal primary stone-cta" onClick={() => onOpenCatalog(stone.id)}>
                   <img className="btn-icon" src={ringIcon} alt="" />
                   Показать украшения с этим камнем
                 </button>

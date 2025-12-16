@@ -27,11 +27,9 @@ export function MainMenu({ user, onNavigate, onBackToCover }: Props) {
           Подберу минералы по твоей энергии, покажу украшения Sky Jewelry и помогу собрать индивидуальное изделие.
         </p>
         {onBackToCover ? (
-          <div style={{ marginTop: 10 }}>
-            <button className="button ghost" onClick={onBackToCover}>
-              Вернуться на обложку
-            </button>
-          </div>
+          <button className="back-fab" aria-label="Вернуться">
+            <span onClick={onBackToCover} />
+          </button>
         ) : null}
       </div>
 
