@@ -2,7 +2,6 @@ import '../App.css';
 import type { User, Screen } from '../types';
 import ringIcon from '../assets/icon-ring.svg';
 import customIcon from '../assets/icon-custom.svg';
-import bookIcon from '../assets/icon-book.svg';
 import profileIcon from '../assets/icon-profile.svg';
 import stoneIcon from '../assets/icon-stone.svg';
 
