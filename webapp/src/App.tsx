@@ -22,7 +22,6 @@ import BrandStory from './components/BrandStory';
 import Favorites from './components/Favorites';
 import Reviews from './components/Reviews';
 import PreAuth from './components/PreAuth';
-import InfoSection from './components/InfoSection';
 
 function extractInitData() {
   const tg = (window as any).Telegram?.WebApp;
