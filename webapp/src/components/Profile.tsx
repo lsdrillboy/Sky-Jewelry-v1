@@ -85,10 +85,10 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
           <div className="profile-avatar-circle" style={{ backgroundImage: avatarBackground }} />
           <div className="profile-avatar-glow" />
         </div>
-        <div className="profile-hero-copy">
+        <div className="profile-hero-copy left">
           <div className="profile-hero-kicker">Моя энергетическая карта</div>
           <h1 className="profile-hero-title">Sky Jewelry Profile</h1>
-          <p className="muted" style={{ margin: 0 }}>
+          <p className="muted" style={{ margin: 0, textAlign: 'left' }}>
             Подбор камней и украшений по твоей энергии. Профиль синхронизирован с Telegram.
           </p>
           {!hasBirthdate ? (
@@ -113,10 +113,6 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
           <div className="identity-card wide">
             <div className="identity-label">Имя</div>
             <div className="identity-value">{fullName}</div>
-          </div>
-          <div className="identity-card wide">
-            <div className="identity-label">Внутренний ID Sky Jewelry</div>
-            <div className="identity-value">{user?.id ?? '—'}</div>
           </div>
         </div>
       </div>
