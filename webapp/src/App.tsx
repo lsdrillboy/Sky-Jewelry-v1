@@ -20,6 +20,7 @@ import CustomRequest from './components/CustomRequest';
 import StoneLibrary from './components/StoneLibrary';
 import BrandStory from './components/BrandStory';
 import Favorites from './components/Favorites';
+import Reviews from './components/Reviews';
 import PreAuth from './components/PreAuth';
 import InfoSection from './components/InfoSection';
 
@@ -340,14 +341,7 @@ function App() {
         />
       );
     if (screen === 'reviews')
-      return (
-        <InfoSection
-          title="Отзывы"
-          subtitle="Что говорят клиенты Sky Jewelry."
-          bullets={['Теплые слова клиентов', 'Истории трансформации', 'Как камни помогли в делах и чувствах']}
-          onBack={() => setScreen('main')}
-        />
-      );
+      return <Reviews onBack={() => setScreen('main')} />;
     if (screen === 'history')
       return <BrandStory onBack={() => setScreen('main')} />;
     if (screen === 'favorites')
