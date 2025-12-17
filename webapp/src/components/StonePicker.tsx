@@ -19,7 +19,7 @@ export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, 
       <div className="hero center-hero">
         <div className="app-header">
           <div className="logo-mark" />
-          <div>
+          <div className="app-header-text">
             <div className="tiny">Подбор камня</div>
             <h1>С каким запросом работаешь?</h1>
             <p className="muted" style={{ margin: '4px 0 0' }}>
@@ -81,7 +81,7 @@ export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, 
                 <p className="muted" style={{ minHeight: 48 }}>
                   {stone.description_short ?? 'Описание появится позже.'}
                 </p>
-                <button className="button minimal primary stone-cta" onClick={() => onOpenCatalog(stone.id)}>
+                <button className="stone-cta" type="button" onClick={() => onOpenCatalog(stone.id)}>
                   <img className="btn-icon" src={ringIcon} alt="" />
                   Показать украшения с этим камнем
                 </button>

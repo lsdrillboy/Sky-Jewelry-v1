@@ -29,12 +29,16 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
     });
   };
 
+  const selectedStoneLabels = stones
+    .filter((stone) => selectedStones.includes(stone.id))
+    .map((stone) => ({ id: stone.id, label: stone.name_ru }));
+
   return (
     <div className="screen">
       <div className="hero center-hero">
         <div className="app-header">
           <div className="logo-mark" />
-          <div>
+          <div className="app-header-text">
             <div className="tiny">Индивидуальное украшение</div>
             <h1 className="break-title">Соберём под твой запрос</h1>
             <p className="muted" style={{ margin: 0 }}>
@@ -62,6 +66,15 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
             </option>
           ))}
         </select>
+        {selectedStoneLabels.length ? (
+          <div className="stone-chip-pills">
+            {selectedStoneLabels.map((stone) => (
+              <span key={stone.id} className="stone-chip-pill">
+                {stone.label}
+              </span>
+            ))}
+          </div>
+        ) : null}
         <p className="muted" style={{ marginTop: 6 }}>
           Выбери один или несколько камней. На телефоне список откроется во всплывающем окне.
         </p>

@@ -18,7 +18,7 @@ export function MainMenu({ user, onNavigate, onBackToCover }: Props) {
       <div className="hero">
         <div className="app-header">
           <div className="logo-mark" />
-          <div>
+          <div className="app-header-text">
             <div className="tiny">Добро пожаловать, {user?.first_name ?? 'гость'}</div>
             <h1>Sky Jewelry</h1>
           </div>

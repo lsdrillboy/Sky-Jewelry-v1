@@ -41,14 +41,12 @@ export default function BrandStory({ onBack }: Props) {
       <div className="hero story-hero">
         <div className="story-hero-text">
           <div className="tiny">История бренда / Мастерская</div>
-          <h1 style={{ textAlign: 'left' }}>Sky Jewelry</h1>
-          <p className="muted" style={{ textAlign: 'left' }}>
-            Ручная работа, смысл и энергия, прожитые в тишине и готовые к твоей истории.
-          </p>
+          <h1>Sky Jewelry</h1>
+          <p className="muted">Ручная работа, смысл и энергия, прожитые в тишине и готовые к твоей истории.</p>
         </div>
         <div className="story-author full">
           <div className="story-photo-frame large full">
-            <div className="story-photo" style={{ backgroundImage: `url(${authorPhoto})` }} />
+            <img className="story-photo" src={authorPhoto} alt="Евгений Пламеннов" />
             <div className="story-photo-glow" />
           </div>
           <div className="story-author-meta">

@@ -26,7 +26,7 @@ export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
       <div className="hero">
         <div className="app-header">
           <div className="logo-mark" />
-          <div>
+          <div className="app-header-text">
             <div className="tiny">Энергия камней</div>
             <h1>Справочник минералов</h1>
             <p className="muted" style={{ margin: 0 }}>

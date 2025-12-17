@@ -62,7 +62,7 @@ export function Catalog({
       <div className="hero">
         <div className="app-header">
           <div className="logo-mark" />
-          <div>
+          <div className="app-header-text">
             <div className="tiny">Каталог</div>
             <h1>Украшения с твоими камнями</h1>
             <p className="muted" style={{ margin: 0 }}>

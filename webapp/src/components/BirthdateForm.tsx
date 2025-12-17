@@ -32,7 +32,7 @@ export function BirthdateForm({ user, onSubmit, onBack }: Props) {
       <div className="hero">
         <div className="app-header">
           <div className="logo-mark" />
-          <div>
+          <div className="app-header-text">
             <div className="tiny">Профиль</div>
             <h1>Дата рождения</h1>
             <p className="muted" style={{ margin: 0 }}>

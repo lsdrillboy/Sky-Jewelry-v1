@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import '../App.css';
 import backIcon from '../assets/icon-arrow-left.svg';
 
@@ -61,12 +62,18 @@ type Props = {
 };
 
 export default function Reviews({ onBack }: Props) {
+  const [expanded, setExpanded] = useState<Record<number, boolean>>({});
+
+  const toggle = (idx: number) => {
+    setExpanded((prev) => ({ ...prev, [idx]: !prev[idx] }));
+  };
+
   return (
     <div className="screen">
       <div className="hero center-hero">
         <div className="app-header">
           <div className="logo-mark" />
-          <div>
+          <div className="app-header-text">
             <div className="tiny">Отзывы</div>
             <h1>Голоса клиентов</h1>
             <p className="muted" style={{ margin: '6px 0 0' }}>
@@ -78,12 +85,22 @@ export default function Reviews({ onBack }: Props) {
 
       <div className="panel">
         <div className="review-grid">
-          {REVIEWS.map((item, idx) => (
-            <div className="card review-card" key={`${item.author}-${idx}`}>
-              <div className="review-author">{item.author}</div>
-              <p className="review-text">{item.text}</p>
-            </div>
-          ))}
+          {REVIEWS.map((item, idx) => {
+            const isExpanded = expanded[idx] ?? false;
+            const canToggle = item.text.length > 180;
+            const textClass = `review-text ${isExpanded ? 'expanded' : ''} ${canToggle && !isExpanded ? 'collapsed' : ''}`.trim();
+            return (
+              <div className="card review-card" key={`${item.author}-${idx}`}>
+                <div className="review-author">{item.author}</div>
+                <p className={textClass}>{item.text}</p>
+                {canToggle ? (
+                  <button className="review-toggle" type="button" onClick={() => toggle(idx)}>
+                    {isExpanded ? 'Скрыть' : 'Показать ещё'}
+                  </button>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
         <div style={{ marginTop: 14 }}>
           <button className="button ghost" onClick={onBack}>
