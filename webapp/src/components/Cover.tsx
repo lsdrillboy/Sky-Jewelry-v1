@@ -63,10 +63,12 @@ export function Cover({ onStart, onCatalog, onNavigate }: Props) {
               type="button"
               onClick={() => onNavigate(item.screen)}
             >
-              <div className={`flow-icon flow-icon-img ${item.icon}`} />
-              <div className="floating-badge">{item.step}</div>
-              <h3>{item.title}</h3>
-              <p className="muted">{item.text}</p>
+              <div className="flow-card-inner">
+                <div className={`flow-icon flow-icon-img ${item.icon}`} />
+                <div className="floating-badge">{item.step}</div>
+                <h3>{item.title}</h3>
+                <p className="muted">{item.text}</p>
+              </div>
             </button>
           ))}
         </div>

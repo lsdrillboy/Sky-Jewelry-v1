@@ -371,14 +371,15 @@
   width: 100%;
   padding: 24px 96px 24px 24px;
   background:
-    radial-gradient(120% 120% at 20% 10%, rgba(216, 177, 92, 0.08), transparent 55%),
-    radial-gradient(120% 120% at 80% 90%, rgba(255, 231, 199, 0.06), transparent 65%),
-    #0b0907;
-  border: 1px solid rgba(216, 177, 92, 0.32);
-  border-radius: 24px;
+    radial-gradient(140% 140% at 20% 10%, rgba(216, 177, 92, 0.08), transparent 55%),
+    radial-gradient(140% 140% at 80% 90%, rgba(255, 231, 199, 0.08), transparent 65%),
+    linear-gradient(170deg, #120d0a 0%, #0c0907 60%, #080604 100%);
+  border: 1.6px solid rgba(216, 177, 92, 0.4);
+  border-radius: 22px;
   box-shadow:
-    0 22px 60px rgba(0, 0, 0, 0.82),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 24px 70px rgba(0, 0, 0, 0.88),
+    0 0 40px rgba(216, 177, 92, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .flow-card-button {
@@ -386,22 +387,23 @@
   border: none;
   text-align: left;
   transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+  padding: 0;
+}
+
+.flow-card-button .flow-card-inner {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
 }
 
 .flow-card-button:hover {
   transform: translateY(-2px);
-  border-color: rgba(216, 177, 92, 0.5);
-  box-shadow:
-    0 26px 70px rgba(0, 0, 0, 0.9),
-    0 0 40px rgba(216, 177, 92, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .flow-card-button:active {
   transform: translateY(1px);
-  box-shadow:
-    0 14px 30px rgba(0, 0, 0, 0.7),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .flow-card h3 {
@@ -764,6 +766,18 @@
   box-shadow:
     0 12px 32px rgba(0, 0, 0, 0.68),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.energy-card-placeholder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+
+.energy-card-placeholder .muted {
+  text-align: left;
+  line-height: 1.5;
 }
 
 .energy-label {
@@ -1197,6 +1211,13 @@
   color: var(--color-gold-primary);
   font-weight: 700;
   margin-bottom: 6px;
+}
+
+.story-card h3,
+.story-card h4,
+.story-card h5,
+.review-card h3 {
+  color: var(--color-gold-primary);
 }
 
 .story-card-text {

@@ -50,6 +50,7 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
   const [saving, setSaving] = useState(false);
   const [note, setNote] = useState<string | null>(null);
   const hasBirthdate = Boolean(user?.birthdate);
+  const hasLifePath = hasBirthdate && typeof user?.life_path === 'number';
 
   useEffect(() => {
     setBirthdate(normalize(user?.birthdate));
@@ -136,13 +137,22 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
               </button>
             </div>
           </div>
-          <div className="energy-card">
-            <div className="energy-label">Число пути</div>
-            <div className="energy-value">{user?.life_path ?? '—'}</div>
-            <p className="muted" style={{ margin: '6px 0 0' }}>
-              {lifePathDescription(user?.life_path)}
-            </p>
-          </div>
+          {hasLifePath ? (
+            <div className="energy-card">
+              <div className="energy-label">Число пути</div>
+              <div className="energy-value">{user?.life_path ?? '—'}</div>
+              <p className="muted" style={{ margin: '6px 0 0' }}>
+                {lifePathDescription(user?.life_path)}
+              </p>
+            </div>
+          ) : (
+            <div className="energy-card energy-card-placeholder">
+              <div className="energy-label">Число пути</div>
+              <p className="muted" style={{ margin: '6px 0 0' }}>
+                Укажите дату рождения, чтобы рассчитать число пути.
+              </p>
+            </div>
+          )}
         </div>
         {note ? (
           <p className="muted profile-note" style={{ marginTop: 12 }}>
