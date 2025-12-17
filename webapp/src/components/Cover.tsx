@@ -1,12 +1,45 @@
 import '../App.css';
 import HeroSection from './HeroSection';
+import type { Screen } from '../types';
 
 type Props = {
   onStart: () => void;
   onCatalog: () => void;
+  onNavigate: (screen: Screen) => void;
 };
 
-export function Cover({ onStart, onCatalog }: Props) {
+const flowSteps: { title: string; text: string; step: number; screen: Screen; icon: 'profile' | 'stone' | 'ring' | 'custom' }[] = [
+  {
+    title: 'Точка входа',
+    text: 'Опираемся на твой запрос, текущее состояние и дату рождения, чтобы определить твой энергетический код и подобрать камни точнее.',
+    step: 1,
+    screen: 'profile',
+    icon: 'profile',
+  },
+  {
+    title: 'Подбор камня',
+    text: 'Выбираем минералы, которые поддержат тебя в текущем запросе: деньги, любовь, защита, путь.',
+    step: 2,
+    screen: 'stone',
+    icon: 'stone',
+  },
+  {
+    title: 'Каталог украшений',
+    text: 'Показываем готовые украшения с подобранными камнями — можно сразу выбрать то, что откликается.',
+    step: 3,
+    screen: 'catalog',
+    icon: 'ring',
+  },
+  {
+    title: 'Индивидуальный проект',
+    text: 'Создаём украшение под тебя: ты описываешь запрос — мастер собирает личный амулет.',
+    step: 4,
+    screen: 'custom',
+    icon: 'custom',
+  },
+];
+
+export function Cover({ onStart, onCatalog, onNavigate }: Props) {
   return (
     <div className="screen cover-grid">
       {/* Premium Hero Block with Eye Crystal */}
@@ -23,30 +56,19 @@ export function Cover({ onStart, onCatalog }: Props) {
       <div className="panel flow-panel">
         <div className="subtitle">Flow</div>
         <div className="grid two">
-          <div className="card flow-card">
-            <div className="flow-icon flow-icon-img profile" />
-            <div className="floating-badge">1</div>
-            <h3>Точка входа</h3>
-            <p className="muted">Опираемся на твою дату рождения и состояние, чтобы считать твой текущий энергетический код.</p>
-          </div>
-          <div className="card flow-card">
-            <div className="flow-icon flow-icon-img stone" />
-            <div className="floating-badge">2</div>
-            <h3>Подбор камня</h3>
-            <p className="muted">Выбираем минералы, которые поддержат тебя в текущем запросе: деньги, любовь, защита, путь.</p>
-          </div>
-          <div className="card flow-card">
-            <div className="flow-icon flow-icon-img ring" />
-            <div className="floating-badge">3</div>
-            <h3>Каталог украшений</h3>
-            <p className="muted">Показываем готовые украшения с подобранными камнями — можно сразу выбрать то, что откликается.</p>
-          </div>
-          <div className="card flow-card">
-            <div className="flow-icon flow-icon-img custom" />
-            <div className="floating-badge">4</div>
-            <h3>Индивидуальный проект</h3>
-            <p className="muted">Создаём украшение под тебя: ты описываешь запрос — мастер собирает личный амулет.</p>
-          </div>
+          {flowSteps.map((item) => (
+            <button
+              key={item.step}
+              className="card flow-card flow-card-button"
+              type="button"
+              onClick={() => onNavigate(item.screen)}
+            >
+              <div className={`flow-icon flow-icon-img ${item.icon}`} />
+              <div className="floating-badge">{item.step}</div>
+              <h3>{item.title}</h3>
+              <p className="muted">{item.text}</p>
+            </button>
+          ))}
         </div>
       </div>
     </div>

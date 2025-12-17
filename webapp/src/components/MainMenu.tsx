@@ -4,7 +4,10 @@ import ringIcon from '../assets/icon-ring.svg';
 import customIcon from '../assets/icon-custom.svg';
 import profileIcon from '../assets/icon-profile.svg';
 import stoneIcon from '../assets/icon-stone.svg';
-import bookIcon from '../assets/icon-book.svg';
+import energyIcon from '../assets/icon-energy.svg';
+import reviewsIcon from '../assets/icon-reviews.svg';
+import historyIcon from '../assets/icon-history.svg';
+import favoritesIcon from '../assets/icon-favorites.svg';
 
 type Props = {
   user: User | null;
@@ -53,19 +56,19 @@ export function MainMenu({ user, onNavigate, onBackToCover }: Props) {
             <span className="nav-label">Индивидуальное украшение</span>
           </button>
           <button className="button full nav-button nav-muted" onClick={() => onNavigate('library')}>
-            <img className="nav-icon" src={bookIcon} alt="" />
+            <img className="nav-icon" src={energyIcon} alt="" />
             <span className="nav-label">Энергия камней</span>
           </button>
           <button className="button full nav-button nav-muted" onClick={() => onNavigate('reviews')}>
-            <img className="nav-icon" src={bookIcon} alt="" />
+            <img className="nav-icon" src={reviewsIcon} alt="" />
             <span className="nav-label">Отзывы</span>
           </button>
           <button className="button full nav-button nav-muted" onClick={() => onNavigate('history')}>
-            <img className="nav-icon" src={bookIcon} alt="" />
+            <img className="nav-icon" src={historyIcon} alt="" />
             <span className="nav-label">История бренда</span>
           </button>
           <button className="button full nav-button nav-muted" onClick={() => onNavigate('favorites')}>
-            <img className="nav-icon" src={ringIcon} alt="" />
+            <img className="nav-icon" src={favoritesIcon} alt="" />
             <span className="nav-label">Избранное</span>
           </button>
         </div>

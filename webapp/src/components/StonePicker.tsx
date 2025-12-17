@@ -69,12 +69,8 @@ export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, 
                 {stone.photo_url ? <img src={stone.photo_url} alt={stone.name_ru} /> : null}
                 <div className="stone-meta">
                   <div
-                    className="stone-thumb"
-                    style={{
-                      backgroundImage: stone.photo_url
-                        ? `linear-gradient(135deg, rgba(216, 177, 92, 0.2), rgba(0,0,0,0.7)), url(${stone.photo_url})`
-                        : undefined,
-                    }}
+                    className="stone-thumb crystal-icon"
+                    style={{ ['--stone-color' as string]: stone.color ?? '#d6a85a' }}
                   />
                   <h3 style={{ margin: 0 }}>{stone.name_ru}</h3>
                 </div>
@@ -92,7 +88,7 @@ export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, 
       </div>
 
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-        <button className="button ghost" onClick={onBack}>
+        <button className="button" onClick={onBack}>
           <img className="btn-icon" src={backIcon} alt="" />
           В меню
         </button>

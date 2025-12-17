@@ -2,7 +2,6 @@ import { useState } from 'react';
 import '../App.css';
 import type { Stone } from '../types';
 import backIcon from '../assets/icon-arrow-left.svg';
-import stoneIcon from '../assets/icon-stone.svg';
 
 type Props = {
   stones: Stone[];
@@ -61,9 +60,10 @@ export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
               <div key={stone.id} className={`stone-item ${opened ? 'opened' : ''}`}>
                 <button className="stone-head" onClick={() => toggle(stone.id)}>
                   <div className="stone-head-left">
-                    <div className="stone-chip">
-                      <img src={stoneIcon} alt="" />
-                    </div>
+                    <div
+                      className="stone-chip crystal-icon small"
+                      style={{ ['--stone-color' as string]: stone.color ?? '#d6a85a' }}
+                    />
                     <span className="stone-title">{stone.name_ru}</span>
                   </div>
                   <span className="stone-toggle">{opened ? '−' : '+'}</span>

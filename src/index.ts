@@ -9,6 +9,9 @@ import { startApiServer } from './api/server';
 
 type SessionData = {
   menuMessageId?: number;
+  reviewsOffset?: number;
+  lastTheme?: string | null;
+  lastStones?: number[];
 };
 type MyContext = Context & SessionFlavor<SessionData> & ConversationFlavor;
 type MyConversation = Conversation<MyContext>;
@@ -79,13 +82,30 @@ bot.callbackQuery('main:custom', async (ctx) => {
 
 bot.callbackQuery('main:reviews', async (ctx) => {
   await ctx.answerCallbackQuery();
-  await sendMainMenu(ctx, `Что говорят клиенты:\n\n${REVIEWS.map((r) => `• ${r}`).join('\n')}`);
+  await sendReviewsBatch(ctx, 0);
 });
 
 bot.callbackQuery('main:faq', async (ctx) => {
   await ctx.answerCallbackQuery();
-  const text = FAQ_ITEMS.map((item) => `• ${item.q}\n${item.a}`).join('\n\n');
-  await sendMainMenu(ctx, `FAQ:\n\n${text}`);
+  await sendFaqMenu(ctx);
+});
+
+bot.callbackQuery('main:consult', async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const kb = new InlineKeyboard().text('Написать мастеру', 'main:custom').text('В меню', 'nav:main');
+  await editMenu(ctx, 'Консультация\nЗадай вопрос — вернусь с ответом и рекомендациями.', kb);
+});
+
+bot.callbackQuery(/faq:(.+)/, async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const code = ctx.match![1];
+  await sendFaqAnswer(ctx, code);
+});
+
+bot.callbackQuery(/reviews:more/, async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const offset = ctx.session.reviewsOffset ?? 0;
+  await sendReviewsBatch(ctx, offset);
 });
 
 bot.callbackQuery('main:about', async (ctx) => {
@@ -104,12 +124,27 @@ bot.callbackQuery('main:about', async (ctx) => {
   await editMenu(ctx, ABOUT_TEXT, keyboard);
 });
 
+bot.callbackQuery(/stone:details:(\d+)/, async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const stoneId = Number(ctx.match![1]);
+  const stone = await getStoneById(stoneId);
+  if (!stone) {
+    await ctx.reply('Не нашла описание для этого камня.');
+    return;
+  }
+  await sendStoneCard(ctx, stone, { theme: ctx.session.lastTheme });
+});
+
 bot.callbackQuery(/products:stone:(\d+)/, async (ctx) => {
   await ctx.answerCallbackQuery();
   const stoneId = Number(ctx.match![1]);
   const products = await fetchProducts({ stoneId, limit: 5 });
   if (!products.length) {
-    await ctx.reply('Пока нет украшений с этим камнем. Могу собрать индивидуальное — напиши, если интересно.');
+    await editMenu(
+      ctx,
+      'Не нашла украшения по этим фильтрам\nДавай уточним или попробуем другой вариант.',
+      buildNoResultsKeyboard(),
+    );
     return;
   }
   for (const product of products) {
@@ -153,23 +188,27 @@ if (!env.DISABLE_API) {
   console.log('API server disabled via DISABLE_API=true');
 }
 
+const MENU_INTRO = 'SKY Jewelry\nУкрашения с камнями, которые поддерживают твоё состояние.';
+
 const MAIN_MENU_ITEMS = [
-  { label: '🧿 Подобрать камень', action: 'main:stone' },
-  { label: '💎 Каталог', action: 'main:catalog' },
-  { label: '⭐ Отзывы', action: 'main:reviews' },
-  { label: '❓ Вопросы / FAQ', action: 'main:faq' },
-  { label: '⬅️ Назад', action: 'nav:main' },
+  { label: 'Подобрать камень', action: 'main:stone' },
+  { label: 'Каталог', action: 'main:catalog' },
+  { label: 'Индивидуальное', action: 'main:custom' },
+  { label: 'Отзывы', action: 'main:reviews' },
+  { label: 'FAQ / Вопросы', action: 'main:faq' },
+  { label: 'Консультация', action: 'main:consult' },
 ];
 
 function buildMainMenuInline() {
   const kb = new InlineKeyboard();
   if (env.WEBAPP_URL) {
-    kb.webApp('🌐 Открыть мини-апп', env.WEBAPP_URL).row();
+    kb.webApp('Открыть мини-апп', env.WEBAPP_URL).row();
   }
   MAIN_MENU_ITEMS.forEach((item, idx) => {
     kb.text(item.label, item.action);
-    if (idx % 2 === 1 && idx !== MAIN_MENU_ITEMS.length - 1) kb.row();
+    if (idx % 2 === 1) kb.row();
   });
+  kb.row().text('В меню', 'nav:main');
   return kb;
 }
 
@@ -194,12 +233,12 @@ async function editMenu(ctx: MyContext, text: string, keyboard?: InlineKeyboard)
 }
 
 async function sendMainMenu(ctx: MyContext, text?: string) {
-  const caption = text ?? ABOUT_TEXT;
+  const caption = text ?? MENU_INTRO;
+  ctx.session.reviewsOffset = 0;
   try {
-    await ctx.replyWithPhoto(ABOUT_COVER_URL, { caption, reply_markup: buildMainMenuInline() });
+    await editMenu(ctx, caption, buildMainMenuInline());
   } catch (err) {
-    console.error('Failed to send main menu cover', err);
-    await ctx.reply(caption, { reply_markup: buildMainMenuInline() });
+    console.error('Failed to send main menu', err);
   }
 }
 
@@ -229,6 +268,21 @@ async function ensureUser(ctx: MyContext, extra?: { birthdate?: string }) {
     return null;
   }
   return data?.id ?? null;
+}
+
+function buildWebAppUrl(params?: Record<string, string | number | null | undefined>) {
+  if (!env.WEBAPP_URL) return null;
+  try {
+    const url = new URL(env.WEBAPP_URL);
+    Object.entries(params ?? {}).forEach(([key, value]) => {
+      if (value === undefined || value === null) return;
+      url.searchParams.set(key, String(value));
+    });
+    return url.toString();
+  } catch (err) {
+    console.error('Failed to build webapp url', err);
+    return env.WEBAPP_URL;
+  }
 }
 
 async function getUserByTelegramId(ctx: MyContext): Promise<DbUser | null> {
@@ -288,10 +342,10 @@ function parsePgDate(dateStr: string | null | undefined): Date | null {
 function buildThemeKeyboard() {
   const kb = new InlineKeyboard();
   STONE_THEMES.forEach((theme, idx) => {
-    kb.text(`${theme.emoji} ${theme.label}`, `theme:${theme.code}`);
+    kb.text(theme.label, `theme:${theme.code}`);
     if (idx % 2 === 1) kb.row();
   });
-  kb.row().text('⬅️ В меню', 'nav:main');
+  kb.row().text('Пропустить', 'theme:skip').text('В меню', 'nav:main');
   return kb;
 }
 
@@ -302,7 +356,7 @@ function buildSubthemeKeyboard(themeCode: string) {
     kb.text(opt.label, `sub:${opt.code}`);
     if (idx % 2 === 1) kb.row();
   });
-  kb.text('⬅️ В меню', 'nav:main');
+  kb.row().text('В меню', 'nav:main');
   return kb;
 }
 
@@ -475,11 +529,15 @@ async function stonePickerConversation(conversation: MyConversation, ctx: MyCont
       lifePath = calculateLifePath(birthdate);
       await saveBirthdate(ctx, formatDateForPg(birthdate), lifePath);
     }
-    await editMenu(ctx, `Использую сохранённую дату ${formatDateForPg(birthdate)}. Число пути: ${lifePath}\nС каким запросом хочешь поработать?`, buildThemeKeyboard());
+    await editMenu(
+      ctx,
+      `Выбери тему\nЧто сейчас важнее всего?`,
+      buildThemeKeyboard(),
+    );
   }
 
-  let themeCode = 'custom';
-  let themeLabel = 'свой запрос';
+  let themeCode: string | null = null;
+  let themeLabel = 'без темы';
   let extraText: string | null = null;
   const themeUpdate = await conversation.waitFor(['callback_query:data', 'message:text']);
   if ('callback_query' in themeUpdate.update) {
@@ -489,7 +547,10 @@ async function stonePickerConversation(conversation: MyConversation, ctx: MyCont
       await sendMainMenu(ctx);
       return;
     }
-    if (data?.startsWith('theme:')) {
+    if (data === 'theme:skip') {
+      themeCode = null;
+      themeLabel = 'Без темы';
+    } else if (data?.startsWith('theme:')) {
       const code = data.split(':')[1];
       const found = STONE_THEMES.find((item) => item.code === code);
       if (found) {
@@ -529,31 +590,34 @@ async function stonePickerConversation(conversation: MyConversation, ctx: MyCont
 
   const stones = await fetchStones(themeCode, lifePath);
   if (!stones.length) {
-    await sendMainMenu(
+    await editMenu(
       ctx,
-      'Пока нет готовых рекомендаций по этим параметрам. Попробуй другой запрос или оформи индивидуальный проект.',
+      'Не нашла украшения по этим фильтрам\nДавай уточним или попробуем другой вариант.',
+      buildNoResultsKeyboard('stone'),
     );
     return;
   }
 
   const selectedIds = stones.map((s) => s.id);
+  ctx.session.lastTheme = themeCode ?? null;
+  ctx.session.lastStones = selectedIds;
   await saveStoneRequest(ctx, {
     birthdate,
     lifePath,
-    theme: themeCode,
+    theme: themeCode ?? 'custom',
     selectedStones: selectedIds,
     extraText,
   });
 
-  for (const stone of stones) {
-    await sendStoneCard(ctx, stone);
-  }
-
-  await sendMainMenu(ctx, 'Готово. Выбери следующий раздел:');
+  await editMenu(
+    ctx,
+    `Я подобрала ${stones.length} камн${stones.length === 1 ? 'ь' : stones.length < 5 ? 'я' : 'ей'}\nНажми на камень — покажу украшения и смысл.`,
+    buildStoneResultsKeyboard(stones, themeCode ?? undefined),
+  );
 }
 
 async function catalogConversation(conversation: MyConversation, ctx: MyContext) {
-  await editMenu(ctx, '💎 Каталог. Выбери тип или пропусти:', buildCatalogTypeKeyboard());
+  await editMenu(ctx, 'Каталог\nВыбери тип или пропусти.', buildCatalogTypeKeyboard());
   const typeUpdate = await conversation.waitFor(['callback_query:data', 'message:text']);
   let pickedType: string | null = null;
   if ('callback_query' in typeUpdate.update) {
@@ -567,7 +631,7 @@ async function catalogConversation(conversation: MyConversation, ctx: MyContext)
     pickedType = typeCode === 'none' ? null : typeCode;
   }
 
-  await editMenu(ctx, 'Выбери тему или пропусти:', buildThemeFilterKeyboard());
+  await editMenu(ctx, 'Выбери тему или пропусти.', buildThemeFilterKeyboard());
   const themeUpdate = await conversation.waitFor(['callback_query:data', 'message:text']);
   let pickedTheme: string | null = null;
   if ('callback_query' in themeUpdate.update) {
@@ -585,9 +649,10 @@ async function catalogConversation(conversation: MyConversation, ctx: MyContext)
 
   const products = await fetchProducts({ type: pickedType, theme: pickedTheme, limit: 10 });
   if (!products.length) {
-    await sendMainMenu(
+    await editMenu(
       ctx,
-      'Не нашла товары по этим фильтрам. Попробуй другой фильтр или оформи индивидуальный запрос.',
+      'Не нашла украшения по этим фильтрам\nДавай уточним или попробуем другой вариант.',
+      buildNoResultsKeyboard(),
     );
     return;
   }
@@ -595,11 +660,11 @@ async function catalogConversation(conversation: MyConversation, ctx: MyContext)
   for (const product of products) {
     await sendProductCard(ctx, product);
   }
-  await sendMainMenu(ctx, 'Каталог показан. Вернуться в меню или выбрать другой раздел:');
+  await editMenu(ctx, 'Каталог\nСмотреть ещё или перейти в мини-апп.', buildCatalogFollowUpKeyboard(pickedType, pickedTheme));
 }
 
 async function customOrderConversation(conversation: MyConversation, ctx: MyContext) {
-  await editMenu(ctx, '🧬 Индивидуальное украшение. С каким запросом работаешь?');
+  await editMenu(ctx, 'Индивидуальное украшение\nОтветь на пару вопросов — вернусь с предложением.');
   const themeMsg = await conversation.waitFor('message:text');
   const userTheme = themeMsg.message.text;
 
@@ -686,6 +751,17 @@ async function fetchProducts(filters: {
   const { data, error } = await query.limit(filters.limit ?? 10);
   if (error) {
     console.error('Failed to fetch products', error);
+    if (filters.stoneId && error.message?.includes('stones')) {
+      let fallback = supabase.from('products').select('*').eq('is_active', true);
+      if (filters.type) fallback = fallback.eq('type', filters.type);
+      if (filters.theme) fallback = fallback.overlaps('themes', [filters.theme]);
+      const { data: alt, error: altError } = await fallback.overlaps('stone_ids', [filters.stoneId]).limit(filters.limit ?? 10);
+      if (altError) {
+        console.error('Fallback fetchProducts stone_ids failed', altError);
+        return [];
+      }
+      return (alt ?? []) as Product[];
+    }
     return [];
   }
   return (data ?? []) as Product[];
@@ -701,27 +777,34 @@ async function getProductById(id: number): Promise<Product | null> {
   return data as Product;
 }
 
-async function sendStoneCard(ctx: MyContext, stone: Stone) {
-  const keyboard = new InlineKeyboard().text('💍 Показать украшения с этим камнем', `products:stone:${stone.id}`);
+async function sendStoneCard(ctx: MyContext, stone: Stone, opts?: { theme?: string | null }) {
+  const webUrl = buildWebAppUrl({
+    screen: 'catalog',
+    stone_id: stone.id,
+    theme: opts?.theme ?? ctx.session.lastTheme ?? undefined,
+  });
+  const keyboard = new InlineKeyboard().text('Показать украшения', `products:stone:${stone.id}`);
+  if (webUrl) {
+    keyboard.row().url('Открыть в мини-аппе', webUrl);
+  }
+  keyboard.row().text('Задать вопрос', 'main:consult').text('В меню', 'nav:main');
+
   const parts: string[] = [];
 
-  parts.push(`💎 ${stone.name_ru}`);
+  parts.push(`${stone.name_ru}`);
 
   if (stone.description_short) {
     parts.push('');
-    parts.push(narrowText(stone.description_short));
+    parts.push(shortenText(stone.description_short, 220));
   }
 
-  if (stone.description_long) {
+  if (stone.best_for || stone.description_long) {
     parts.push('');
-    parts.push('✨ Как помогает');
-    parts.push(narrowText(stone.description_long));
-  }
-
-  if ((stone as any).how_to_use) {
-    parts.push('');
-    parts.push('Как носить');
-    parts.push(narrowText((stone as any).how_to_use));
+    parts.push('Подходит, если:');
+    const suitability = shortenText(stone.best_for ?? stone.description_long ?? '', 180);
+    if (suitability) {
+      parts.push(suitability);
+    }
   }
 
   const text = parts.join('\n');
@@ -733,27 +816,56 @@ async function sendStoneCard(ctx: MyContext, stone: Stone) {
 }
 
 async function sendProductCard(ctx: MyContext, product: Product) {
-  const keyboard = new InlineKeyboard()
-    .text('Подробнее', `product:details:${product.id}`)
-    .row()
-    .text('Оставить заявку', `order:catalog:${product.id}`);
+  const webUrl = buildWebAppUrl({
+    screen: 'catalog',
+    product_id: product.id,
+    stone_id: product.stones?.[0] ?? product.stone_ids?.[0],
+    type: product.type,
+  });
+
+  const keyboard = new InlineKeyboard();
+  if (webUrl) {
+    keyboard.url('Смотреть в мини-аппе', webUrl).row();
+  }
+  keyboard.text('Заказать / Написать', `order:catalog:${product.id}`);
+  keyboard.text('Ещё варианты', 'main:catalog').row();
+  keyboard.text('В меню', 'nav:main');
+
+  const summary =
+    product.description && product.description.length > 0
+      ? shortenText(product.description, 140)
+      : 'Описание появится позже.';
+
   const text = [
-    `💎 ${product.name}`,
-    product.description ?? 'Описание появится позже.',
+    `${product.name}`,
+    summary,
     product.price_min ? `Цена: ${formatPriceRange(product.price_min, product.price_max, product.currency)}` : '',
   ]
     .filter(Boolean)
     .join('\n');
-  if (product.main_photo_url) {
-    await ctx.replyWithPhoto(product.main_photo_url, { caption: text, reply_markup: keyboard });
+  if (product.main_photo_url || product.photo_url) {
+    const photo = product.main_photo_url ?? product.photo_url!;
+    await ctx.replyWithPhoto(photo, { caption: text, reply_markup: keyboard });
   } else {
     await ctx.reply(text, { reply_markup: keyboard });
   }
 }
 
 async function sendProductDetails(ctx: MyContext, product: Product) {
+  const webUrl = buildWebAppUrl({
+    screen: 'catalog',
+    product_id: product.id,
+    stone_id: product.stones?.[0] ?? product.stone_ids?.[0],
+    type: product.type,
+  });
+  const keyboard = new InlineKeyboard();
+  if (webUrl) {
+    keyboard.url('Смотреть в мини-аппе', webUrl).row();
+  }
+  keyboard.text('Заказать / Написать', `order:catalog:${product.id}`).text('В меню', 'nav:main');
+
   const text = [
-    `💎 ${product.name}`,
+    `${product.name}`,
     product.description ?? '',
     product.themes?.length ? `Темы: ${product.themes.join(', ')}` : '',
     product.stones?.length ? `Камни: ${product.stones.join(', ')}` : '',
@@ -762,9 +874,9 @@ async function sendProductDetails(ctx: MyContext, product: Product) {
     .filter(Boolean)
     .join('\n');
   if (product.main_photo_url) {
-    await ctx.replyWithPhoto(product.main_photo_url, { caption: text });
+    await ctx.replyWithPhoto(product.main_photo_url, { caption: text, reply_markup: keyboard });
   } else {
-    await ctx.reply(text);
+    await ctx.reply(text, { reply_markup: keyboard });
   }
 }
 
@@ -840,7 +952,7 @@ function buildCatalogTypeKeyboard() {
     kb.text(item.label, `catalog_type:${item.code}`);
     if (idx % 2 === 1) kb.row();
   });
-  kb.text('Пропустить', 'catalog_type:none').row().text('⬅️ В меню', 'nav:main');
+  kb.row().text('Пропустить', 'catalog_type:none').text('В меню', 'nav:main');
   return kb;
 }
 
@@ -850,7 +962,7 @@ function buildThemeFilterKeyboard() {
     kb.text(item.label, `catalog_theme:${item.code}`);
     if (idx % 2 === 1) kb.row();
   });
-  kb.text('Пропустить', 'catalog_theme:none').row().text('⬅️ В меню', 'nav:main');
+  kb.row().text('Пропустить', 'catalog_theme:none').text('В меню', 'nav:main');
   return kb;
 }
 
@@ -864,7 +976,58 @@ function buildZoneKeyboard() {
     .row()
     .text('Пропустить', 'zone:skip')
     .row()
-    .text('⬅️ В меню', 'nav:main');
+    .text('В меню', 'nav:main');
+}
+
+function buildStoneResultsKeyboard(stones: Stone[], theme?: string) {
+  const kb = new InlineKeyboard();
+  stones.forEach((stone, idx) => {
+    kb.text(stone.name_ru, `stone:details:${stone.id}`);
+    if (idx % 2 === 1) kb.row();
+  });
+  const webUrl = buildWebAppUrl({
+    screen: 'catalog',
+    theme: theme ?? undefined,
+    stone_id: stones[0]?.id,
+  });
+  if (webUrl) {
+    kb.row().url('Открыть в мини-аппе', webUrl);
+  }
+  kb.row().text('Изменить фильтры', 'main:stone').text('В меню', 'nav:main');
+  return kb;
+}
+
+function buildNoResultsKeyboard(context: 'catalog' | 'stone' = 'catalog') {
+  const changeAction = context === 'stone' ? 'main:stone' : 'main:catalog';
+  const kb = new InlineKeyboard()
+    .text('Изменить фильтры', changeAction)
+    .text('Сбросить', changeAction)
+    .row()
+    .text('Перейти в каталог', 'main:catalog')
+    .text('Индивидуальный запрос', 'main:custom')
+    .row()
+    .text('В меню', 'nav:main');
+  return kb;
+}
+
+function buildCatalogFollowUpKeyboard(type?: string | null, theme?: string | null) {
+  const kb = new InlineKeyboard();
+  const url = buildWebAppUrl({ screen: 'catalog', type: type ?? undefined, theme: theme ?? undefined });
+  if (url) {
+    kb.webApp('Открыть в мини-аппе', url).row();
+  }
+  kb.text('Изменить фильтры', 'main:catalog').text('В меню', 'nav:main');
+  return kb;
+}
+
+function buildFaqKeyboard() {
+  const kb = new InlineKeyboard();
+  FAQ_ITEMS.forEach((item, idx) => {
+    kb.text(item.label, `faq:${item.code}`);
+    if (idx % 2 === 1) kb.row();
+  });
+  kb.row().text('В меню', 'nav:main');
+  return kb;
 }
 
 function parseBudget(input: string): { from: number | null; to: number | null } {
@@ -898,6 +1061,53 @@ function narrowText(text: string) {
     .filter(Boolean)
     .map((sentence) => `${sentence}.`)
     .join('\n\n');
+}
+
+function shortenText(text: string, maxLength: number) {
+  const normalized = text.replace(/\s+/g, ' ').trim();
+  if (normalized.length <= maxLength) return normalized;
+  return `${normalized.slice(0, maxLength).trim()}…`;
+}
+
+async function sendReviewsBatch(ctx: MyContext, offset = 0) {
+  const start = offset % REVIEWS.length;
+  const batch = REVIEWS.slice(start, start + 3);
+  if (!batch.length) {
+    await sendMainMenu(ctx, 'Отзывы скоро появятся.');
+    return;
+  }
+  const text = ['Отзывы', 'Реальные истории клиентов.', '', ...batch.map((r) => `• ${r}`)].join('\n');
+  const kb = new InlineKeyboard()
+    .text('Показать ещё', 'reviews:more')
+    .text('Оставить отзыв', 'main:consult')
+    .row()
+    .text('В меню', 'nav:main');
+  await editMenu(ctx, text, kb);
+  const nextOffset = start + batch.length >= REVIEWS.length ? 0 : start + batch.length;
+  ctx.session.reviewsOffset = nextOffset;
+}
+
+async function sendFaqMenu(ctx: MyContext) {
+  await editMenu(ctx, 'Вопросы / FAQ\nВыбери категорию.', buildFaqKeyboard());
+}
+
+async function sendFaqAnswer(ctx: MyContext, code: string) {
+  const item = FAQ_ITEMS.find((faq) => faq.code === code);
+  if (!item) {
+    await sendFaqMenu(ctx);
+    return;
+  }
+  await editMenu(ctx, `${item.label}\n${item.answer}`, buildFaqKeyboard());
+}
+
+async function getStoneById(id: number): Promise<Stone | null> {
+  if (!supabase) return null;
+  const { data, error } = await supabase.from('stones').select('*').eq('id', id).maybeSingle();
+  if (error) {
+    console.error('Failed to fetch stone by id', error);
+    return null;
+  }
+  return (data as Stone) ?? null;
 }
 
 async function sendAdminLog(ctx: MyContext, text: string) {
