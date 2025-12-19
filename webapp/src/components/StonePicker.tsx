@@ -1,8 +1,11 @@
 import '../App.css';
+import { useMemo, useState } from 'react';
 import { themes as themeList } from '../data/themes';
-import type { Stone, StonePickerResult } from '../types';
+import type { StonePickerResult } from '../types';
 import ringIcon from '../assets/icon-ring.svg';
 import backIcon from '../assets/icon-arrow-left.svg';
+import { normalizeStone, type NormalizedStone } from '../utils/stone';
+import StoneDetails from './StoneDetails';
 
 type Props = {
   result: StonePickerResult | null;
@@ -14,6 +17,12 @@ type Props = {
 };
 
 export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, onBack }: Props) {
+  const [selected, setSelected] = useState<NormalizedStone | null>(null);
+  const normalizedResult = useMemo(
+    () => (result ? { ...result, stones: result.stones.map(normalizeStone) } : null),
+    [result],
+  );
+
   return (
     <div className="screen">
       <div className="hero center-hero">
@@ -61,9 +70,9 @@ export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, 
       <div className="panel">
         <div className="subtitle">Результат</div>
         {!result && <p className="muted">После выбора темы здесь появятся камни.</p>}
-        {result && (
+        {normalizedResult && (
           <div className="grid two">
-            {result.stones.map((stone: Stone, idx) => (
+            {normalizedResult.stones.map((stone: NormalizedStone, idx) => (
               <div key={stone.id} className="card stone-card">
                 <div className="floating-badge">{idx === 0 ? 'главный' : 'дополнительный'}</div>
                 {stone.photo_url ? <img src={stone.photo_url} alt={stone.name_ru} /> : null}
@@ -77,10 +86,32 @@ export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, 
                 <p className="muted" style={{ minHeight: 48 }}>
                   {stone.description_short ?? 'Описание появится позже.'}
                 </p>
-                <button className="stone-cta" type="button" onClick={() => onOpenCatalog(stone.id)}>
-                  <img className="btn-icon" src={ringIcon} alt="" />
-                  Показать украшения с этим камнем
-                </button>
+                <div className="chips">
+                  {stone.chakra_list.map((chakra) => (
+                    <span key={`c-${chakra}`} className="tag">
+                      {chakra}
+                    </span>
+                  ))}
+                  {stone.planet_list.map((planet) => (
+                    <span key={`p-${planet}`} className="tag">
+                      {planet}
+                    </span>
+                  ))}
+                  {stone.life_path_list.map((lp) => (
+                    <span key={`l-${lp}`} className="tag">
+                      Путь {lp}
+                    </span>
+                  ))}
+                </div>
+                <div style={{ display: 'grid', gap: 10, width: '100%' }}>
+                  <button className="stone-cta" type="button" onClick={() => onOpenCatalog(stone.id)}>
+                    <img className="btn-icon" src={ringIcon} alt="" />
+                    Показать украшения с этим камнем
+                  </button>
+                  <button className="button minimal ghost" type="button" onClick={() => setSelected(stone)}>
+                    Подробнее
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -93,6 +124,8 @@ export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, 
           В меню
         </button>
       </div>
+
+      <StoneDetails stone={selected} onClose={() => setSelected(null)} />
     </div>
   );
 }

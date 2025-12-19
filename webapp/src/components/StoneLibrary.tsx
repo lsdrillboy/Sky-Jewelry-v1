@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import '../App.css';
 import type { Stone } from '../types';
+import { normalizeStone, type NormalizedStone } from '../utils/stone';
+import StoneDetails from './StoneDetails';
 import backIcon from '../assets/icon-arrow-left.svg';
 
 type Props = {
@@ -12,13 +14,14 @@ type Props = {
 
 export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
   const [openedId, setOpenedId] = useState<number | null>(null);
+  const [selected, setSelected] = useState<NormalizedStone | null>(null);
 
   const toggle = (id: number) => {
     setOpenedId((prev) => (prev === id ? null : id));
   };
 
   const isEmpty = !loading && stones.length === 0;
-  const displayStones = stones;
+  const displayStones = useMemo(() => stones.map(normalizeStone), [stones]);
 
   return (
     <div className="screen">
@@ -71,15 +74,26 @@ export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
                 {opened ? (
                   <div className="stone-body">
                     <p className="muted">{stone.description_short ?? 'Описание появится позже.'}</p>
-                    {stone.themes?.length ? (
-                      <div className="chips">
-                        {stone.themes.map((theme) => (
-                          <span key={theme} className="tag">
-                            {theme}
-                          </span>
-                        ))}
-                      </div>
-                    ) : null}
+                    <div className="chips">
+                      {stone.chakra_list.map((chakra) => (
+                        <span key={`c-${chakra}`} className="tag">
+                          {chakra}
+                        </span>
+                      ))}
+                      {stone.planet_list.map((planet) => (
+                        <span key={`p-${planet}`} className="tag">
+                          {planet}
+                        </span>
+                      ))}
+                      {stone.life_path_list.map((lp) => (
+                        <span key={`l-${lp}`} className="tag">
+                          Путь {lp}
+                        </span>
+                      ))}
+                    </div>
+                    <button className="stone-cta" type="button" onClick={() => setSelected(stone)}>
+                      Подробнее
+                    </button>
                   </div>
                 ) : null}
               </div>
@@ -94,6 +108,8 @@ export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
           В меню
         </button>
       </div>
+
+      <StoneDetails stone={selected} onClose={() => setSelected(null)} />
     </div>
   );
 }

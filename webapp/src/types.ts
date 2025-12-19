@@ -20,6 +20,8 @@ export type Stone = {
   zodiac?: string[] | null;
   life_path?: number[] | null;
   chakra?: string[] | null;
+  planet?: string[] | null;
+  planets?: string[] | null;
   element?: string | null;
   color?: string | null;
 };
