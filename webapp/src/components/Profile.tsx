@@ -15,16 +15,26 @@ function normalize(date?: string | null) {
   return date.slice(0, 10);
 }
 
-function formatDateHuman(date?: string | null) {
-  if (!date) return '—';
-  const [y, m, d] = date.slice(0, 10).split('-');
-  if (!y || !m || !d) return date;
-  return `${d}.${m}.${y}`;
-}
-
 function formatUsername(username?: string | null) {
   if (!username) return '—';
   return username.startsWith('@') ? username : `@${username}`;
+}
+
+async function copyToClipboard(value?: string | number | null) {
+  if (!value) return;
+  const text = String(value);
+  try {
+    await navigator.clipboard?.writeText(text);
+  } catch {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+  }
 }
 
 function lifePathDescription(value?: number | null) {
@@ -51,6 +61,8 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
   const [note, setNote] = useState<string | null>(null);
   const hasBirthdate = Boolean(user?.birthdate);
   const hasLifePath = hasBirthdate && typeof user?.life_path === 'number';
+  const usernameValue = formatUsername(user?.username);
+  const telegramId = user?.telegram_id ? String(user.telegram_id) : '—';
 
   useEffect(() => {
     setBirthdate(normalize(user?.birthdate));
@@ -89,7 +101,7 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
         <div className="profile-hero-copy left">
           <div className="profile-hero-kicker">Моя энергетическая карта</div>
           <h1 className="profile-hero-title">Sky Jewelry Profile</h1>
-          <p className="muted" style={{ margin: 0, textAlign: 'left' }}>
+          <p className="muted profile-hero-text" style={{ margin: 0, textAlign: 'left' }}>
             Персональный подбор камней и украшений по твоей энергии — рекомендации, которые раскрывают твой стиль и состояние.
           </p>
           {!hasBirthdate ? (
@@ -104,69 +116,99 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
         <div className="subtitle">Твои идентификаторы</div>
         <div className="identity-grid">
           <div className="identity-card">
-            <div className="identity-label">Telegram ID</div>
-            <div className="identity-value">{user?.telegram_id ?? '—'}</div>
+            <div className="identity-row">
+              <div className="identity-label">Telegram ID</div>
+              {user?.telegram_id ? (
+                <button
+                  type="button"
+                  className="icon-button copy-btn"
+                  onClick={() => copyToClipboard(user.telegram_id)}
+                  aria-label="Скопировать Telegram ID"
+                >
+                  <span className="copy-icon" aria-hidden />
+                </button>
+              ) : null}
+            </div>
+            <div className="identity-value" title={telegramId}>
+              {telegramId}
+            </div>
           </div>
           <div className="identity-card">
-            <div className="identity-label">Username</div>
-            <div className="identity-value">{formatUsername(user?.username)}</div>
+            <div className="identity-row">
+              <div className="identity-label">Username</div>
+              {user?.username ? (
+                <button
+                  type="button"
+                  className="icon-button copy-btn"
+                  onClick={() => copyToClipboard(usernameValue)}
+                  aria-label="Скопировать username"
+                >
+                  <span className="copy-icon" aria-hidden />
+                </button>
+              ) : null}
+            </div>
+            <div className="identity-value" title={usernameValue}>
+              {usernameValue}
+            </div>
           </div>
           <div className="identity-card wide">
             <div className="identity-label">Имя</div>
-            <div className="identity-value">{fullName}</div>
+            <div className="identity-value" title={fullName}>
+              {fullName}
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="panel">
+      <div className="panel energy-panel">
         <div className="subtitle">Энергетический блок</div>
-        <div className="energy-grid">
-          <div className="energy-card">
+        <div className="energy-stack">
+          <div className="energy-card energy-input-card">
             <div className="energy-label">Дата рождения</div>
-            <div className="energy-value">{formatDateHuman(user?.birthdate)}</div>
-            <div className="energy-actions">
+            <div className="energy-input-line">
               <input
-                className="input"
+                className="input energy-date-input"
                 type="date"
                 value={birthdate}
                 onChange={(e) => setBirthdate(e.target.value)}
+                placeholder="ДД.ММ.ГГГГ"
               />
-              <button className="button ghost" disabled={!birthdate || saving} onClick={handleSave}>
+              <button
+                className="button minimal energy-primary-btn"
+                disabled={!birthdate || saving}
+                onClick={handleSave}
+              >
                 <img className="btn-icon" src={calendarIcon} alt="" />
                 {saving ? 'Сохраняю...' : 'Обновить'}
               </button>
             </div>
+            {note ? (
+              <p className="muted profile-note success" style={{ marginTop: 8 }}>
+                Данные обновлены.
+              </p>
+            ) : null}
           </div>
-          {hasLifePath ? (
-            <div className="energy-card">
-              <div className="energy-label">Число пути</div>
-              <div className="energy-value">{user?.life_path ?? '—'}</div>
-              <p className="muted" style={{ margin: '6px 0 0' }}>
+          <div className="energy-card energy-result-card">
+            <div className="energy-label">Число пути</div>
+            <div className="energy-life">
+              <div className="energy-life-number">{hasLifePath ? user?.life_path : '—'}</div>
+              <p className="muted energy-life-desc">
                 {lifePathDescription(user?.life_path)}
               </p>
             </div>
-          ) : (
-            <div className="energy-card energy-card-placeholder">
-              <div className="energy-label">Число пути</div>
-              <p className="muted" style={{ margin: '6px 0 0' }}>
-                Укажите дату рождения, чтобы рассчитать число пути.
-              </p>
-            </div>
-          )}
-        </div>
-        {note ? (
-          <p className="muted profile-note" style={{ marginTop: 12 }}>
-            Данные обновлены.
-          </p>
-        ) : null}
-        <div className="trust-note">
-          Эти данные используются только для персонального подбора камней и не передаются третьим лицам.
-        </div>
-        <div className="profile-actions">
-          <button className="button ghost" onClick={onBack}>
-            <img className="btn-icon" src={backIcon} alt="" />
-            В меню
-          </button>
+          </div>
+
+          <div className="trust-note trust-note-solid">
+            <span className="lock-icon" aria-hidden />
+            <span>Эти данные используются только для персонального подбора камней и не передаются третьим лицам.</span>
+          </div>
+
+          <div className="profile-actions compact">
+            <button className="button minimal ghost profile-back" onClick={onBack}>
+              <img className="btn-icon" src={backIcon} alt="" />
+              В меню
+            </button>
+          </div>
         </div>
       </div>
     </div>

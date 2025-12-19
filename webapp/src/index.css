@@ -4,8 +4,11 @@
   --color-bg: #050403;
   --color-panel: #0b0907;
   --color-gold: #d6a85a;
+  --color-gold-primary: #d6a85a;
   --color-gold-soft: #f5dfa8;
   --color-gold-muted: #c9a869;
+  --color-ivory: #f1e8d8;
+  --color-ivory-soft: #dcd4c5;
   --color-text: #f7eddc;
   --color-shadow: rgba(0, 0, 0, 0.85);
   --radius-lg: 30px;

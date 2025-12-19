@@ -64,10 +64,19 @@ export function Cover({ onStart, onCatalog, onNavigate }: Props) {
               onClick={() => onNavigate(item.screen)}
             >
               <div className="flow-card-inner">
-                <div className={`flow-icon flow-icon-img ${item.icon}`} />
-                <div className="floating-badge">{item.step}</div>
-                <h3>{item.title}</h3>
-                <p className="muted">{item.text}</p>
+                <div className="flow-card-head">
+                  <div className="flow-icon-shell">
+                    <div className={`flow-icon-img ${item.icon}`} />
+                  </div>
+                  <div className="flow-card-meta">
+                    <div className="flow-card-kicker">flow</div>
+                    <h3>{item.title}</h3>
+                  </div>
+                  <div className="flow-step-pill">{String(item.step).padStart(2, '0')}</div>
+                  <div className="flow-chevron" aria-hidden />
+                </div>
+                <p className="muted flow-card-text">{item.text}</p>
+                <div className="flow-card-footer">Подробнее</div>
               </div>
             </button>
           ))}
