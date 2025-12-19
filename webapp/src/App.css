@@ -1,3 +1,10 @@
+/* Global tokens */
+:root {
+  --card-radius: 22px;
+  --card-padding: 22px;
+  --card-gap: 12px;
+}
+
 .app-header {
   display: flex;
   align-items: center;
@@ -8,6 +15,7 @@
   flex-direction: column;
   max-width: 380px;
   margin: 0 auto;
+  font-family: var(--font-main);
 }
 
 .app-header-text {
@@ -24,11 +32,13 @@
 .app-header h1 {
   line-height: 1.18;
   margin: 0;
+  font-weight: 700;
 }
 
 .app-header .muted {
   margin: 0;
   line-height: 1.5;
+  font-weight: 500;
 }
 
 .app-header .pill {
@@ -359,7 +369,7 @@
 
 .flow-panel .grid.two {
   grid-template-columns: 1fr;
-  gap: 20px;
+  gap: 18px;
 }
 
 .flow-card {
@@ -369,19 +379,20 @@
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
-  padding: 24px;
+  padding: var(--card-padding);
   background:
     radial-gradient(140% 140% at 20% 10%, rgba(216, 177, 92, 0.08), transparent 55%),
     radial-gradient(140% 140% at 80% 90%, rgba(255, 231, 199, 0.08), transparent 65%),
     linear-gradient(175deg, #120d0a 0%, #0c0907 55%, #070504 100%);
   border: 1px solid rgba(216, 177, 92, 0.12);
-  border-radius: 22px;
+  border-radius: var(--card-radius);
   box-shadow:
     0 14px 40px rgba(0, 0, 0, 0.55),
     0 4px 18px rgba(216, 177, 92, 0.14),
     inset 0 1px 0 rgba(255, 215, 150, 0.08);
   isolation: isolate;
   overflow: hidden;
+  gap: 12px;
 }
 
 .flow-card-button {
@@ -438,10 +449,11 @@
   margin: 0;
   width: 100%;
   color: var(--color-gold);
-  font-size: clamp(24px, 4vw, 26px);
-  line-height: 1.14;
+  font-size: 24px;
+  line-height: 1.2;
   font-weight: 700;
   letter-spacing: 0.01em;
+  font-family: var(--font-main);
 }
 
 .flow-card p {
@@ -454,15 +466,15 @@
 
 .flow-card-head {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
   gap: 12px;
 }
 
 .flow-icon-shell {
-  width: 32px;
-  height: 32px;
-  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
   display: grid;
   place-items: center;
   background: radial-gradient(circle at 40% 40%, rgba(216, 177, 92, 0.12), rgba(0, 0, 0, 0.8));
@@ -491,6 +503,7 @@
   flex-direction: column;
   gap: 4px;
   align-items: flex-start;
+  min-width: 0;
 }
 
 .flow-card-kicker {
@@ -498,32 +511,36 @@
   letter-spacing: 0.22em;
   color: rgba(216, 177, 92, 0.65);
   text-transform: uppercase;
+  font-weight: 600;
 }
 
 .flow-step-pill {
-  padding: 9px 12px;
+  width: 40px;
+  height: 40px;
   border-radius: 999px;
   border: 1px solid rgba(216, 177, 92, 0.35);
   background: radial-gradient(circle at 40% 40%, rgba(216, 177, 92, 0.12), rgba(0, 0, 0, 0.6));
   color: var(--color-gold);
   font-weight: 700;
-  font-family: var(--font-serif, 'Playfair Display', serif);
+  font-family: var(--font-main);
   letter-spacing: 0.08em;
+  display: grid;
+  place-items: center;
   box-shadow:
     0 6px 18px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 rgba(255, 215, 150, 0.18);
 }
 
 .flow-chevron {
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
-  border: 1px solid rgba(216, 177, 92, 0.22);
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(216, 177, 92, 0.35);
   background: radial-gradient(circle at 50% 40%, rgba(216, 177, 92, 0.12), rgba(0, 0, 0, 0.7));
   display: grid;
   place-items: center;
   box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.45),
+    0 6px 18px rgba(0, 0, 0, 0.45),
     inset 0 1px 0 rgba(255, 215, 150, 0.12);
 }
 
@@ -547,6 +564,7 @@
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  font-weight: 500;
 }
 
 .flow-card-footer {
@@ -731,18 +749,23 @@
 }
 
 .profile-hero-card {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 16px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  text-align: left;
+  justify-content: center;
+  text-align: center;
+  gap: 12px;
+  padding: var(--card-padding);
+  border-radius: var(--card-radius);
+  border: 1px solid rgba(216, 177, 92, 0.25);
 }
 
 .profile-avatar-wrap {
   position: relative;
   width: 96px;
   height: 96px;
+  display: grid;
+  place-items: center;
 }
 
 .profile-avatar-circle {
@@ -777,14 +800,15 @@
 .profile-hero-copy {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  align-items: flex-start;
-  text-align: left;
+  gap: 8px;
+  align-items: center;
+  text-align: center;
+  max-width: 420px;
 }
 
 .profile-hero-kicker {
-  font-size: 12px;
-  letter-spacing: 0.22em;
+  font-size: 11px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--color-gold-muted);
   font-weight: 700;
@@ -792,16 +816,20 @@
 
 .profile-hero-title {
   margin: 0;
-  font-size: clamp(22px, 5vw, 30px);
-  letter-spacing: 0.12em;
-  color: var(--color-gold-soft);
+  font-size: clamp(24px, 5vw, 28px);
+  letter-spacing: 0.1em;
+  color: var(--color-gold);
   text-transform: uppercase;
+  line-height: 1.15;
+  font-weight: 700;
 }
 
 .profile-hero-text {
   color: var(--color-ivory);
-  max-width: 420px;
-  line-height: 1.52;
+  max-width: 32ch;
+  line-height: 1.55;
+  font-size: 15px;
+  font-weight: 500;
 }
 
 .profile-hero-hint {
@@ -823,8 +851,8 @@
 }
 
 .identity-card {
-  padding: 14px 16px;
-  border-radius: 16px;
+  padding: var(--card-padding);
+  border-radius: var(--card-radius);
   border: 1px solid rgba(216, 177, 92, 0.18);
   background: linear-gradient(145deg, rgba(255, 231, 199, 0.05), rgba(0, 0, 0, 0.7));
   box-shadow:
@@ -832,8 +860,10 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   font-family: var(--font-montserrat, var(--font-sans), sans-serif);
+  position: relative;
+  height: 100%;
 }
 
 .identity-card.wide {
@@ -854,6 +884,7 @@
   text-transform: uppercase;
   margin-bottom: 2px;
   white-space: nowrap;
+  font-weight: 600;
 }
 
 .identity-value {
@@ -907,6 +938,12 @@
   border-radius: 4px;
 }
 
+.identity-card .icon-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
 .profile-line {
   display: flex;
   align-items: center;
@@ -923,13 +960,13 @@
 .energy-stack {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
   margin-top: 10px;
 }
 
 .energy-card {
-  padding: 16px 18px;
-  border-radius: 18px;
+  padding: var(--card-padding);
+  border-radius: var(--card-radius);
   border: 1px solid rgba(216, 177, 92, 0.2);
   background: linear-gradient(150deg, rgba(255, 231, 199, 0.05), rgba(0, 0, 0, 0.72));
   box-shadow:
@@ -937,7 +974,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .energy-input-card {
@@ -950,6 +987,7 @@
   color: rgba(216, 177, 92, 0.7);
   text-transform: uppercase;
   margin-bottom: 2px;
+  font-weight: 600;
 }
 
 .energy-input-line {
@@ -963,7 +1001,7 @@
   min-width: 200px;
   flex: 1;
   min-height: 46px;
-  height: 46px;
+  height: 48px;
   border-radius: 14px;
   border: 1px solid rgba(216, 177, 92, 0.28);
   background: radial-gradient(120% 140% at 40% 20%, rgba(255, 231, 199, 0.05), rgba(0, 0, 0, 0.78));
@@ -976,7 +1014,7 @@
 }
 
 .energy-primary-btn {
-  min-height: 46px;
+  min-height: 48px;
   padding: 0 18px;
   border-radius: 14px;
   border: 1.4px solid rgba(216, 177, 92, 0.65);
@@ -1242,7 +1280,7 @@
 }
 
 .button.minimal.energy-primary-btn {
-  min-height: 46px;
+  min-height: 48px;
   padding: 0 18px;
   border-radius: 14px;
   border: 1.4px solid rgba(216, 177, 92, 0.65);
@@ -1252,6 +1290,7 @@
     0 10px 28px rgba(216, 177, 92, 0.22),
     inset 0 1px 0 rgba(255, 255, 255, 0.16);
   letter-spacing: 0.04em;
+  font-weight: 700;
 }
 
 .button.minimal.energy-primary-btn:hover {

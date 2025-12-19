@@ -76,7 +76,6 @@ export function Cover({ onStart, onCatalog, onNavigate }: Props) {
                   <div className="flow-chevron" aria-hidden />
                 </div>
                 <p className="muted flow-card-text">{item.text}</p>
-                <div className="flow-card-footer">Подробнее</div>
               </div>
             </button>
           ))}
