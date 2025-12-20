@@ -29,14 +29,6 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
     });
   };
 
-  const handleStoneMouseDown = (event: React.MouseEvent<HTMLSelectElement>) => {
-    if (!(event.target instanceof HTMLOptionElement)) return;
-    event.preventDefault();
-    const value = Number(event.target.value);
-    if (Number.isNaN(value)) return;
-    toggleStone(value);
-  };
-
   const handleSubmit = () => {
     onSubmit({
       stones: selectedStones,
@@ -67,23 +59,27 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
 
       <div className="panel">
         <div className="subtitle">Камни</div>
-        <select
-          className="input stone-select"
-          multiple
-          size={6}
-          value={selectedStones.map(String)}
-          onMouseDown={handleStoneMouseDown}
-          onChange={(e) => {
-            const options = Array.from(e.target.selectedOptions).map((o) => Number(o.value));
-            setSelectedStones(options);
-          }}
+        <div
+          className="input stone-select stone-select-list"
+          role="listbox"
+          aria-multiselectable="true"
         >
-          {stones.map((stone) => (
-            <option key={stone.id} value={stone.id}>
-              {stone.name_ru}
-            </option>
-          ))}
-        </select>
+          {stones.map((stone) => {
+            const isSelected = selectedStones.includes(stone.id);
+            return (
+              <button
+                key={stone.id}
+                type="button"
+                className={`stone-select-option${isSelected ? ' selected' : ''}`}
+                onClick={() => toggleStone(stone.id)}
+                aria-selected={isSelected}
+              >
+                <span className="stone-select-option-label">{stone.name_ru}</span>
+                <span className="stone-select-check" aria-hidden />
+              </button>
+            );
+          })}
+        </div>
         {selectedStoneLabels.length ? (
           <div className="stone-chip-pills">
             {selectedStoneLabels.map((stone) => (
@@ -93,9 +89,7 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
             ))}
           </div>
         ) : null}
-        <p className="muted mt-6">
-          Выбери один или несколько камней. На телефоне список откроется во всплывающем окне.
-        </p>
+        <p className="muted mt-6">Можно выбрать несколько камней — просто нажимай по пунктам.</p>
       </div>
 
       <div className="panel">
