@@ -136,7 +136,7 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
           />
         </div>
         <div className="action-row">
-          <button className="button" onClick={handleSubmit} disabled={loading}>
+          <button className="button minimal primary menu-back" onClick={handleSubmit} disabled={loading}>
             <img className="btn-icon" src={sendIcon} alt="" />
             {loading ? 'Отправляю...' : 'Отправить заявку'}
           </button>

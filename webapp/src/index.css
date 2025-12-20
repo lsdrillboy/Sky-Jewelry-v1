@@ -503,9 +503,10 @@ select.input:focus {
 }
 
 .modal-card {
-  width: min(640px, 96vw);
-  max-height: 86vh;
-  overflow: auto;
+  width: min(560px, 100%);
+  max-height: calc(100vh - 40px);
+  overflow-x: hidden;
+  overflow-y: auto;
   background: linear-gradient(160deg, rgba(18, 14, 10, 0.95), rgba(7, 5, 3, 0.94));
   border: 1px solid var(--border-gold);
   border-radius: var(--card-radius);
