@@ -20,6 +20,23 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
   const [budgetTo, setBudgetTo] = useState('');
   const [comment, setComment] = useState('');
 
+  const toggleStone = (value: number) => {
+    setSelectedStones((prev) => {
+      if (prev.includes(value)) {
+        return prev.filter((id) => id !== value);
+      }
+      return [...prev, value];
+    });
+  };
+
+  const handleStoneMouseDown = (event: React.MouseEvent<HTMLSelectElement>) => {
+    if (!(event.target instanceof HTMLOptionElement)) return;
+    event.preventDefault();
+    const value = Number(event.target.value);
+    if (Number.isNaN(value)) return;
+    toggleStone(value);
+  };
+
   const handleSubmit = () => {
     onSubmit({
       stones: selectedStones,
@@ -55,6 +72,7 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
           multiple
           size={6}
           value={selectedStones.map(String)}
+          onMouseDown={handleStoneMouseDown}
           onChange={(e) => {
             const options = Array.from(e.target.selectedOptions).map((o) => Number(o.value));
             setSelectedStones(options);
