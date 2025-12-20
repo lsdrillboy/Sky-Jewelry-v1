@@ -20,23 +20,6 @@ function formatUsername(username?: string | null) {
   return username.startsWith('@') ? username : `@${username}`;
 }
 
-async function copyToClipboard(value?: string | number | null) {
-  if (!value) return;
-  const text = String(value);
-  try {
-    await navigator.clipboard?.writeText(text);
-  } catch {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    textarea.style.position = 'fixed';
-    textarea.style.opacity = '0';
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textarea);
-  }
-}
-
 function lifePathDescription(value?: number | null) {
   if (!value) return 'Добавь дату рождения, чтобы узнать свой путь.';
   const map: Record<number, string> = {
@@ -118,16 +101,6 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
           <div className="identity-card">
             <div className="identity-row">
               <div className="identity-label">Telegram ID</div>
-              {user?.telegram_id ? (
-                <button
-                  type="button"
-                  className="icon-button copy-btn"
-                  onClick={() => copyToClipboard(user.telegram_id)}
-                  aria-label="Скопировать Telegram ID"
-                >
-                  <span className="copy-icon" aria-hidden />
-                </button>
-              ) : null}
             </div>
             <div className="identity-value" title={telegramId}>
               {telegramId}
@@ -136,16 +109,6 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
           <div className="identity-card">
             <div className="identity-row">
               <div className="identity-label">Username</div>
-              {user?.username ? (
-                <button
-                  type="button"
-                  className="icon-button copy-btn"
-                  onClick={() => copyToClipboard(usernameValue)}
-                  aria-label="Скопировать username"
-                >
-                  <span className="copy-icon" aria-hidden />
-                </button>
-              ) : null}
             </div>
             <div className="identity-value" title={usernameValue}>
               {usernameValue}
