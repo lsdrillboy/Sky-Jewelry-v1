@@ -306,7 +306,7 @@
   line-height: var(--type-body-line);
   margin: 0;
   white-space: pre-line;
-  font-family: var(--font-main);
+  font-family: var(--font-sans);
   font-size: var(--type-body-size);
   position: relative;
   transition: max-height 0.22s ease;
@@ -702,7 +702,7 @@
 .flow-card-text {
   max-width: 30ch;
   color: #f0e7d8;
-  font-family: var(--font-main);
+  font-family: var(--font-sans);
   font-size: var(--type-body-size);
   line-height: var(--type-body-line);
   display: -webkit-box;
@@ -972,6 +972,7 @@
   line-height: var(--type-body-line);
   font-size: var(--type-body-size);
   font-weight: var(--type-body-weight);
+  font-family: var(--font-sans);
 }
 
 .profile-hero-hint {
@@ -986,14 +987,14 @@
 
 .identity-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: var(--card-gap);
   margin-top: 12px;
   grid-auto-rows: 1fr;
 }
 
 .identity-card {
-  padding: var(--card-padding);
+  padding: 18px;
   border-radius: var(--card-radius);
   border: 1px solid var(--border-gold-soft);
   background: linear-gradient(145deg, rgba(255, 231, 199, 0.05), rgba(0, 0, 0, 0.7));
@@ -1002,11 +1003,12 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   font-family: var(--font-sans);
   position: relative;
   height: 100%;
   min-width: 0;
+  overflow: hidden;
 }
 
 .identity-card.wide {
@@ -1022,8 +1024,8 @@
 }
 
 .identity-label {
-  font-size: var(--type-small-size);
-  letter-spacing: var(--type-small-letter);
+  font-size: 11px;
+  letter-spacing: 0.16em;
   color: rgba(216, 177, 92, 0.7);
   text-transform: uppercase;
   margin-bottom: 2px;
@@ -1032,8 +1034,8 @@
 }
 
 .identity-value {
-  font-size: var(--type-h3-size);
-  font-weight: 700;
+  font-size: clamp(14px, 2.6vw, 16px);
+  font-weight: 600;
   color: var(--color-ivory);
   white-space: nowrap;
   overflow: hidden;
@@ -1041,6 +1043,20 @@
   min-width: 0;
   max-width: 100%;
   font-family: var(--font-sans);
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+
+.identity-card .icon-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+.identity-card .copy-icon {
+  width: 12px;
+  height: 12px;
 }
 
 .icon-button {
@@ -1212,6 +1228,7 @@
   max-width: 32ch;
   color: var(--color-ivory-soft);
   line-height: var(--type-body-line);
+  font-family: var(--font-sans);
 }
 
 .trust-note {
@@ -1226,6 +1243,7 @@
   align-items: flex-start;
   gap: 10px;
   line-height: 1.48;
+  font-family: var(--font-sans);
 }
 
 .trust-note-solid {
@@ -1234,35 +1252,25 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-.lock-icon {
-  width: 16px;
-  height: 16px;
-  border-radius: 5px;
-  border: 1.4px solid rgba(216, 177, 92, 0.55);
-  position: relative;
+.trust-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 8px;
+  border: 1px solid var(--border-gold-soft);
+  display: grid;
+  place-items: center;
+  color: var(--color-gold-soft);
+  background: radial-gradient(circle at 30% 30%, rgba(216, 177, 92, 0.18), rgba(0, 0, 0, 0.6));
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
   margin-top: 2px;
-  box-shadow: inset 0 1px 0 rgba(255, 215, 150, 0.12);
 }
 
-.lock-icon::before {
-  content: '';
-  position: absolute;
-  inset: 3px 4px auto 4px;
-  height: 7px;
-  border-radius: 4px;
-  border: 1.4px solid rgba(216, 177, 92, 0.6);
-}
-
-.lock-icon::after {
-  content: '';
-  position: absolute;
-  left: 6px;
-  top: -5px;
-  width: 8px;
-  height: 6px;
-  border: 1.4px solid rgba(216, 177, 92, 0.5);
-  border-bottom: none;
-  border-radius: 6px 6px 0 0;
+.trust-icon svg {
+  width: 14px;
+  height: 14px;
 }
 
 .profile-actions {
@@ -1395,7 +1403,7 @@
   position: relative;
   line-height: var(--type-body-line);
   color: #d9d9d9;
-  font-family: var(--font-main);
+  font-family: var(--font-sans);
 }
 
 .product-description:not(.expanded)::after {
@@ -1631,6 +1639,7 @@
 
 .story-author-note {
   text-align: left;
+  font-family: var(--font-sans);
 }
 
 .story-photo-frame {
@@ -1712,7 +1721,7 @@
   color: #e0dfda;
   line-height: var(--type-body-line);
   margin: 0;
-  font-family: var(--font-main);
+  font-family: var(--font-sans);
 }
 
 .break-title {

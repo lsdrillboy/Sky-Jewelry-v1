@@ -459,7 +459,7 @@ select.input:focus {
 .muted {
   color: var(--color-gold-soft);
   opacity: 0.9;
-  font-family: var(--font-main);
+  font-family: var(--font-sans);
   text-align: left;
   text-wrap: balance;
   hyphens: auto;
@@ -530,6 +530,7 @@ select.input:focus {
   line-height: var(--type-body-line);
   color: var(--color-ivory);
   font-family: var(--font-sans);
+  font-size: 14px;
 }
 
 .stone-head {
@@ -569,9 +570,10 @@ select.input:focus {
 }
 
 .stone-title {
-  font-size: var(--type-h3-size);
+  font-size: clamp(15px, 2.8vw, 18px);
   font-weight: 700;
   font-family: var(--font-main);
+  letter-spacing: 0.02em;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -579,7 +581,7 @@ select.input:focus {
 }
 
 .stone-toggle {
-  font-size: 18px;
+  font-size: 16px;
   color: var(--color-gold);
 }
 
@@ -593,6 +595,8 @@ select.input:focus {
 
 .stone-description {
   font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 @media (max-width: 720px) {

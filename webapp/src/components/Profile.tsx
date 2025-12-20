@@ -199,7 +199,13 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
           </div>
 
           <div className="trust-note trust-note-solid">
-            <span className="lock-icon" aria-hidden />
+            <span className="trust-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.6" />
+                <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                <circle cx="12" cy="15" r="1.5" fill="currentColor" />
+              </svg>
+            </span>
             <span>Эти данные используются только для персонального подбора камней и не передаются третьим лицам.</span>
           </div>
 
