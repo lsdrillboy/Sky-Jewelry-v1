@@ -242,7 +242,7 @@ function App() {
     try {
       await submitCustomRequest(initData, payload);
       setOrderModal({
-        title: '✅ Заказ принят',
+        title: 'Заказ принят',
         text: 'Наш менеджер скоро свяжется с вами.',
       });
     } catch (err) {
@@ -264,7 +264,7 @@ function App() {
         comment: `Каталог: ${product.name} (id ${product.id})`,
       });
       setOrderModal({
-        title: '✅ Заказ принят',
+        title: 'Заказ принят',
         text: 'Наш менеджер скоро свяжется с вами.',
       });
     } catch (err) {

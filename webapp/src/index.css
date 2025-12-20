@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
 
 :root {
   --color-bg: #050403;
@@ -23,8 +23,8 @@
   --font-main: 'Playfair Display', 'Times New Roman', serif;
   --font-premium: var(--font-main);
   --font-serif: var(--font-main);
-  --font-sans: var(--font-main);
-  --font-montserrat: var(--font-main);
+  --font-sans: 'Montserrat', 'Manrope', 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-montserrat: var(--font-sans);
 
   --type-h1-size: clamp(26px, 4.6vw, 32px);
   --type-h1-line: 1.2;
@@ -480,6 +480,8 @@ select.input:focus {
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   background-position: center;
   transform: none;
+  overflow: hidden;
+  min-width: 0;
 }
 
 .stone-item.opened {
@@ -527,6 +529,7 @@ select.input:focus {
   margin: 8px 0;
   line-height: var(--type-body-line);
   color: var(--color-ivory);
+  font-family: var(--font-sans);
 }
 
 .stone-head {
@@ -540,12 +543,14 @@ select.input:focus {
   justify-content: space-between;
   gap: 10px;
   cursor: pointer;
+  min-width: 0;
 }
 
 .stone-head-left {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
 }
 
 .stone-chip {
@@ -567,6 +572,10 @@ select.input:focus {
   font-size: var(--type-h3-size);
   font-weight: 700;
   font-family: var(--font-main);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .stone-toggle {
@@ -579,6 +588,11 @@ select.input:focus {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
+}
+
+.stone-description {
+  font-family: var(--font-sans);
 }
 
 @media (max-width: 720px) {

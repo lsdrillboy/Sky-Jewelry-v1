@@ -71,7 +71,9 @@ export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
                 </button>
                 {opened ? (
                   <div className="stone-body">
-                    <p className="muted">{stone.description_short ?? 'Описание появится позже.'}</p>
+                    <p className="muted stone-description">
+                      {stone.description_short ?? 'Описание появится позже.'}
+                    </p>
                     <div className="chips">
                       {stone.chakra_list.map((chakra) => (
                         <span key={`c-${chakra}`} className="tag">

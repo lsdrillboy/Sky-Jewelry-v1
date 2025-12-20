@@ -17,7 +17,9 @@ export function StoneDetails({ stone, onClose }: Props) {
             ✕
           </button>
         </div>
-        {stone.description_short ? <p className="muted">{stone.description_short}</p> : null}
+        {stone.description_short ? (
+          <p className="muted stone-description">{stone.description_short}</p>
+        ) : null}
         {stone.description_long ? (
           <div className="stone-fulltext">
             {stone.description_long.split(/\n+/).map((para, idx) => (
