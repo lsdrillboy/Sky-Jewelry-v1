@@ -51,7 +51,7 @@ export default function Favorites({ products, onBack, onOrder, onToggleFavorite 
           })}
         </div>
         <div className="mt-14">
-          <button className="button ghost" onClick={onBack}>
+          <button className="button minimal ghost menu-back" onClick={onBack}>
             <img className="btn-icon" src={backIcon} alt="" />
             В меню
           </button>

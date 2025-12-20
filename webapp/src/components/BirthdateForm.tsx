@@ -59,7 +59,7 @@ export function BirthdateForm({ user, onSubmit, onBack }: Props) {
             <img className="btn-icon" src={calendarIcon} alt="" />
             {saving ? 'Сохраняю...' : 'Сохранить и продолжить'}
           </button>
-          <button className="button ghost" onClick={onBack}>
+          <button className="button minimal ghost menu-back" onClick={onBack}>
             <img className="btn-icon" src={backIcon} alt="" />
             В меню
           </button>

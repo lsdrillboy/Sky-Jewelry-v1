@@ -1246,7 +1246,7 @@
   margin-top: 6px;
 }
 
-.profile-back {
+.menu-back {
   min-height: 44px;
   padding: 0 14px;
   border-radius: 14px;
@@ -1429,7 +1429,7 @@
   opacity: 0.65;
 }
 
-.button.minimal.profile-back {
+.button.minimal.menu-back {
   min-height: 42px;
   padding: 8px 14px;
 }

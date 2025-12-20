@@ -128,7 +128,7 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
             <img className="btn-icon" src={sendIcon} alt="" />
             {loading ? 'Отправляю...' : 'Отправить заявку'}
           </button>
-          <button className="button ghost" onClick={onBack}>
+          <button className="button minimal ghost menu-back" onClick={onBack}>
             <img className="btn-icon" src={backIcon} alt="" />
             В меню
           </button>

@@ -103,7 +103,7 @@ export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
       </div>
 
       <div className="action-row">
-        <button className="button ghost" onClick={onBack}>
+        <button className="button minimal ghost menu-back" onClick={onBack}>
           <img className="btn-icon" src={backIcon} alt="" />
           В меню
         </button>

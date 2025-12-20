@@ -120,7 +120,7 @@ export function Catalog({
             <img className="btn-icon" src={searchIcon} alt="" />
             Применить
           </button>
-          <button className="button ghost" onClick={onBack}>
+          <button className="button minimal ghost menu-back" onClick={onBack}>
             <img className="btn-icon" src={backIcon} alt="" />
             В меню
           </button>

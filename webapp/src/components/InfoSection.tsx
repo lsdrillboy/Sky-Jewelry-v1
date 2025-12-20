@@ -26,7 +26,7 @@ export default function InfoSection({ title, subtitle, bullets = [], note, onBac
         </div>
         {note ? <p className="muted mt-12">{note}</p> : null}
         <div className="mt-14">
-          <button className="button ghost" onClick={onBack}>
+          <button className="button minimal ghost menu-back" onClick={onBack}>
             <img className="btn-icon" src={backIcon} alt="" />
             В меню
           </button>

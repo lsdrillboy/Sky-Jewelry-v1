@@ -173,7 +173,7 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
           </div>
 
           <div className="profile-actions compact">
-            <button className="button minimal ghost profile-back" onClick={onBack}>
+            <button className="button minimal ghost menu-back" onClick={onBack}>
               <img className="btn-icon" src={backIcon} alt="" />
               В меню
             </button>
