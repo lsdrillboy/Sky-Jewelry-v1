@@ -54,7 +54,6 @@ export function Cover({ onStart, onCatalog, onNavigate }: Props) {
 
       {/* Flow Cards */}
       <div className="panel flow-panel">
-        <div className="subtitle">Flow</div>
         <div className="grid two">
           {flowSteps.map((item) => (
             <button
@@ -69,7 +68,6 @@ export function Cover({ onStart, onCatalog, onNavigate }: Props) {
                     <div className={`flow-icon-img ${item.icon}`} />
                   </div>
                   <div className="flow-card-meta">
-                    <div className="flow-card-kicker">flow</div>
                     <h3>{item.title}</h3>
                   </div>
                   <div className="flow-step-pill">{String(item.step).padStart(2, '0')}</div>

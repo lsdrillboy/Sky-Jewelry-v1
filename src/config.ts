@@ -16,6 +16,10 @@ export const env = {
   ALLOW_DEV_INIT_DATA: process.env.ALLOW_DEV_INIT_DATA === 'true',
   DISABLE_API: process.env.DISABLE_API === 'true',
   ORDER_CHAT_ID: process.env.ORDER_CHAT_ID ? Number(process.env.ORDER_CHAT_ID) : 3662210811,
+  WELCOME_PHOTO_FILE_ID: trimmed(process.env.WELCOME_PHOTO_FILE_ID),
+  WELCOME_PHOTO_URL: trimmed(process.env.WELCOME_PHOTO_URL),
+  WELCOME_CAPTION_SHORT: trimmed(process.env.WELCOME_CAPTION_SHORT),
+  WELCOME_TEXT_FULL: trimmed(process.env.WELCOME_TEXT_FULL),
 };
 
 export const hasSupabase =

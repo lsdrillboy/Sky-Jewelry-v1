@@ -4,11 +4,13 @@ import { env, hasSupabase } from './config';
 import { supabase } from './supabase';
 import { ABOUT_COVER_URL, ABOUT_TEXT, CATALOG_TYPES, FAQ_ITEMS, REVIEWS, STONE_THEMES, THEME_SUBOPTIONS } from './constants';
 import { calculateLifePath, formatDateForPg } from './utils/lifePath';
+import { extractTelegramError, isCaptionTooLongError, isParseModeError, sanitizeForHtml, truncateForCaption } from './utils/text';
 import { OrderPayload, Product, Stone } from './types';
 import { startApiServer } from './api/server';
 
 type SessionData = {
   menuMessageId?: number;
+  menuMessageType?: 'photo' | 'text';
   reviewsOffset?: number;
   lastTheme?: string | null;
   lastStones?: number[];
@@ -189,6 +191,7 @@ if (!env.DISABLE_API) {
 }
 
 const MENU_INTRO = 'SKY Jewelry\nУкрашения с камнями, которые поддерживают твоё состояние.';
+const WELCOME_CAPTION_LIMIT = 900;
 
 const MAIN_MENU_ITEMS = [
   { label: 'Подобрать камень', action: 'main:stone' },
@@ -212,31 +215,133 @@ function buildMainMenuInline() {
   return kb;
 }
 
+function buildWelcomeCaption(override?: string) {
+  const source = override ?? env.WELCOME_CAPTION_SHORT ?? MENU_INTRO;
+  return truncateForCaption(source, WELCOME_CAPTION_LIMIT);
+}
+
+async function sendWelcomeLongText(ctx: MyContext) {
+  const fullText = env.WELCOME_TEXT_FULL?.trim();
+  if (!fullText) return;
+  try {
+    await ctx.reply(fullText, { parse_mode: 'HTML' });
+    return;
+  } catch (err) {
+    console.error('Failed to send full welcome text', { error: extractTelegramError(err) || err });
+    if (isParseModeError(err)) {
+      await ctx.reply(sanitizeForHtml(fullText));
+    }
+  }
+}
+
+async function sendWelcome(ctx: MyContext, captionOverride?: string) {
+  const caption = buildWelcomeCaption(captionOverride);
+  const keyboard = buildMainMenuInline();
+  const photoCandidates = [env.WELCOME_PHOTO_FILE_ID, env.WELCOME_PHOTO_URL, ABOUT_COVER_URL].filter(
+    Boolean,
+  ) as string[];
+  let lastError: unknown = null;
+
+  for (const photo of photoCandidates) {
+    try {
+      const sent = await ctx.replyWithPhoto(photo, {
+        caption,
+        parse_mode: 'HTML',
+        reply_markup: keyboard,
+      });
+      ctx.session.menuMessageId = sent.message_id;
+      ctx.session.menuMessageType = 'photo';
+      await sendWelcomeLongText(ctx);
+      return;
+    } catch (err) {
+      lastError = err;
+      console.error('Failed to send welcome photo', { photo, error: extractTelegramError(err) || err });
+      if (isParseModeError(err) || isCaptionTooLongError(err)) {
+        try {
+          const safeCaption = truncateForCaption(sanitizeForHtml(caption), WELCOME_CAPTION_LIMIT);
+          const sent = await ctx.replyWithPhoto(photo, {
+            caption: safeCaption,
+            reply_markup: keyboard,
+          });
+          ctx.session.menuMessageId = sent.message_id;
+          ctx.session.menuMessageType = 'photo';
+          await sendWelcomeLongText(ctx);
+          return;
+        } catch (fallbackErr) {
+          lastError = fallbackErr;
+          console.error('Fallback welcome photo failed', {
+            photo,
+            error: extractTelegramError(fallbackErr) || fallbackErr,
+          });
+        }
+      }
+    }
+  }
+
+  console.error('All welcome photo attempts failed, falling back to text', {
+    error: extractTelegramError(lastError) || lastError,
+  });
+  const sent = await ctx.reply(caption, { reply_markup: keyboard });
+  ctx.session.menuMessageId = sent.message_id;
+  ctx.session.menuMessageType = 'text';
+  await sendWelcomeLongText(ctx);
+  if (process.env.NODE_ENV !== 'production') {
+    await ctx.reply('(Если не видно обложку — обновите Telegram)');
+  }
+}
+
 async function editMenu(ctx: MyContext, text: string, keyboard?: InlineKeyboard) {
   const chatId = ctx.chat?.id ?? ctx.callbackQuery?.message?.chat.id;
   const messageId = ctx.session.menuMessageId ?? ctx.callbackQuery?.message?.message_id;
   if (ctx.callbackQuery?.message?.message_id && !ctx.session.menuMessageId) {
     ctx.session.menuMessageId = ctx.callbackQuery.message.message_id;
   }
+  const isPhotoMessage =
+    ctx.session.menuMessageType === 'photo' || Boolean(ctx.callbackQuery?.message && 'photo' in ctx.callbackQuery.message);
+  if (ctx.callbackQuery?.message?.photo?.length && !ctx.session.menuMessageType) {
+    ctx.session.menuMessageType = 'photo';
+  }
   const options = keyboard ? { reply_markup: keyboard } : undefined;
   if (chatId && messageId) {
+    if (isPhotoMessage) {
+      const caption = truncateForCaption(text, WELCOME_CAPTION_LIMIT);
+      if (text.length > caption.length) {
+        const sent = await ctx.reply(text, options);
+        ctx.session.menuMessageId = sent.message_id;
+        ctx.session.menuMessageType = 'text';
+        return;
+      }
+      try {
+        await ctx.api.editMessageCaption(chatId, messageId, { caption, ...options });
+        ctx.session.menuMessageType = 'photo';
+        return;
+      } catch (err) {
+        console.error('Failed to edit menu caption, retrying as text', err);
+        ctx.session.menuMessageType = 'text';
+      }
+    }
     try {
       await ctx.api.editMessageText(chatId, messageId, text, options);
+      ctx.session.menuMessageType = 'text';
+      ctx.session.menuMessageId = messageId;
       return;
     } catch (err) {
-      // fall through to send new message
       console.error('Failed to edit menu, sending new message', err);
     }
   }
   const sent = await ctx.reply(text, options);
   ctx.session.menuMessageId = sent.message_id;
+  ctx.session.menuMessageType = 'text';
 }
 
 async function sendMainMenu(ctx: MyContext, text?: string) {
-  const caption = text ?? MENU_INTRO;
   ctx.session.reviewsOffset = 0;
+  if (!text) {
+    await sendWelcome(ctx);
+    return;
+  }
   try {
-    await editMenu(ctx, caption, buildMainMenuInline());
+    await editMenu(ctx, text, buildMainMenuInline());
   } catch (err) {
     console.error('Failed to send main menu', err);
   }

@@ -448,12 +448,15 @@
 .flow-card h3 {
   margin: 0;
   width: 100%;
-  color: var(--color-gold);
+  color: var(--color-gold-soft);
   font-size: 24px;
-  line-height: 1.2;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  font-family: var(--font-main);
+  line-height: 1.22;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  font-family: var(--font-premium, 'Playfair Display', serif);
+  text-shadow: 0 6px 18px rgba(216, 177, 92, 0.28);
+  text-wrap: balance;
+  hyphens: auto;
 }
 
 .flow-card p {
@@ -461,7 +464,9 @@
   flex: 1;
   color: #efe4d1;
   font-size: 16px;
-  line-height: 1.55;
+  line-height: 1.6;
+  text-wrap: balance;
+  hyphens: auto;
 }
 
 .flow-card-head {
@@ -555,16 +560,18 @@
 }
 
 .flow-card-text {
-  max-width: 28ch;
+  max-width: 30ch;
   color: #f0e7d8;
   font-family: var(--font-montserrat, var(--font-sans), sans-serif);
   font-size: 15.5px;
-  line-height: 1.55;
+  line-height: 1.6;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   font-weight: 500;
+  text-wrap: balance;
+  hyphens: auto;
 }
 
 .flow-card-footer {

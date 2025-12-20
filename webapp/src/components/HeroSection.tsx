@@ -40,3 +40,7 @@ export function HeroSection({ onStart, onCatalog }: Props) {
 
 export default HeroSection;
 
+
+
+
+
