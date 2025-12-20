@@ -19,6 +19,13 @@ type ApiUser = {
   language_code?: string | null;
 };
 
+type ThemeRow = {
+  code: string;
+  label: string;
+  description?: string | null;
+  numbers?: number[] | null;
+};
+
 function getInitData(req: express.Request) {
   return (req.body?.telegram_init_data as string | undefined) ?? (req.headers['x-telegram-initdata'] as string | undefined);
 }
@@ -111,6 +118,19 @@ async function fetchStones(theme: string | null, lifePath: number | null): Promi
     filtered = rows; // fallback без life_path
   }
   return filtered.slice(0, 5).map((row) => row.stone as Stone);
+}
+
+async function fetchThemes(): Promise<ThemeRow[]> {
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from('jyotish_themes')
+    .select('code,label,description,numbers')
+    .order('label', { ascending: true });
+  if (error) {
+    console.error('fetchThemes error', error);
+    return [];
+  }
+  return (data ?? []) as ThemeRow[];
 }
 
 async function insertStoneRequest(params: {
@@ -400,6 +420,18 @@ export function buildApiApp() {
       });
     } catch (err) {
       console.error('stone-picker error', err);
+      const { message, status } = formatSupabaseError(err);
+      return res.status(status).json({ error: message });
+    }
+  });
+
+  app.get('/api/themes', async (_req, res) => {
+    try {
+      if (!hasSupabase) return res.status(503).json({ error: 'Supabase not configured' });
+      const themes = await fetchThemes();
+      return res.json({ themes });
+    } catch (err) {
+      console.error('GET /api/themes error', err);
       const { message, status } = formatSupabaseError(err);
       return res.status(status).json({ error: message });
     }

@@ -48,6 +48,13 @@ export type StonePickerResult = {
   stones: Stone[];
 };
 
+export type Theme = {
+  code: string;
+  label: string;
+  description?: string | null;
+  numbers?: number[] | null;
+};
+
 export type CustomRequestPayload = {
   stones?: number[];
   type?: string;

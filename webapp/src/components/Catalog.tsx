@@ -116,7 +116,7 @@ export function Catalog({
           </div>
         </div>
         <div className="action-row mt-10">
-          <button className="button" onClick={onRefresh}>
+          <button className="button minimal primary menu-back" onClick={onRefresh}>
             <img className="btn-icon" src={searchIcon} alt="" />
             Применить
           </button>

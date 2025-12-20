@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import './index.css';
 import './App.css';
-import { initSession, pickStone, updateBirthdate, getProducts, getStones, submitCustomRequest } from './api';
+import { initSession, pickStone, updateBirthdate, getProducts, getStones, submitCustomRequest, getThemes } from './api';
 import type {
   CustomRequestPayload,
   Product,
   Screen,
   Stone,
   StonePickerResult,
+  Theme,
   User,
 } from './types';
 import Cover from './components/Cover';
@@ -86,9 +87,11 @@ function App() {
   const [stoneResult, setStoneResult] = useState<StonePickerResult | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [stones, setStones] = useState<Stone[]>([]);
+  const [themes, setThemes] = useState<Theme[]>([]);
   const [catalogFilters, setCatalogFilters] = useState<{ stone_id?: number; type?: string | null }>({});
   const [catalogLoading, setCatalogLoading] = useState(false);
   const [stonesLoading, setStonesLoading] = useState(false);
+  const [themesLoading, setThemesLoading] = useState(false);
   const [pickerLoading, setPickerLoading] = useState(false);
   const [requestLoading, setRequestLoading] = useState(false);
   const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
@@ -174,6 +177,9 @@ function App() {
     if (screen === 'custom' || screen === 'library') {
       if (!stones.length) void refreshStones();
     }
+    if (screen === 'stone') {
+      if (!themes.length) void refreshThemes();
+    }
   }, [screen, catalogFilters]);
 
   useEffect(() => {
@@ -205,6 +211,19 @@ function App() {
       setToast('Не удалось загрузить каталог.');
     } finally {
       setCatalogLoading(false);
+    }
+  };
+
+  const refreshThemes = async () => {
+    setThemesLoading(true);
+    try {
+      const { themes } = await getThemes(initData);
+      setThemes(themes);
+    } catch (err) {
+      console.error('getThemes failed', err);
+      setToast('Не удалось загрузить темы.');
+    } finally {
+      setThemesLoading(false);
     }
   };
 
@@ -307,6 +326,8 @@ function App() {
         <StonePicker
           result={stoneResult}
           loading={pickerLoading}
+          themes={themes}
+          themesLoading={themesLoading}
           lifePath={user?.life_path ?? null}
           onPick={handleStonePick}
           onOpenCatalog={handleOpenCatalogWithStone}
@@ -369,8 +390,10 @@ function App() {
     catalogFilters,
     products,
     stones,
+    themes,
     catalogLoading,
     stonesLoading,
+    themesLoading,
     requestLoading,
     favoriteProducts,
   ]);

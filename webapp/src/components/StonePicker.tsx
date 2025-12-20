@@ -1,7 +1,7 @@
 import '../App.css';
 import { useMemo, useState } from 'react';
-import { themes as themeList } from '../data/themes';
-import type { StonePickerResult } from '../types';
+import { themes as themeFallback } from '../data/themes';
+import type { StonePickerResult, Theme } from '../types';
 import ringIcon from '../assets/icon-ring.svg';
 import backIcon from '../assets/icon-arrow-left.svg';
 import { normalizeStone, type NormalizedStone } from '../utils/stone';
@@ -11,18 +11,31 @@ import SectionHeader from './SectionHeader';
 type Props = {
   result: StonePickerResult | null;
   loading: boolean;
+  themes: Theme[];
+  themesLoading: boolean;
   lifePath: number | null | undefined;
   onPick: (theme: string) => Promise<void> | void;
   onOpenCatalog: (stoneId: number) => void;
   onBack: () => void;
 };
 
-export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, onBack }: Props) {
+export function StonePicker({
+  result,
+  loading,
+  themes,
+  themesLoading,
+  lifePath,
+  onPick,
+  onOpenCatalog,
+  onBack,
+}: Props) {
   const [selected, setSelected] = useState<NormalizedStone | null>(null);
   const normalizedResult = useMemo(
     () => (result ? { ...result, stones: result.stones.map(normalizeStone) } : null),
     [result],
   );
+  const themeOptions = themes.length ? themes : themeFallback;
+  const isThemeLoading = themesLoading && !themes.length;
 
   return (
     <div className="screen">
@@ -45,17 +58,23 @@ export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, 
           className="input"
           onChange={(e) => e.target.value && onPick(e.target.value)}
           defaultValue=""
+          disabled={isThemeLoading}
         >
           <option value="" disabled>
-            Выбери тему под запрос
+            {isThemeLoading ? 'Загружаю темы...' : 'Выбери тему под запрос'}
           </option>
-          {themeList.map((theme) => (
+          {themeOptions.map((theme) => (
             <option key={theme.code} value={theme.code}>
-              {theme.label}
+              {theme.label ?? theme.code}
             </option>
           ))}
         </select>
-        {loading ? (
+        {isThemeLoading ? (
+          <div className="inline-row mt-12">
+            <div className="spinner small" />
+            <div className="muted">Загружаю темы...</div>
+          </div>
+        ) : loading ? (
           <div className="inline-row mt-12">
             <div className="spinner small" />
             <div className="muted">Собираю рекомендации...</div>

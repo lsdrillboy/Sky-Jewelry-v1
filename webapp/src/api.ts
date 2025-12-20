@@ -1,4 +1,4 @@
-import type { CustomRequestPayload, Product, Stone, StonePickerResult, User } from './types';
+import type { CustomRequestPayload, Product, Stone, StonePickerResult, Theme, User } from './types';
 
 const API_BASE = import.meta.env.VITE_API_URL as string;
 if (!API_BASE) {
@@ -96,4 +96,8 @@ export async function submitCustomRequest(
     method: 'POST',
     body: JSON.stringify({ telegram_init_data: initData, ...payload }),
   });
+}
+
+export async function getThemes(initData?: string): Promise<{ themes: Theme[] }> {
+  return apiRequest('/api/themes', initData);
 }
