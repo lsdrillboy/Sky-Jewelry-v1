@@ -8,6 +8,7 @@ import energyIcon from '../assets/icon-energy.svg';
 import reviewsIcon from '../assets/icon-reviews.svg';
 import historyIcon from '../assets/icon-history.svg';
 import favoritesIcon from '../assets/icon-favorites.svg';
+import SectionHeader from './SectionHeader';
 
 type Props = {
   user: User | null;
@@ -21,14 +22,13 @@ export function MainMenu({ user, onNavigate, onBackToCover }: Props) {
       <div className="hero">
         <div className="app-header">
           <div className="logo-mark" />
-          <div className="app-header-text">
-            <div className="tiny">Добро пожаловать, {user?.first_name ?? 'гость'}</div>
-            <h1>Sky Jewelry</h1>
-          </div>
+          <SectionHeader
+            align="center"
+            kicker={`Добро пожаловать, ${user?.first_name ?? 'гость'}`}
+            title="Sky Jewelry"
+            subtitle="Подберу минералы по твоей энергии, покажу украшения Sky Jewelry и помогу собрать индивидуальное изделие."
+          />
         </div>
-        <p className="muted lead-text" style={{ margin: '10px 0 0' }}>
-          Подберу минералы по твоей энергии, покажу украшения Sky Jewelry и помогу собрать индивидуальное изделие.
-        </p>
         {onBackToCover ? (
           <button className="back-fab" aria-label="Вернуться">
             <span onClick={onBackToCover} />

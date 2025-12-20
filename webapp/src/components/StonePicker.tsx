@@ -6,6 +6,7 @@ import ringIcon from '../assets/icon-ring.svg';
 import backIcon from '../assets/icon-arrow-left.svg';
 import { normalizeStone, type NormalizedStone } from '../utils/stone';
 import StoneDetails from './StoneDetails';
+import SectionHeader from './SectionHeader';
 
 type Props = {
   result: StonePickerResult | null;
@@ -28,13 +29,12 @@ export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, 
       <div className="hero center-hero">
         <div className="app-header">
           <div className="logo-mark" />
-          <div className="app-header-text">
-            <div className="tiny">Подбор камня</div>
-            <h1>С каким запросом работаешь?</h1>
-            <p className="muted" style={{ margin: '4px 0 0' }}>
-              Я посмотрю камни, которые лучше всего поддержат тебя сейчас.
-            </p>
-          </div>
+          <SectionHeader
+            align="center"
+            kicker="Подбор камня"
+            title="С каким запросом работаешь?"
+            subtitle="Я посмотрю камни, которые лучше всего поддержат тебя сейчас."
+          />
           {lifePath ? <div className="pill">Число пути: {lifePath}</div> : null}
         </div>
       </div>
@@ -56,14 +56,12 @@ export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, 
           ))}
         </select>
         {loading ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 12 }}>
-            <div className="spinner" style={{ width: 30, height: 30 }} />
+          <div className="inline-row mt-12">
+            <div className="spinner small" />
             <div className="muted">Собираю рекомендации...</div>
           </div>
         ) : (
-          <p className="muted" style={{ marginTop: 10 }}>
-            Темы можно менять — подберу новые связки камней.
-          </p>
+          <p className="muted mt-10">Темы можно менять — подберу новые связки камней.</p>
         )}
       </div>
 
@@ -81,9 +79,9 @@ export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, 
                     className="stone-thumb crystal-icon"
                     style={{ ['--stone-color' as string]: stone.color ?? '#d6a85a' }}
                   />
-                  <h3 style={{ margin: 0 }}>{stone.name_ru}</h3>
+                  <h3>{stone.name_ru}</h3>
                 </div>
-                <p className="muted" style={{ minHeight: 48 }}>
+                <p className="muted min-h-48">
                   {stone.description_short ?? 'Описание появится позже.'}
                 </p>
                 <div className="chips">
@@ -103,7 +101,7 @@ export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, 
                     </span>
                   ))}
                 </div>
-                <div style={{ display: 'grid', gap: 10, width: '100%' }}>
+                <div className="stack">
                   <button className="stone-cta" type="button" onClick={() => onOpenCatalog(stone.id)}>
                     <img className="btn-icon" src={ringIcon} alt="" />
                     Показать украшения с этим камнем
@@ -118,7 +116,7 @@ export function StonePicker({ result, loading, lifePath, onPick, onOpenCatalog, 
         )}
       </div>
 
-      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+      <div className="action-row">
         <button className="button" onClick={onBack}>
           <img className="btn-icon" src={backIcon} alt="" />
           В меню

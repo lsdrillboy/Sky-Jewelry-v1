@@ -8,10 +8,10 @@ export function Preloader({ text = 'Stones that hear your soul...' }: Props) {
   return (
     <div className="preloader">
       <div className="orb" />
-      <div className="panel shadowed" style={{ maxWidth: 340 }}>
+      <div className="panel shadowed narrow">
         <div className="tiny">Sky Jewelry</div>
-        <h3 style={{ margin: '6px 0 8px' }}>Загружаю твою Вселенную</h3>
-        <p className="muted" style={{ marginBottom: 12 }}>
+        <h3 className="mt-6 mb-8">Загружаю твою Вселенную</h3>
+        <p className="muted mb-12">
           {text}
         </p>
         <div className="spinner" />

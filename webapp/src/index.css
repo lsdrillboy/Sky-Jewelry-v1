@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Manrope:wght@400;500;600&family=Montserrat:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
 
 :root {
   --color-bg: #050403;
@@ -11,21 +11,44 @@
   --color-ivory-soft: #dcd4c5;
   --color-text: #f7eddc;
   --color-shadow: rgba(0, 0, 0, 0.85);
-  --radius-lg: 30px;
+  --radius-lg: 28px;
   --radius-md: 24px;
   --radius-sm: 16px;
   --card-radius: 22px;
   --card-padding: 22px;
   --card-gap: 12px;
-  --font-main: 'Montserrat', 'Manrope', 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-premium: 'Playfair Display', 'Times New Roman', serif;
+  --border-gold: rgba(216, 177, 92, 0.28);
+  --border-gold-strong: rgba(216, 177, 92, 0.45);
+  --border-gold-soft: rgba(216, 177, 92, 0.18);
+  --font-main: 'Playfair Display', 'Times New Roman', serif;
+  --font-premium: var(--font-main);
   --font-serif: var(--font-main);
   --font-sans: var(--font-main);
   --font-montserrat: var(--font-main);
 
+  --type-h1-size: clamp(26px, 4.6vw, 32px);
+  --type-h1-line: 1.2;
+  --type-h1-weight: 600;
+  --type-h1-letter: 0.04em;
+  --type-h2-size: clamp(22px, 4vw, 28px);
+  --type-h2-line: 1.24;
+  --type-h2-weight: 600;
+  --type-h2-letter: 0.04em;
+  --type-h3-size: clamp(20px, 3.4vw, 24px);
+  --type-h3-line: 1.26;
+  --type-h3-weight: 600;
+  --type-h3-letter: 0.04em;
+  --type-body-size: 16px;
+  --type-body-line: 1.6;
+  --type-body-weight: 400;
+  --type-body-letter: 0.01em;
+  --type-small-size: 12px;
+  --type-small-line: 1.4;
+  --type-small-letter: 0.2em;
+
   font-family: var(--font-main);
-  line-height: 1.5;
-  font-weight: 400;
+  line-height: var(--type-body-line);
+  font-weight: var(--type-body-weight);
   background-color: var(--color-bg);
   color: var(--color-text);
   text-rendering: optimizeLegibility;
@@ -48,14 +71,65 @@ body {
     var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-main);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-letter);
 }
 
 a {
   color: inherit;
 }
 
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-main);
+}
+
 #root {
   min-height: 100vh;
+}
+
+#root h1,
+#root h2,
+#root h3 {
+  font-family: var(--font-main);
+  color: var(--color-gold-soft);
+  margin: 0;
+  text-wrap: balance;
+  hyphens: auto;
+}
+
+#root h1 {
+  font-size: var(--type-h1-size);
+  line-height: var(--type-h1-line);
+  font-weight: var(--type-h1-weight);
+  letter-spacing: var(--type-h1-letter);
+}
+
+#root h2 {
+  font-size: var(--type-h2-size);
+  line-height: var(--type-h2-line);
+  font-weight: var(--type-h2-weight);
+  letter-spacing: var(--type-h2-letter);
+}
+
+#root h3 {
+  font-size: var(--type-h3-size);
+  line-height: var(--type-h3-line);
+  font-weight: var(--type-h3-weight);
+  letter-spacing: var(--type-h3-letter);
+}
+
+#root p {
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  font-weight: var(--type-body-weight);
+  letter-spacing: var(--type-body-letter);
+  margin: 0;
+  text-wrap: balance;
+  hyphens: auto;
 }
 
 .app-shell {
@@ -82,13 +156,13 @@ a {
 
 .grid {
   display: grid;
-  gap: 14px;
+  gap: var(--card-gap);
   width: 100%;
 }
 
 .grid.two {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
+  gap: var(--card-gap);
 }
 
 .screen {
@@ -105,7 +179,7 @@ a {
     radial-gradient(120% 140% at 20% 10%, rgba(216, 177, 92, 0.08), transparent 60%),
     radial-gradient(120% 140% at 80% 90%, rgba(255, 231, 199, 0.06), transparent 70%),
     var(--color-panel);
-  border: 1px solid rgba(216, 177, 92, 0.25);
+  border: 1px solid var(--border-gold);
   border-radius: var(--card-radius);
   padding: var(--card-padding);
   box-shadow:
@@ -119,9 +193,9 @@ a {
     radial-gradient(140% 160% at 25% 15%, rgba(216, 177, 92, 0.14), transparent 60%),
     radial-gradient(120% 140% at 80% 80%, rgba(255, 231, 199, 0.08), transparent 70%),
     linear-gradient(160deg, #0f0b07 0%, #0b0907 52%, #060404 100%);
-  border: 1px solid rgba(216, 177, 92, 0.35);
-  border-radius: 28px;
-  padding: 26px;
+  border: 1px solid var(--border-gold-strong);
+  border-radius: var(--radius-lg);
+  padding: var(--card-padding);
   position: relative;
   overflow: hidden;
   box-shadow:
@@ -144,11 +218,9 @@ a {
 
 .hero h1 {
   margin: 0 auto 10px;
-  font-size: 32px;
-  letter-spacing: 0.09em;
+  letter-spacing: var(--type-h1-letter);
   color: var(--color-gold-soft);
-  font-family: var(--font-serif);
-  line-height: 1.16;
+  line-height: var(--type-h1-line);
   text-align: center;
   max-width: 320px;
   text-wrap: balance;
@@ -227,11 +299,12 @@ a {
 .subtitle {
   color: var(--color-gold-muted);
   margin: 0 0 10px;
-  letter-spacing: 0.08em;
-  font-size: 13px;
+  letter-spacing: var(--type-small-letter);
+  font-size: var(--type-small-size);
   font-weight: 600;
   text-transform: uppercase;
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-main);
+  text-wrap: balance;
 }
 
 /* Inputs / selects */
@@ -243,7 +316,7 @@ a {
   border: 1.2px solid rgba(216, 177, 92, 0.32);
   background: linear-gradient(145deg, rgba(255, 231, 199, 0.06), rgba(0, 0, 0, 0.7));
   color: var(--color-gold-soft);
-  font-family: var(--font-montserrat, var(--font-sans), sans-serif);
+  font-family: var(--font-main);
   font-size: 14px;
   letter-spacing: 0.01em;
   appearance: none;
@@ -298,7 +371,7 @@ select.input:focus {
 
 .input::placeholder {
   color: rgba(216, 177, 92, 0.7);
-  font-family: var(--font-montserrat, var(--font-sans), sans-serif);
+  font-family: var(--font-main);
 }
 
 .btn-icon {
@@ -332,7 +405,7 @@ select.input:focus {
   box-shadow:
     0 2px 12px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-main);
   min-height: 56px;
   display: inline-flex;
   align-items: center;
@@ -359,33 +432,37 @@ select.input:focus {
 .catalog-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 14px;
+  gap: var(--card-gap);
 }
 
 .product-card,
 .stone-card {
-  background: var(--color-panel);
-  border: 1px solid rgba(216, 177, 92, 0.32);
-  border-radius: 18px;
-  padding: 16px;
+  background: linear-gradient(180deg, rgba(255, 231, 199, 0.05), rgba(0, 0, 0, 0.75));
+  border: 1px solid var(--border-gold);
+  border-radius: var(--card-radius);
+  padding: var(--card-padding);
   box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.8),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  background-position: center;
+  transform: none;
 }
 
 .product-card img,
 .stone-card img {
   width: 100%;
-  border-radius: 14px;
+  border-radius: calc(var(--card-radius) - 6px);
   object-fit: cover;
-  border: 1px solid rgba(216, 177, 92, 0.35);
+  border: 1px solid var(--border-gold);
 }
 
 .muted {
   color: var(--color-gold-soft);
   opacity: 0.9;
-  font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--font-main);
   text-align: left;
+  text-wrap: balance;
+  hyphens: auto;
 }
 
 .stone-accordion {
@@ -395,12 +472,14 @@ select.input:focus {
 }
 
 .stone-item {
-  border: 1px solid rgba(216, 177, 92, 0.32);
-  border-radius: 16px;
-  background: linear-gradient(135deg, rgba(216, 177, 92, 0.08), rgba(0, 0, 0, 0.5));
+  border: 1px solid var(--border-gold);
+  border-radius: var(--card-radius);
+  background: linear-gradient(180deg, rgba(216, 177, 92, 0.08), rgba(0, 0, 0, 0.5));
   box-shadow:
     0 10px 30px rgba(0, 0, 0, 0.7),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  background-position: center;
+  transform: none;
 }
 
 .stone-item.opened {
@@ -426,7 +505,7 @@ select.input:focus {
   max-height: 86vh;
   overflow: auto;
   background: linear-gradient(160deg, rgba(18, 14, 10, 0.95), rgba(7, 5, 3, 0.94));
-  border: 1px solid rgba(216, 177, 92, 0.28);
+  border: 1px solid var(--border-gold);
   border-radius: var(--card-radius);
   padding: var(--card-padding);
   box-shadow:
@@ -446,7 +525,7 @@ select.input:focus {
 
 .stone-fulltext p {
   margin: 8px 0;
-  line-height: 1.55;
+  line-height: var(--type-body-line);
   color: var(--color-ivory);
 }
 
@@ -485,9 +564,9 @@ select.input:focus {
 }
 
 .stone-title {
-  font-size: 17px;
+  font-size: var(--type-h3-size);
   font-weight: 700;
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-main);
 }
 
 .stone-toggle {
@@ -507,7 +586,7 @@ select.input:focus {
     padding: 12px;
   }
   .hero {
-    padding: 20px;
+    padding: calc(var(--card-padding) - 2px);
   }
   .chips-grid {
     grid-template-columns: 1fr;

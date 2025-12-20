@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import '../App.css';
 import backIcon from '../assets/icon-arrow-left.svg';
+import SectionHeader from './SectionHeader';
 
 const REVIEWS = [
   {
@@ -73,13 +74,12 @@ export default function Reviews({ onBack }: Props) {
       <div className="hero center-hero">
         <div className="app-header">
           <div className="logo-mark" />
-          <div className="app-header-text">
-            <div className="tiny">Отзывы</div>
-            <h1>Голоса клиентов</h1>
-            <p className="muted" style={{ margin: '6px 0 0' }}>
-              Живые истории о мастере и работе с камнями.
-            </p>
-          </div>
+          <SectionHeader
+            align="center"
+            kicker="Отзывы"
+            title="Голоса клиентов"
+            subtitle="Живые истории о мастере и работе с камнями."
+          />
         </div>
       </div>
 
@@ -102,7 +102,7 @@ export default function Reviews({ onBack }: Props) {
             );
           })}
         </div>
-        <div style={{ marginTop: 14 }}>
+        <div className="mt-14">
           <button className="button ghost" onClick={onBack}>
             <img className="btn-icon" src={backIcon} alt="" />
             В меню

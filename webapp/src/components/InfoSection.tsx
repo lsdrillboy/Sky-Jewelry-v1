@@ -1,5 +1,6 @@
 import '../App.css';
 import backIcon from '../assets/icon-arrow-left.svg';
+import SectionHeader from './SectionHeader';
 
 type Props = {
   title: string;
@@ -13,8 +14,7 @@ export default function InfoSection({ title, subtitle, bullets = [], note, onBac
   return (
     <div className="screen">
       <div className="hero">
-        <h1 style={{ margin: 0 }}>{title}</h1>
-        {subtitle ? <p className="muted" style={{ margin: '6px 0 0' }}>{subtitle}</p> : null}
+        <SectionHeader align="center" title={title} subtitle={subtitle} />
       </div>
       <div className="panel">
         <div className="chips-grid">
@@ -24,8 +24,8 @@ export default function InfoSection({ title, subtitle, bullets = [], note, onBac
             </div>
           ))}
         </div>
-        {note ? <p className="muted" style={{ margin: '12px 0 0' }}>{note}</p> : null}
-        <div style={{ marginTop: 14 }}>
+        {note ? <p className="muted mt-12">{note}</p> : null}
+        <div className="mt-14">
           <button className="button ghost" onClick={onBack}>
             <img className="btn-icon" src={backIcon} alt="" />
             В меню

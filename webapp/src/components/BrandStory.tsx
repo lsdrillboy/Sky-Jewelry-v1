@@ -1,5 +1,6 @@
 import '../App.css';
 import backIcon from '../assets/icon-arrow-left.svg';
+import SectionHeader from './SectionHeader';
 
 type Props = {
   onBack: () => void;
@@ -40,9 +41,12 @@ export default function BrandStory({ onBack }: Props) {
     <div className="screen story-screen">
       <div className="hero story-hero">
         <div className="story-hero-text">
-          <div className="tiny">История бренда / Мастерская</div>
-          <h1>Sky Jewelry</h1>
-          <p className="muted">Ручная работа, смысл и энергия, прожитые в тишине и готовые к твоей истории.</p>
+          <SectionHeader
+            align="left"
+            kicker="История бренда / Мастерская"
+            title="Sky Jewelry"
+            subtitle="Ручная работа, смысл и энергия, прожитые в тишине и готовые к твоей истории."
+          />
         </div>
         <div className="story-author full">
           <div className="story-photo-frame large full">
@@ -52,7 +56,7 @@ export default function BrandStory({ onBack }: Props) {
           <div className="story-author-meta">
             <div className="tiny">Автор</div>
             <div className="story-author-name">Евгений Пламеннов</div>
-            <p className="muted" style={{ textAlign: 'left' }}>
+            <p className="muted story-author-note">
               Живой тест минералов. Магия и ювелирное ремесло — как единый язык.
             </p>
           </div>
@@ -68,7 +72,7 @@ export default function BrandStory({ onBack }: Props) {
             </div>
           ))}
         </div>
-        <div style={{ marginTop: 18 }}>
+        <div className="mt-18">
           <button className="button ghost" onClick={onBack}>
             <img className="btn-icon" src={backIcon} alt="" />
             В меню

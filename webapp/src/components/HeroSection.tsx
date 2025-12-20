@@ -14,7 +14,9 @@ export function HeroSection({ onStart, onCatalog }: Props) {
     <div className="hero cover-hero">
       <div className="hero-logo">
         <div className="hero-logo-glow" />
-        <img src={logoUrl} alt="Sky Jewelry eye logo" />
+        <div className="hero-logo-frame">
+          <img src={logoUrl} alt="Sky Jewelry eye logo" />
+        </div>
       </div>
 
       {/* Text Content */}
@@ -39,6 +41,7 @@ export function HeroSection({ onStart, onCatalog }: Props) {
 }
 
 export default HeroSection;
+
 
 
 

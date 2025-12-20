@@ -4,6 +4,7 @@ import { catalogTypes } from '../data/themes';
 import type { CustomRequestPayload, Stone } from '../types';
 import sendIcon from '../assets/icon-send.svg';
 import backIcon from '../assets/icon-arrow-left.svg';
+import SectionHeader from './SectionHeader';
 
 type Props = {
   stones: Stone[];
@@ -38,13 +39,12 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
       <div className="hero center-hero">
         <div className="app-header">
           <div className="logo-mark" />
-          <div className="app-header-text">
-            <div className="tiny">Индивидуальное украшение</div>
-            <h1 className="break-title">Соберём под твой запрос</h1>
-            <p className="muted" style={{ margin: 0 }}>
-              Выбери камни, тип украшения и бюджет. Мастер получит заявку в Telegram.
-            </p>
-          </div>
+          <SectionHeader
+            align="center"
+            kicker="Индивидуальное украшение"
+            title="Соберём под твой запрос"
+            subtitle="Выбери камни, тип украшения и бюджет. Мастер получит заявку в Telegram."
+          />
         </div>
       </div>
 
@@ -75,7 +75,7 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
             ))}
           </div>
         ) : null}
-        <p className="muted" style={{ marginTop: 6 }}>
+        <p className="muted mt-6">
           Выбери один или несколько камней. На телефоне список откроется во всплывающем окне.
         </p>
       </div>
@@ -95,7 +95,7 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
           </div>
           <div>
             <div className="subtitle">Бюджет</div>
-            <div style={{ display: 'flex', gap: 8 }}>
+            <div className="input-row">
               <input
                 className="input"
                 placeholder="от"
@@ -123,7 +123,7 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
             onChange={(e) => setComment(e.target.value)}
           />
         </div>
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+        <div className="action-row">
           <button className="button" onClick={handleSubmit} disabled={loading}>
             <img className="btn-icon" src={sendIcon} alt="" />
             {loading ? 'Отправляю...' : 'Отправить заявку'}

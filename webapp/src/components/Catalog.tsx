@@ -4,6 +4,7 @@ import { catalogTypes } from '../data/themes';
 import type { Product, Stone } from '../types';
 import searchIcon from '../assets/icon-search.svg';
 import backIcon from '../assets/icon-arrow-left.svg';
+import SectionHeader from './SectionHeader';
 
 type Filters = {
   stone_id?: number;
@@ -62,13 +63,12 @@ export function Catalog({
       <div className="hero">
         <div className="app-header">
           <div className="logo-mark" />
-          <div className="app-header-text">
-            <div className="tiny">Каталог</div>
-            <h1>Украшения с твоими камнями</h1>
-            <p className="muted" style={{ margin: 0 }}>
-              Фильтруй по камню и типу. Нажми на карточку, чтобы оставить заявку через бота.
-            </p>
-          </div>
+          <SectionHeader
+            align="center"
+            kicker="Каталог"
+            title="Украшения с твоими камнями"
+            subtitle="Фильтруй по камню и типу. Нажми на карточку, чтобы оставить заявку через бота."
+          />
         </div>
       </div>
 
@@ -115,7 +115,7 @@ export function Catalog({
             </select>
           </div>
         </div>
-        <div style={{ display: 'flex', gap: 10, marginTop: 10, flexWrap: 'wrap' }}>
+        <div className="action-row mt-10">
           <button className="button" onClick={onRefresh}>
             <img className="btn-icon" src={searchIcon} alt="" />
             Применить
@@ -130,8 +130,8 @@ export function Catalog({
       <div className="panel">
         <div className="subtitle">Украшения</div>
         {loading ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div className="spinner" style={{ width: 30, height: 30 }} />
+          <div className="inline-row">
+            <div className="spinner small" />
             <div className="muted">Загружаю...</div>
           </div>
         ) : null}

@@ -22,6 +22,7 @@ import BrandStory from './components/BrandStory';
 import Favorites from './components/Favorites';
 import Reviews from './components/Reviews';
 import PreAuth from './components/PreAuth';
+import ConfirmModal from './components/ConfirmModal';
 
 function extractInitData() {
   const tg = (window as any).Telegram?.WebApp;
@@ -92,6 +93,7 @@ function App() {
   const [requestLoading, setRequestLoading] = useState(false);
   const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
   const [toast, setToast] = useState<string | null>(null);
+  const [orderModal, setOrderModal] = useState<{ title: string; text: string } | null>(null);
 
   useEffect(() => {
     try {
@@ -239,11 +241,13 @@ function App() {
     setRequestLoading(true);
     try {
       await submitCustomRequest(initData, payload);
-      setToast('Ваш заказ успешно отправлен. С вами скоро свяжется менеджер.');
-      // остаёмся на экране заявки
+      setOrderModal({
+        title: '✅ Заказ принят',
+        text: 'Наш менеджер скоро свяжется с вами.',
+      });
     } catch (err) {
       console.error('custom request failed', err);
-      setToast('Не удалось отправить заявку');
+      setToast('Не удалось отправить, попробуйте ещё раз.');
     } finally {
       setRequestLoading(false);
     }
@@ -259,10 +263,13 @@ function App() {
         budget_to: product.price_max ?? product.price ?? null,
         comment: `Каталог: ${product.name} (id ${product.id})`,
       });
-      setToast('Ваш заказ успешно отправлен. С вами скоро свяжется менеджер.');
+      setOrderModal({
+        title: '✅ Заказ принят',
+        text: 'Наш менеджер скоро свяжется с вами.',
+      });
     } catch (err) {
       console.error('catalog order failed', err);
-      setToast('Не удалось отправить заявку');
+      setToast('Не удалось отправить, попробуйте ещё раз.');
     } finally {
       setRequestLoading(false);
     }
@@ -372,6 +379,13 @@ function App() {
     <div className="app-shell">
       {preAuthStage !== 'done' ? <PreAuth stage={preAuthStage} /> : null}
       {content}
+      {orderModal ? (
+        <ConfirmModal
+          title={orderModal.title}
+          text={orderModal.text}
+          onClose={() => setOrderModal(null)}
+        />
+      ) : null}
       {toast ? <div className="toast">{toast}</div> : null}
     </div>
   );

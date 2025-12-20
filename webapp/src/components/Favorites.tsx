@@ -1,6 +1,7 @@
 import '../App.css';
 import type { Product } from '../types';
 import backIcon from '../assets/icon-arrow-left.svg';
+import SectionHeader from './SectionHeader';
 
 type Props = {
   products: Product[];
@@ -13,10 +14,11 @@ export default function Favorites({ products, onBack, onOrder, onToggleFavorite 
   return (
     <div className="screen">
       <div className="hero">
-        <h1 style={{ margin: 0 }}>Избранное</h1>
-        <p className="muted" style={{ margin: '6px 0 0' }}>
-          Сохраняй украшения, чтобы вернуться к ним позже.
-        </p>
+        <SectionHeader
+          align="center"
+          title="Избранное"
+          subtitle="Сохраняй украшения, чтобы вернуться к ним позже."
+        />
       </div>
       <div className="panel">
         {!products.length ? <p className="muted">Пока пусто. Добавь украшение из каталога.</p> : null}
@@ -48,7 +50,7 @@ export default function Favorites({ products, onBack, onOrder, onToggleFavorite 
             );
           })}
         </div>
-        <div style={{ marginTop: 14 }}>
+        <div className="mt-14">
           <button className="button ghost" onClick={onBack}>
             <img className="btn-icon" src={backIcon} alt="" />
             В меню

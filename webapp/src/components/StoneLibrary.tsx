@@ -4,6 +4,7 @@ import type { Stone } from '../types';
 import { normalizeStone, type NormalizedStone } from '../utils/stone';
 import StoneDetails from './StoneDetails';
 import backIcon from '../assets/icon-arrow-left.svg';
+import SectionHeader from './SectionHeader';
 
 type Props = {
   stones: Stone[];
@@ -28,13 +29,12 @@ export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
       <div className="hero">
         <div className="app-header">
           <div className="logo-mark" />
-          <div className="app-header-text">
-            <div className="tiny">Энергия камней</div>
-            <h1>Справочник минералов</h1>
-            <p className="muted" style={{ margin: 0 }}>
-              Краткие заметки о том, что усиливает каждый камень.
-            </p>
-          </div>
+          <SectionHeader
+            align="center"
+            kicker="Энергия камней"
+            title="Справочник минералов"
+            subtitle="Краткие заметки о том, что усиливает каждый камень."
+          />
         </div>
       </div>
 
@@ -46,16 +46,14 @@ export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
       <div className="panel">
         <div className="subtitle">Камни</div>
         {loading ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div className="spinner" style={{ width: 30, height: 30 }} />
+          <div className="inline-row">
+            <div className="spinner small" />
             <div className="muted">Загружаю...</div>
           </div>
         ) : null}
         <div className="stone-accordion">
           {isEmpty ? (
-            <div className="muted" style={{ marginBottom: 10 }}>
-              Не удалось загрузить список камней. Попробуй позже.
-            </div>
+            <div className="muted mb-10">Не удалось загрузить список камней. Попробуй позже.</div>
           ) : null}
           {displayStones.map((stone) => {
             const opened = openedId === stone.id;
@@ -102,7 +100,7 @@ export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+      <div className="action-row">
         <button className="button ghost" onClick={onBack}>
           <img className="btn-icon" src={backIcon} alt="" />
           В меню

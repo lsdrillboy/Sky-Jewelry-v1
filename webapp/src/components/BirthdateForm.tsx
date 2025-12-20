@@ -3,6 +3,7 @@ import '../App.css';
 import type { User } from '../types';
 import calendarIcon from '../assets/icon-calendar.svg';
 import backIcon from '../assets/icon-arrow-left.svg';
+import SectionHeader from './SectionHeader';
 
 type Props = {
   user: User | null;
@@ -32,13 +33,12 @@ export function BirthdateForm({ user, onSubmit, onBack }: Props) {
       <div className="hero">
         <div className="app-header">
           <div className="logo-mark" />
-          <div className="app-header-text">
-            <div className="tiny">Профиль</div>
-            <h1>Дата рождения</h1>
-            <p className="muted" style={{ margin: 0 }}>
-              Используется для расчёта числа пути и точного подбора минералов.
-            </p>
-          </div>
+          <SectionHeader
+            align="center"
+            kicker="Профиль"
+            title="Дата рождения"
+            subtitle="Используется для расчёта числа пути и точного подбора минералов."
+          />
         </div>
       </div>
 
@@ -54,7 +54,7 @@ export function BirthdateForm({ user, onSubmit, onBack }: Props) {
           onChange={(e) => setValue(e.target.value)}
         />
         <p className="muted">Дата сохранится в Supabase и будет использоваться при подборе камней.</p>
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+        <div className="action-row">
           <button className="button" onClick={handleSubmit} disabled={saving || !value}>
             <img className="btn-icon" src={calendarIcon} alt="" />
             {saving ? 'Сохраняю...' : 'Сохранить и продолжить'}

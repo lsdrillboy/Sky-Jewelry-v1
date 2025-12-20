@@ -101,7 +101,7 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
         <div className="profile-hero-copy">
           <div className="profile-hero-kicker">Моя энергетическая карта</div>
           <h1 className="profile-hero-title">Sky Jewelry Profile</h1>
-          <p className="muted profile-hero-text" style={{ margin: 0 }}>
+          <p className="muted profile-hero-text">
             Персональный подбор камней и украшений по твоей энергии — рекомендации, которые раскрывают твой стиль и состояние.
           </p>
           {!hasBirthdate ? (
@@ -183,7 +183,7 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
               </button>
             </div>
             {note ? (
-              <p className="muted profile-note success" style={{ marginTop: 8 }}>
+              <p className="muted profile-note success mt-8">
                 Данные обновлены.
               </p>
             ) : null}
