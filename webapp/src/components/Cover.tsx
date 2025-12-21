@@ -71,7 +71,6 @@ export function Cover({ onStart, onCatalog, onNavigate }: Props) {
                     <h3>{item.title}</h3>
                   </div>
                   <div className="flow-card-actions">
-                    <div className="flow-step-pill">{String(item.step).padStart(2, '0')}</div>
                     <div className="flow-chevron" aria-hidden />
                   </div>
                 </div>
