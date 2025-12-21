@@ -460,7 +460,7 @@ export function buildApiApp() {
     const baseSelect = theme
       ? '*, jyotish_stone_theme!inner(theme_code,intensity)'
       : '*, jyotish_stone_theme(theme_code,intensity)';
-    let query = client.from('jyotish_stones').select(baseSelect).limit(40);
+    let query = client.from('jyotish_stones').select(baseSelect);
     if (search) {
       query = query.ilike('name_ru', `%${search}%`);
     }
