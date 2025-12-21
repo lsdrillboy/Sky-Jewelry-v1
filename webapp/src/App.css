@@ -10,6 +10,10 @@
   margin: 0 auto;
 }
 
+.app-header .logo-mark {
+  align-self: center;
+}
+
 .app-header-text {
   display: flex;
   flex-direction: column;
@@ -898,6 +902,11 @@
 .cover-grid {
   display: grid;
   gap: var(--card-gap);
+  justify-items: center;
+}
+
+.cover-grid > * {
+  width: min(100%, 520px);
 }
 
 .menu-grid {
