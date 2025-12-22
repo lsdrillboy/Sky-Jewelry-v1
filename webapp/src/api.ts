@@ -68,10 +68,12 @@ export async function pickStone(initData: string, theme: string): Promise<StoneP
 
 export async function getProducts(
   initData: string,
-  params: { stone_id?: number; type?: string | null } = {},
+  params: { stone_ids?: number[]; type?: string | null } = {},
 ): Promise<{ products: Product[] }> {
   const search = new URLSearchParams();
-  if (params.stone_id) search.set('stone_id', String(params.stone_id));
+  if (params.stone_ids && params.stone_ids.length) {
+    search.set('stone_ids', params.stone_ids.join(','));
+  }
   if (params.type) search.set('type', params.type);
   const qs = search.toString();
   return apiRequest(`/api/products${qs ? `?${qs}` : ''}`, initData);

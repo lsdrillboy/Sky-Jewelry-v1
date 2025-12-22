@@ -88,7 +88,7 @@ function App() {
   const [products, setProducts] = useState<Product[]>([]);
   const [stones, setStones] = useState<Stone[]>([]);
   const [themes, setThemes] = useState<Theme[]>([]);
-  const [catalogFilters, setCatalogFilters] = useState<{ stone_id?: number; type?: string | null }>({});
+  const [catalogFilters, setCatalogFilters] = useState<{ stone_ids?: number[]; type?: string | null }>({});
   const [catalogLoading, setCatalogLoading] = useState(false);
   const [stonesLoading, setStonesLoading] = useState(false);
   const [themesLoading, setThemesLoading] = useState(false);
@@ -308,7 +308,7 @@ function App() {
   };
 
   const handleOpenCatalogWithStone = (stoneId: number) => {
-    setCatalogFilters((prev) => ({ ...prev, stone_id: stoneId }));
+    setCatalogFilters((prev) => ({ ...prev, stone_ids: [stoneId] }));
     setScreen('catalog');
   };
 
@@ -347,6 +347,7 @@ function App() {
           onToggleFavorite={handleToggleFavorite}
           onOrder={handleProductOrder}
           onBack={() => setScreen('main')}
+          onCustomRequest={() => setScreen('custom')}
         />
       );
     if (screen === 'custom')

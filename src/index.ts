@@ -836,6 +836,37 @@ async function fetchStones(theme: string | null, lifePath: number | null): Promi
   return filtered.slice(0, 5).map((row) => row.stone as Stone);
 }
 
+const TYPE_ALIASES: Record<string, string[]> = {
+  bracelet: ['браслет', 'bracelet'],
+  ring: ['кольц', 'ring'],
+  necklace: ['колье', 'necklace'],
+  talisman: ['талисман', 'talisman'],
+};
+
+function normalizeTypeTokens(value?: string | null): string[] {
+  if (!value) return [];
+  const trimmed = value.trim().toLowerCase();
+  if (!trimmed) return [];
+  if (TYPE_ALIASES[trimmed]) return TYPE_ALIASES[trimmed];
+  if (trimmed.includes('браслет')) return TYPE_ALIASES.bracelet;
+  if (trimmed.includes('кольц')) return TYPE_ALIASES.ring;
+  if (trimmed.includes('колье')) return TYPE_ALIASES.necklace;
+  if (trimmed.includes('талисман')) return TYPE_ALIASES.talisman;
+  return [trimmed];
+}
+
+function applyTypeFilter(query: any, type?: string | null) {
+  const tokens = normalizeTypeTokens(type)
+    .map((token) => token.replace(/[%,]/g, '').trim())
+    .filter(Boolean);
+  if (!tokens.length) return query;
+  const unique = Array.from(new Set(tokens));
+  if (unique.length === 1) {
+    return query.ilike('type', `%${unique[0]}%`);
+  }
+  return query.or(unique.map((token) => `type.ilike.%${token}%`).join(','));
+}
+
 async function fetchProducts(filters: {
   type?: string | null;
   theme?: string | null;
@@ -844,9 +875,7 @@ async function fetchProducts(filters: {
 }): Promise<Product[]> {
   if (!supabase) return [];
   let query = supabase.from('products').select('*').eq('is_active', true);
-  if (filters.type) {
-    query = query.eq('type', filters.type);
-  }
+  query = applyTypeFilter(query, filters.type);
   if (filters.theme) {
     query = query.overlaps('themes', [filters.theme]);
   }
@@ -858,7 +887,7 @@ async function fetchProducts(filters: {
     console.error('Failed to fetch products', error);
     if (filters.stoneId && error.message?.includes('stones')) {
       let fallback = supabase.from('products').select('*').eq('is_active', true);
-      if (filters.type) fallback = fallback.eq('type', filters.type);
+      fallback = applyTypeFilter(fallback, filters.type);
       if (filters.theme) fallback = fallback.overlaps('themes', [filters.theme]);
       const { data: alt, error: altError } = await fallback.overlaps('stone_ids', [filters.stoneId]).limit(filters.limit ?? 10);
       if (altError) {

@@ -4,10 +4,11 @@ import { catalogTypes } from '../data/themes';
 import type { Product, Stone } from '../types';
 import searchIcon from '../assets/icon-search.svg';
 import backIcon from '../assets/icon-arrow-left.svg';
+import customIcon from '../assets/icon-custom.svg';
 import SectionHeader from './SectionHeader';
 
 type Filters = {
-  stone_id?: number;
+  stone_ids?: number[];
   type?: string | null;
 };
 
@@ -22,6 +23,7 @@ type Props = {
   onToggleFavorite: (product: Product) => void;
   onOrder: (product: Product) => void;
   onBack: () => void;
+  onCustomRequest: () => void;
 };
 
 function formatPrice(product: Product) {
@@ -45,8 +47,10 @@ export function Catalog({
   onToggleFavorite,
   onOrder,
   onBack,
+  onCustomRequest,
 }: Props) {
   const [expanded, setExpanded] = useState<Set<number>>(() => new Set());
+  const selectedStoneIds = filters.stone_ids ?? [];
 
   const toggleExpanded = (id: number) => {
     setExpanded((prev) => {
@@ -56,7 +60,31 @@ export function Catalog({
     });
   };
 
+  const toggleStone = (id: number) => {
+    const next = selectedStoneIds.includes(id)
+      ? selectedStoneIds.filter((stoneId) => stoneId !== id)
+      : [...selectedStoneIds, id];
+    onChangeFilters({
+      ...filters,
+      stone_ids: next.length ? next : undefined,
+    });
+  };
+
+  const clearStones = () => {
+    onChangeFilters({
+      ...filters,
+      stone_ids: undefined,
+    });
+  };
+
   const sortedProducts = useMemo(() => products, [products]);
+  const selectedStoneLabels = useMemo(
+    () =>
+      stones
+        .filter((stone) => selectedStoneIds.includes(stone.id))
+        .map((stone) => ({ id: stone.id, label: stone.name_ru })),
+    [stones, selectedStoneIds],
+  );
 
   return (
     <div className="screen">
@@ -75,24 +103,43 @@ export function Catalog({
       <div className="panel">
         <div className="grid two">
           <div>
-            <div className="subtitle">Камень</div>
-            <select
-              className="input"
-              value={filters.stone_id ?? ''}
-              onChange={(e) =>
-                onChangeFilters({
-                  ...filters,
-                  stone_id: e.target.value ? Number(e.target.value) : undefined,
-                })
-              }
-            >
-              <option value="">Любой</option>
-              {stones.map((stone) => (
-                <option key={stone.id} value={stone.id}>
-                  {stone.name_ru}
-                </option>
-              ))}
-            </select>
+            <div className="subtitle">Камни</div>
+            <div className="input stone-select stone-select-list" role="listbox" aria-multiselectable="true">
+              <button
+                type="button"
+                className={`stone-select-option${selectedStoneIds.length === 0 ? ' selected' : ''}`}
+                onClick={clearStones}
+                aria-selected={selectedStoneIds.length === 0}
+              >
+                <span className="stone-select-option-label">Любой</span>
+                <span className="stone-select-check" aria-hidden />
+              </button>
+              {stones.map((stone) => {
+                const isSelected = selectedStoneIds.includes(stone.id);
+                return (
+                  <button
+                    key={stone.id}
+                    type="button"
+                    className={`stone-select-option${isSelected ? ' selected' : ''}`}
+                    onClick={() => toggleStone(stone.id)}
+                    aria-selected={isSelected}
+                  >
+                    <span className="stone-select-option-label">{stone.name_ru}</span>
+                    <span className="stone-select-check" aria-hidden />
+                  </button>
+                );
+              })}
+            </div>
+            {selectedStoneLabels.length ? (
+              <div className="stone-chip-pills">
+                {selectedStoneLabels.map((stone) => (
+                  <span key={stone.id} className="stone-chip-pill">
+                    {stone.label}
+                  </span>
+                ))}
+              </div>
+            ) : null}
+            <p className="muted mt-6">Можно выбрать несколько камней — просто нажимай по пунктам.</p>
           </div>
           <div>
             <div className="subtitle">Тип украшения</div>
@@ -135,7 +182,15 @@ export function Catalog({
             <div className="muted">Загружаю...</div>
           </div>
         ) : null}
-        {!loading && !products.length ? <p className="muted">Не нашел украшения под этот фильтр.</p> : null}
+        {!loading && !products.length ? (
+          <div className="stack">
+            <p className="muted">Не нашел украшения под этот фильтр.</p>
+            <button className="button minimal primary menu-back" onClick={onCustomRequest}>
+              <img className="btn-icon" src={customIcon} alt="" />
+              Собрать индивидуально
+            </button>
+          </div>
+        ) : null}
         <div className="catalog-grid">
           {sortedProducts.map((product) => {
             const image = product.main_photo_url ?? product.photo_url ?? '';

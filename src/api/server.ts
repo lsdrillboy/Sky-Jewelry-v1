@@ -26,6 +26,37 @@ type ThemeRow = {
   numbers?: number[] | null;
 };
 
+const TYPE_ALIASES: Record<string, string[]> = {
+  bracelet: ['браслет', 'bracelet'],
+  ring: ['кольц', 'ring'],
+  necklace: ['колье', 'necklace'],
+  talisman: ['талисман', 'talisman'],
+};
+
+function normalizeTypeTokens(value?: string | null): string[] {
+  if (!value) return [];
+  const trimmed = value.trim().toLowerCase();
+  if (!trimmed) return [];
+  if (TYPE_ALIASES[trimmed]) return TYPE_ALIASES[trimmed];
+  if (trimmed.includes('браслет')) return TYPE_ALIASES.bracelet;
+  if (trimmed.includes('кольц')) return TYPE_ALIASES.ring;
+  if (trimmed.includes('колье')) return TYPE_ALIASES.necklace;
+  if (trimmed.includes('талисман')) return TYPE_ALIASES.talisman;
+  return [trimmed];
+}
+
+function applyTypeFilter(query: any, type?: string | null) {
+  const tokens = normalizeTypeTokens(type)
+    .map((token) => token.replace(/[%,]/g, '').trim())
+    .filter(Boolean);
+  if (!tokens.length) return query;
+  const unique = Array.from(new Set(tokens));
+  if (unique.length === 1) {
+    return query.ilike('type', `%${unique[0]}%`);
+  }
+  return query.or(unique.map((token) => `type.ilike.%${token}%`).join(','));
+}
+
 function getInitData(req: express.Request) {
   return (req.body?.telegram_init_data as string | undefined) ?? (req.headers['x-telegram-initdata'] as string | undefined);
 }
@@ -154,25 +185,21 @@ async function insertStoneRequest(params: {
   if (error) console.error('insertStoneRequest error', error);
 }
 
-async function fetchProducts(filters: { type?: string | null; stoneId?: number | null }): Promise<Product[]> {
+async function fetchProducts(filters: { type?: string | null; stoneIds?: number[] | null }): Promise<Product[]> {
   if (!supabase) return [];
   let query = supabase.from('products').select('*').eq('is_active', true);
-  if (filters.type) {
-    query = query.eq('type', filters.type);
-  }
-  if (filters.stoneId) {
+  query = applyTypeFilter(query, filters.type);
+  if (filters.stoneIds?.length) {
     // Try 'stones' first (more likely to exist in older schemas), then fallback to 'stone_ids'
-    query = query.overlaps('stones', [filters.stoneId]);
+    query = query.overlaps('stones', filters.stoneIds);
   }
   const { data, error } = await query.limit(30);
   if (error) {
     // If 'stones' column doesn't exist, try 'stone_ids' as fallback
-    if (error.message?.includes('column "stones"') && filters.stoneId) {
-      const fallbackQuery = supabase.from('products').select('*').eq('is_active', true);
-      if (filters.type) {
-        fallbackQuery.eq('type', filters.type);
-      }
-      const fallback = await fallbackQuery.overlaps('stone_ids', [filters.stoneId]).limit(30);
+    if (error.message?.includes('column "stones"') && filters.stoneIds?.length) {
+      let fallbackQuery = supabase.from('products').select('*').eq('is_active', true);
+      fallbackQuery = applyTypeFilter(fallbackQuery, filters.type);
+      const fallback = await fallbackQuery.overlaps('stone_ids', filters.stoneIds).limit(30);
       if (fallback.error) {
         console.error('fetchProducts fallback error', fallback.error);
         return [];
@@ -440,9 +467,16 @@ export function buildApiApp() {
   app.get('/api/products', async (req, res) => {
     try {
       if (!hasSupabase) return res.status(503).json({ error: 'Supabase not configured' });
+      const stoneIdsParam = req.query.stone_ids;
+      const stoneIdsRaw = Array.isArray(stoneIdsParam) ? stoneIdsParam : stoneIdsParam ? [stoneIdsParam] : [];
+      const stoneIds = stoneIdsRaw
+        .flatMap((value) => String(value).split(','))
+        .map((value) => Number(value.trim()))
+        .filter((value) => Number.isFinite(value));
       const stoneId = req.query.stone_id ? Number(req.query.stone_id) : null;
       const type = req.query.type ? String(req.query.type) : null;
-      const products = await fetchProducts({ stoneId, type });
+      const stoneFilter = stoneIds.length ? stoneIds : stoneId ? [stoneId] : null;
+      const products = await fetchProducts({ stoneIds: stoneFilter, type });
       return res.json({ products });
     } catch (err) {
       console.error('GET /api/products error', err);
