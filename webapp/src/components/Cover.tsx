@@ -1,6 +1,7 @@
 import '../App.css';
 import HeroSection from './HeroSection';
 import type { Screen } from '../types';
+import { useI18n } from '../i18n';
 
 type Props = {
   onStart: () => void;
@@ -8,38 +9,16 @@ type Props = {
   onNavigate: (screen: Screen) => void;
 };
 
-const flowSteps: { title: string; text: string; step: number; screen: Screen; icon: 'profile' | 'stone' | 'ring' | 'custom' }[] = [
-  {
-    title: 'Точка входа',
-    text: 'Опираемся на твой запрос, текущее состояние и дату рождения, чтобы определить твой энергетический код и подобрать камни точнее.',
-    step: 1,
-    screen: 'profile',
-    icon: 'profile',
-  },
-  {
-    title: 'Подбор камня',
-    text: 'Выбираем минералы, которые поддержат тебя в текущем запросе: деньги, любовь, защита, путь.',
-    step: 2,
-    screen: 'stone',
-    icon: 'stone',
-  },
-  {
-    title: 'Каталог украшений',
-    text: 'Показываем готовые украшения с подобранными камнями — можно сразу выбрать то, что откликается.',
-    step: 3,
-    screen: 'catalog',
-    icon: 'ring',
-  },
-  {
-    title: 'Индивидуальный проект',
-    text: 'Создаём украшение под тебя: ты описываешь запрос — мастер собирает личный амулет.',
-    step: 4,
-    screen: 'custom',
-    icon: 'custom',
-  },
+const flowSteps: { key: 'profile' | 'stone' | 'catalog' | 'custom'; step: number; screen: Screen; icon: 'profile' | 'stone' | 'ring' | 'custom' }[] = [
+  { key: 'profile', step: 1, screen: 'profile', icon: 'profile' },
+  { key: 'stone', step: 2, screen: 'stone', icon: 'stone' },
+  { key: 'catalog', step: 3, screen: 'catalog', icon: 'ring' },
+  { key: 'custom', step: 4, screen: 'custom', icon: 'custom' },
 ];
 
 export function Cover({ onStart, onCatalog, onNavigate }: Props) {
+  const { t } = useI18n();
+
   return (
     <div className="screen cover-grid">
       {/* Premium Hero Block with Eye Crystal */}
@@ -48,7 +27,7 @@ export function Cover({ onStart, onCatalog, onNavigate }: Props) {
       {/* Description */}
       <div className="hero-description">
         <p className="muted lead-text">
-          Я помогу найти камень, который отзовётся на твою душу, и создам украшение — личное, как амулет.
+          {t('cover.lead')}
         </p>
       </div>
 
@@ -68,13 +47,13 @@ export function Cover({ onStart, onCatalog, onNavigate }: Props) {
                     <div className={`flow-icon-img ${item.icon}`} />
                   </div>
                   <div className="flow-card-meta">
-                    <h3>{item.title}</h3>
+                    <h3>{t(`cover.steps.${item.key}.title`)}</h3>
                   </div>
                   <div className="flow-card-actions">
                     <div className="flow-chevron" aria-hidden />
                   </div>
                 </div>
-                <p className="muted flow-card-text">{item.text}</p>
+                <p className="muted flow-card-text">{t(`cover.steps.${item.key}.text`)}</p>
               </div>
             </button>
           ))}

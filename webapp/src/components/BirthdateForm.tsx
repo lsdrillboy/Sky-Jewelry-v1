@@ -4,6 +4,7 @@ import type { User } from '../types';
 import calendarIcon from '../assets/icon-calendar.svg';
 import backIcon from '../assets/icon-arrow-left.svg';
 import SectionHeader from './SectionHeader';
+import { useI18n } from '../i18n';
 
 type Props = {
   user: User | null;
@@ -18,6 +19,7 @@ function normalize(date?: string | null) {
 }
 
 export function BirthdateForm({ user, onSubmit, onBack }: Props) {
+  const { t } = useI18n();
   const [value, setValue] = useState(() => normalize(user?.birthdate));
   const [saving, setSaving] = useState(false);
 
@@ -35,16 +37,16 @@ export function BirthdateForm({ user, onSubmit, onBack }: Props) {
           <div className="logo-mark" />
           <SectionHeader
             align="center"
-            kicker="Профиль"
-            title="Дата рождения"
-            subtitle="Используется для расчёта числа пути и точного подбора минералов."
+            kicker={t('birthdate.kicker')}
+            title={t('birthdate.title')}
+            subtitle={t('birthdate.subtitle')}
           />
         </div>
       </div>
 
       <div className="panel">
         <label className="subtitle" htmlFor="birthdate">
-          Выбери дату
+          {t('birthdate.label')}
         </label>
         <input
           id="birthdate"
@@ -53,15 +55,15 @@ export function BirthdateForm({ user, onSubmit, onBack }: Props) {
           value={value}
           onChange={(e) => setValue(e.target.value)}
         />
-        <p className="muted">Дата сохранится в Supabase и будет использоваться при подборе камней.</p>
+        <p className="muted">{t('birthdate.note')}</p>
         <div className="action-row">
           <button className="button" onClick={handleSubmit} disabled={saving || !value}>
             <img className="btn-icon" src={calendarIcon} alt="" />
-            {saving ? 'Сохраняю...' : 'Сохранить и продолжить'}
+            {saving ? t('common.saving') : t('birthdate.save')}
           </button>
           <button className="button minimal ghost menu-back" onClick={onBack}>
             <img className="btn-icon" src={backIcon} alt="" />
-            В меню
+            {t('common.menu')}
           </button>
         </div>
       </div>

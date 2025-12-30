@@ -1,6 +1,7 @@
 import '../App.css';
 import backIcon from '../assets/icon-arrow-left.svg';
 import SectionHeader from './SectionHeader';
+import { useI18n } from '../i18n';
 
 type Props = {
   title: string;
@@ -11,6 +12,8 @@ type Props = {
 };
 
 export default function InfoSection({ title, subtitle, bullets = [], note, onBack }: Props) {
+  const { t } = useI18n();
+
   return (
     <div className="screen">
       <div className="hero">
@@ -28,7 +31,7 @@ export default function InfoSection({ title, subtitle, bullets = [], note, onBac
         <div className="mt-14">
           <button className="button minimal ghost menu-back" onClick={onBack}>
             <img className="btn-icon" src={backIcon} alt="" />
-            В меню
+            {t('common.menu')}
           </button>
         </div>
       </div>

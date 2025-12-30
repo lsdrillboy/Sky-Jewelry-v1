@@ -1,4 +1,5 @@
 import '../App.css';
+import { useI18n } from '../i18n';
 
 type Stage =
   | 'init'
@@ -13,12 +14,13 @@ type Props = {
   stage: Stage;
 };
 
-function stageText(_stage: Stage) {
-  return { title: 'Вход', subtitle: 'Подключаю профиль…' };
+function stageText(_stage: Stage, t: (key: string) => string) {
+  return { title: t('preAuth.title'), subtitle: t('preAuth.subtitle') };
 }
 
 export default function PreAuth({ stage }: Props) {
-  const { title, subtitle } = stageText(stage);
+  const { t } = useI18n();
+  const { title, subtitle } = stageText(stage, t);
   const logoUrl =
     'https://kyxztleagpawfhkvxvwa.supabase.co/storage/v1/object/sign/Cover/logogo.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8wMGI3NGEwZi1jMTViLTRmYzQtYWIzMS0yMzdiMTE3OGY0MWEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJDb3Zlci9sb2dvZ28ucG5nIiwiaWF0IjoxNzY1NjgyOTYwLCJleHAiOjE3OTcyMTg5NjB9.8dtOi_KfgKaqFwzz5qi2CBJGsReZ1Ob90QOSRtqQwnk';
 
@@ -33,7 +35,7 @@ export default function PreAuth({ stage }: Props) {
           <div className={`preauth-ring ${stage === 'done' ? 'preauth-ring-done' : ''}`}>
             <span />
           </div>
-          <div className="tiny">Займёт несколько секунд</div>
+          <div className="tiny">{t('preAuth.caption')}</div>
         </div>
       </div>
     </div>

@@ -7,6 +7,7 @@ import backIcon from '../assets/icon-arrow-left.svg';
 import { normalizeStone, type NormalizedStone } from '../utils/stone';
 import StoneDetails from './StoneDetails';
 import SectionHeader from './SectionHeader';
+import { useI18n } from '../i18n';
 
 type Props = {
   result: StonePickerResult | null;
@@ -29,6 +30,7 @@ export function StonePicker({
   onOpenCatalog,
   onBack,
 }: Props) {
+  const { t } = useI18n();
   const [selected, setSelected] = useState<NormalizedStone | null>(null);
   const normalizedResult = useMemo(
     () => (result ? { ...result, stones: result.stones.map(normalizeStone) } : null),
@@ -36,6 +38,10 @@ export function StonePicker({
   );
   const themeOptions = themes.length ? themes : themeFallback;
   const isThemeLoading = themesLoading && !themes.length;
+  const resolveThemeLabel = (theme: Theme | (typeof themeFallback)[number]) => {
+    if ('labelKey' in theme && theme.labelKey) return t(theme.labelKey);
+    return t(`themes.${theme.code}`, { defaultValue: theme.label ?? theme.code });
+  };
 
   return (
     <div className="screen">
@@ -44,16 +50,16 @@ export function StonePicker({
           <div className="logo-mark" />
           <SectionHeader
             align="center"
-            kicker="Подбор камня"
-            title="С каким запросом работаешь?"
-            subtitle="Я посмотрю камни, которые лучше всего поддержат тебя сейчас."
+            kicker={t('stonePicker.kicker')}
+            title={t('stonePicker.title')}
+            subtitle={t('stonePicker.subtitle')}
           />
-          {lifePath ? <div className="pill">Число пути: {lifePath}</div> : null}
+          {lifePath ? <div className="pill">{t('common.lifePathLabel', { value: lifePath })}</div> : null}
         </div>
       </div>
 
       <div className="panel">
-        <div className="subtitle">Выбери тему</div>
+        <div className="subtitle">{t('stonePicker.chooseTheme')}</div>
         <select
           className="input"
           onChange={(e) => e.target.value && onPick(e.target.value)}
@@ -61,37 +67,39 @@ export function StonePicker({
           disabled={isThemeLoading}
         >
           <option value="" disabled>
-            {isThemeLoading ? 'Загружаю темы...' : 'Выбери тему под запрос'}
+            {isThemeLoading ? t('stonePicker.loadingThemes') : t('stonePicker.themePlaceholder')}
           </option>
           {themeOptions.map((theme) => (
             <option key={theme.code} value={theme.code}>
-              {theme.label ?? theme.code}
+              {resolveThemeLabel(theme)}
             </option>
           ))}
         </select>
         {isThemeLoading ? (
           <div className="inline-row mt-12">
             <div className="spinner small" />
-            <div className="muted">Загружаю темы...</div>
+            <div className="muted">{t('stonePicker.loadingThemes')}</div>
           </div>
         ) : loading ? (
           <div className="inline-row mt-12">
             <div className="spinner small" />
-            <div className="muted">Собираю рекомендации...</div>
+            <div className="muted">{t('stonePicker.loadingRecommendations')}</div>
           </div>
         ) : (
-          <p className="muted mt-10">Темы можно менять — подберу новые связки камней.</p>
+          <p className="muted mt-10">{t('stonePicker.canChange')}</p>
         )}
       </div>
 
       <div className="panel">
-        <div className="subtitle">Результат</div>
-        {!result && <p className="muted">После выбора темы здесь появятся камни.</p>}
+        <div className="subtitle">{t('common.result')}</div>
+        {!result && <p className="muted">{t('stonePicker.resultEmpty')}</p>}
         {normalizedResult && (
           <div className="grid two">
             {normalizedResult.stones.map((stone: NormalizedStone, idx) => (
               <div key={stone.id} className="card stone-card">
-                <div className="floating-badge">{idx === 0 ? 'главный' : 'дополнительный'}</div>
+                <div className="floating-badge">
+                  {idx === 0 ? t('stonePicker.primary') : t('stonePicker.secondary')}
+                </div>
                 {stone.photo_url ? <img src={stone.photo_url} alt={stone.name_ru} /> : null}
                 <div className="stone-meta">
                   <div
@@ -101,7 +109,7 @@ export function StonePicker({
                   <h3>{stone.name_ru}</h3>
                 </div>
                 <p className="muted min-h-48">
-                  {stone.description_short ?? 'Описание появится позже.'}
+                  {stone.description_short ?? t('common.descriptionPlaceholder')}
                 </p>
                 <div className="chips">
                   {stone.chakra_list.map((chakra) => (
@@ -116,17 +124,17 @@ export function StonePicker({
                   ))}
                   {stone.life_path_list.map((lp) => (
                     <span key={`l-${lp}`} className="tag">
-                      Путь {lp}
+                      {t('common.pathLabel', { value: lp })}
                     </span>
                   ))}
                 </div>
                 <div className="stack">
                   <button className="stone-cta" type="button" onClick={() => onOpenCatalog(stone.id)}>
                     <img className="btn-icon" src={ringIcon} alt="" />
-                    Показать украшения с этим камнем
+                    {t('stonePicker.showProducts')}
                   </button>
                   <button className="button minimal ghost" type="button" onClick={() => setSelected(stone)}>
-                    Подробнее
+                    {t('common.details')}
                   </button>
                 </div>
               </div>
@@ -138,7 +146,7 @@ export function StonePicker({
       <div className="action-row">
         <button className="button minimal ghost menu-back" onClick={onBack}>
           <img className="btn-icon" src={backIcon} alt="" />
-          В меню
+          {t('common.menu')}
         </button>
       </div>
 

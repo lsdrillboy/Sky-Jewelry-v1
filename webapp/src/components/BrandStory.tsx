@@ -1,6 +1,7 @@
 import '../App.css';
 import backIcon from '../assets/icon-arrow-left.svg';
 import SectionHeader from './SectionHeader';
+import { useI18n } from '../i18n';
 
 type Props = {
   onBack: () => void;
@@ -9,55 +10,31 @@ type Props = {
 const authorPhoto =
   'https://kyxztleagpawfhkvxvwa.supabase.co/storage/v1/object/sign/Cover/Autor.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8wMGI3NGEwZi1jMTViLTRmYzQtYWIzMS0yMzdiMTE3OGY0MWEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJDb3Zlci9BdXRvci5qcGVnIiwiaWF0IjoxNzY1Nzk0NTYxLCJleHAiOjE3OTczMzA1NjF9.cSvZNla8uLWxTvTukrsY6TVNRVji_yIaLFtA0YbXu0o';
 
-const storyBlocks = [
-  {
-    title: 'Настройка, а не продукт',
-    text: `Мы создаём очень ограниченное количество изделий и большую часть времени посвящаем не производству, а глубокому тестированию каждого минерала — сначала на себе, затем в живой практике с людьми. Камень никогда не используется «вслепую»: он проживается, чувствуется и проверяется во времени. Украшение SkyJewelry — это не продукт для витрины. Это — настройка.`,
-  },
-  {
-    title: 'Наш человек',
-    text: `Наш человек — тот, кто чувствует: не все задачи решаются логикой и умом. Он приходит с внутренним состоянием: «Я верю и позволяю чудесам происходить в моей жизни». И уходит с ощущением вдохновлённости, наполненности, принятия, любви и понимания, что с ним всё в порядке.`,
-  },
-  {
-    title: 'Атмосфера',
-    text: `SkyJewelry — это магия, энергия и воля. Мир, похожий на восточную сказку, где живут специи, джины и чудеса, и где тонкое и материальное существуют вместе.`,
-  },
-  {
-    title: 'Новый уровень',
-    text: `Долгое время SkyJewelry существовал камерно — как путь для себя и узкого круга. Любой живой процесс готов выйти за пределы личного пространства: сегодня мы на пороге нового уровня, но не как массовый продукт, а как зрелая форма того, что годы проживалось в тишине.`,
-  },
-  {
-    title: 'Взгляд в будущее',
-    text: `По мере повышения чувствительности людей и изменения вибраций планеты человечество будет глубже понимать влияние энергий. SkyJewelry поможет в этом пути — создавая браслеты, бусы и домашние минералы‑гармонизаторы как инструменты осознанного самопрограммирования.`,
-  },
-  {
-    title: 'Наследие',
-    text: `То, что мы хотим оставить — знание и понимание: камни работают, и человек способен осознанно взаимодействовать с реальностью. SkyJewelry существует потому, что я верю в магию. И потому что выбираю жить в сказке. SkyJewelry — украшения, которые помнят, кто ты есть.`,
-  },
-];
-
 export default function BrandStory({ onBack }: Props) {
+  const { t, get } = useI18n();
+  const storyBlocks = (get('brandStory.blocks') as { title: string; text: string }[]) ?? [];
+
   return (
     <div className="screen story-screen">
       <div className="hero story-hero">
         <div className="story-hero-text">
           <SectionHeader
             align="left"
-            kicker="История бренда / Мастерская"
-            title="Sky Jewelry"
-            subtitle="Ручная работа, смысл и энергия, прожитые в тишине и готовые к твоей истории."
+            kicker={t('brandStory.kicker')}
+            title={t('brandStory.title')}
+            subtitle={t('brandStory.subtitle')}
           />
         </div>
         <div className="story-author full">
           <div className="story-photo-frame large full">
-            <img className="story-photo" src={authorPhoto} alt="Евгений Пламеннов" />
+            <img className="story-photo" src={authorPhoto} alt={t('brandStory.authorName')} />
             <div className="story-photo-glow" />
           </div>
           <div className="story-author-meta">
-            <div className="tiny">Автор</div>
-            <div className="story-author-name">Евгений Пламеннов</div>
+            <div className="tiny">{t('brandStory.authorLabel')}</div>
+            <div className="story-author-name">{t('brandStory.authorName')}</div>
             <p className="muted story-author-note">
-              Живой тест минералов. Магия и ювелирное ремесло — как единый язык.
+              {t('brandStory.authorNote')}
             </p>
           </div>
         </div>
@@ -75,7 +52,7 @@ export default function BrandStory({ onBack }: Props) {
         <div className="mt-18">
           <button className="button minimal ghost menu-back" onClick={onBack}>
             <img className="btn-icon" src={backIcon} alt="" />
-            В меню
+            {t('common.menu')}
           </button>
         </div>
       </div>

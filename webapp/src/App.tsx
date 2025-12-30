@@ -24,6 +24,8 @@ import Favorites from './components/Favorites';
 import Reviews from './components/Reviews';
 import PreAuth from './components/PreAuth';
 import ConfirmModal from './components/ConfirmModal';
+import LanguageSwitcher from './components/LanguageSwitcher';
+import { useI18n } from './i18n';
 
 function extractInitData() {
   const tg = (window as any).Telegram?.WebApp;
@@ -79,7 +81,11 @@ type PreAuthStage =
   | 'error-network'
   | 'error-unknown';
 
+type ToastState = { key: string; params?: Record<string, string | number> } | null;
+type OrderModalState = { titleKey: string; textKey: string } | null;
+
 function App() {
+  const { t } = useI18n();
   const [initData, setInitData] = useState('');
   const [screen, setScreen] = useState<Screen>('cover');
   const [user, setUser] = useState<User | null>(null);
@@ -95,8 +101,8 @@ function App() {
   const [pickerLoading, setPickerLoading] = useState(false);
   const [requestLoading, setRequestLoading] = useState(false);
   const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
-  const [toast, setToast] = useState<string | null>(null);
-  const [orderModal, setOrderModal] = useState<{ title: string; text: string } | null>(null);
+  const [toast, setToast] = useState<ToastState>(null);
+  const [orderModal, setOrderModal] = useState<OrderModalState>(null);
 
   useEffect(() => {
     try {
@@ -195,7 +201,7 @@ function App() {
       setStones(stones);
     } catch (err) {
       console.error('getStones failed', err);
-      setToast('Не удалось загрузить список камней.');
+      setToast({ key: 'app.toast.stonesLoadError' });
     } finally {
       setStonesLoading(false);
     }
@@ -208,7 +214,7 @@ function App() {
       setProducts(products);
     } catch (err) {
       console.error('getProducts failed', err);
-      setToast('Не удалось загрузить каталог.');
+      setToast({ key: 'app.toast.catalogLoadError' });
     } finally {
       setCatalogLoading(false);
     }
@@ -221,7 +227,7 @@ function App() {
       setThemes(themes);
     } catch (err) {
       console.error('getThemes failed', err);
-      setToast('Не удалось загрузить темы.');
+      setToast({ key: 'app.toast.themesLoadError' });
     } finally {
       setThemesLoading(false);
     }
@@ -231,11 +237,11 @@ function App() {
     try {
       const { user } = await updateBirthdate(initData, birthdate);
       setUser((prev) => mergeUser(prev, { ...user, photo_url: (user as any)?.photo_url ?? prev?.photo_url ?? null }));
-      setToast('Дата рождения сохранена');
+      setToast({ key: 'app.toast.birthdateSaved' });
       if (nextScreen) setScreen(nextScreen);
     } catch (err) {
       console.error('updateBirthdate failed', err);
-      setToast('Не удалось сохранить дату. Проверь подключение.');
+      setToast({ key: 'app.toast.birthdateSaveError' });
       throw err;
     }
   };
@@ -250,7 +256,7 @@ function App() {
       }
     } catch (err) {
       console.error('pickStone failed', err);
-      setToast('Не удалось подобрать камни. Попробуй ещё раз.');
+      setToast({ key: 'app.toast.stonePickError' });
     } finally {
       setPickerLoading(false);
     }
@@ -261,12 +267,12 @@ function App() {
     try {
       await submitCustomRequest(initData, payload);
       setOrderModal({
-        title: 'Заказ принят',
-        text: 'Наш менеджер скоро свяжется с вами.',
+        titleKey: 'app.modal.orderTitle',
+        textKey: 'app.modal.orderText',
       });
     } catch (err) {
       console.error('custom request failed', err);
-      setToast('Не удалось отправить, попробуйте ещё раз.');
+      setToast({ key: 'app.toast.sendError' });
     } finally {
       setRequestLoading(false);
     }
@@ -280,15 +286,15 @@ function App() {
         stones: product.stone_ids ?? product.stones ?? [],
         budget_from: product.price_min ?? product.price ?? null,
         budget_to: product.price_max ?? product.price ?? null,
-        comment: `Каталог: ${product.name} (id ${product.id})`,
+        comment: t('app.order.catalogComment', { name: product.name, id: product.id }),
       });
       setOrderModal({
-        title: 'Заказ принят',
-        text: 'Наш менеджер скоро свяжется с вами.',
+        titleKey: 'app.modal.orderTitle',
+        textKey: 'app.modal.orderText',
       });
     } catch (err) {
       console.error('catalog order failed', err);
-      setToast('Не удалось отправить, попробуйте ещё раз.');
+      setToast({ key: 'app.toast.sendError' });
     } finally {
       setRequestLoading(false);
     }
@@ -397,20 +403,22 @@ function App() {
     themesLoading,
     requestLoading,
     favoriteProducts,
+    t,
   ]);
 
   return (
     <div className="app-shell">
+      <LanguageSwitcher />
       {preAuthStage !== 'done' ? <PreAuth stage={preAuthStage} /> : null}
       {content}
       {orderModal ? (
         <ConfirmModal
-          title={orderModal.title}
-          text={orderModal.text}
+          title={t(orderModal.titleKey)}
+          text={t(orderModal.textKey)}
           onClose={() => setOrderModal(null)}
         />
       ) : null}
-      {toast ? <div className="toast">{toast}</div> : null}
+      {toast ? <div className="toast">{t(toast.key, toast.params)}</div> : null}
     </div>
   );
 }

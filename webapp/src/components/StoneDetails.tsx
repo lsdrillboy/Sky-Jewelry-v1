@@ -1,5 +1,6 @@
 import '../App.css';
 import type { NormalizedStone } from '../utils/stone';
+import { useI18n } from '../i18n';
 
 type Props = {
   stone: NormalizedStone | null;
@@ -7,13 +8,14 @@ type Props = {
 };
 
 export function StoneDetails({ stone, onClose }: Props) {
+  const { t } = useI18n();
   if (!stone) return null;
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
           <h3>{stone.name_ru}</h3>
-          <button className="icon-button" type="button" onClick={onClose} aria-label="Закрыть">
+          <button className="icon-button" type="button" onClick={onClose} aria-label={t('common.close')}>
             ✕
           </button>
         </div>
@@ -40,7 +42,7 @@ export function StoneDetails({ stone, onClose }: Props) {
           ))}
           {stone.life_path_list.map((lp) => (
             <span key={`ml-${lp}`} className="tag">
-              Путь {lp}
+              {t('common.pathLabel', { value: lp })}
             </span>
           ))}
         </div>

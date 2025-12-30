@@ -9,6 +9,7 @@ import reviewsIcon from '../assets/icon-reviews.svg';
 import historyIcon from '../assets/icon-history.svg';
 import favoritesIcon from '../assets/icon-favorites.svg';
 import SectionHeader from './SectionHeader';
+import { useI18n } from '../i18n';
 
 type Props = {
   user: User | null;
@@ -17,6 +18,9 @@ type Props = {
 };
 
 export function MainMenu({ user, onNavigate, onBackToCover }: Props) {
+  const { t } = useI18n();
+  const displayName = user?.first_name ?? t('mainMenu.guest');
+
   return (
     <div className="screen">
       <div className="hero">
@@ -24,52 +28,52 @@ export function MainMenu({ user, onNavigate, onBackToCover }: Props) {
           <div className="logo-mark" />
           <SectionHeader
             align="center"
-            kicker={`Добро пожаловать, ${user?.first_name ?? 'гость'}`}
+            kicker={t('mainMenu.welcome', { name: displayName })}
             title="Sky Jewelry"
-            subtitle="Подберу минералы по твоей энергии, покажу украшения Sky Jewelry и помогу собрать индивидуальное изделие."
+            subtitle={t('mainMenu.subtitle')}
           />
         </div>
         {onBackToCover ? (
-          <button className="back-fab" aria-label="Вернуться">
+          <button className="back-fab" aria-label={t('mainMenu.backAria')}>
             <span onClick={onBackToCover} />
           </button>
         ) : null}
       </div>
 
       <div className="panel">
-        <div className="subtitle">Навигация</div>
+        <div className="subtitle">{t('mainMenu.navigation')}</div>
         <div className="menu-grid nav-grid">
           <button className="button full nav-button" onClick={() => onNavigate('profile')}>
             <img className="nav-icon" src={profileIcon} alt="" />
-            <span className="nav-label">Мой профиль</span>
+            <span className="nav-label">{t('mainMenu.items.profile')}</span>
           </button>
           <button className="button full nav-button nav-muted" onClick={() => onNavigate('stone')}>
             <img className="nav-icon" src={stoneIcon} alt="" />
-            <span className="nav-label">Подбор камня</span>
+            <span className="nav-label">{t('mainMenu.items.stone')}</span>
           </button>
           <button className="button full nav-button nav-muted" onClick={() => onNavigate('catalog')}>
             <img className="nav-icon" src={ringIcon} alt="" />
-            <span className="nav-label">Каталог украшений</span>
+            <span className="nav-label">{t('mainMenu.items.catalog')}</span>
           </button>
           <button className="button full nav-button nav-muted" onClick={() => onNavigate('custom')}>
             <img className="nav-icon" src={customIcon} alt="" />
-            <span className="nav-label">Индивидуальное украшение</span>
+            <span className="nav-label">{t('mainMenu.items.custom')}</span>
           </button>
           <button className="button full nav-button nav-muted" onClick={() => onNavigate('library')}>
             <img className="nav-icon" src={energyIcon} alt="" />
-            <span className="nav-label">Энергия камней</span>
+            <span className="nav-label">{t('mainMenu.items.library')}</span>
           </button>
           <button className="button full nav-button nav-muted" onClick={() => onNavigate('reviews')}>
             <img className="nav-icon" src={reviewsIcon} alt="" />
-            <span className="nav-label">Отзывы</span>
+            <span className="nav-label">{t('mainMenu.items.reviews')}</span>
           </button>
           <button className="button full nav-button nav-muted" onClick={() => onNavigate('history')}>
             <img className="nav-icon" src={historyIcon} alt="" />
-            <span className="nav-label">История бренда</span>
+            <span className="nav-label">{t('mainMenu.items.history')}</span>
           </button>
           <button className="button full nav-button nav-muted" onClick={() => onNavigate('favorites')}>
             <img className="nav-icon" src={favoritesIcon} alt="" />
-            <span className="nav-label">Избранное</span>
+            <span className="nav-label">{t('mainMenu.items.favorites')}</span>
           </button>
         </div>
       </div>

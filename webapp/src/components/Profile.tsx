@@ -3,6 +3,7 @@ import '../App.css';
 import type { User } from '../types';
 import calendarIcon from '../assets/icon-calendar.svg';
 import backIcon from '../assets/icon-arrow-left.svg';
+import { useI18n } from '../i18n';
 
 type Props = {
   user: User | null;
@@ -20,25 +21,16 @@ function formatUsername(username?: string | null) {
   return username.startsWith('@') ? username : `@${username}`;
 }
 
-function lifePathDescription(value?: number | null) {
-  if (!value) return 'Добавь дату рождения, чтобы узнать свой путь.';
-  const map: Record<number, string> = {
-    1: 'Путь лидерства и инициативы.',
-    2: 'Путь баланса и дипломатии.',
-    3: 'Путь творчества и самовыражения.',
-    4: 'Путь структуры и силы.',
-    5: 'Путь перемен и свободы.',
-    6: 'Путь заботы и гармонии.',
-    7: 'Путь интуиции и знаний.',
-    8: 'Путь реализации и энергии.',
-    9: 'Путь служения и мудрости.',
-    11: 'Путь вдохновения и идей.',
-    22: 'Путь созидания и масштаба.',
-  };
-  return map[value] ?? 'Твоя энергетика активируется после указания даты рождения.';
+function lifePathDescription(
+  value: number | null | undefined,
+  t: (key: string, params?: { defaultValue?: string }) => string,
+) {
+  if (!value) return t('profile.lifePath.missing');
+  return t(`profile.lifePath.${value}`, { defaultValue: t('profile.lifePath.default') });
 }
 
 export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
+  const { t } = useI18n();
   const [birthdate, setBirthdate] = useState(() => normalize(user?.birthdate));
   const [saving, setSaving] = useState(false);
   const [note, setNote] = useState<string | null>(null);
@@ -56,9 +48,9 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
     setSaving(true);
     try {
       await onSaveBirthdate(birthdate);
-      setNote('Данные обновлены.');
+      setNote(t('profile.noteSaved'));
     } catch (err) {
-      // toast об ошибке уже ставится выше
+      // toast error is handled in the parent
       setNote(null);
     } finally {
       setSaving(false);
@@ -82,25 +74,25 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
           <div className="profile-avatar-glow" />
         </div>
         <div className="profile-hero-copy">
-          <div className="profile-hero-kicker">Моя энергетическая карта</div>
-          <h1 className="profile-hero-title">Sky Jewelry Profile</h1>
+          <div className="profile-hero-kicker">{t('profile.kicker')}</div>
+          <h1 className="profile-hero-title">{t('profile.title')}</h1>
           <p className="muted profile-hero-text">
-            Персональный подбор камней и украшений по твоей энергии — рекомендации, которые раскрывают твой стиль и состояние.
+            {t('profile.subtitle')}
           </p>
           {!hasBirthdate ? (
             <div className="profile-hero-hint">
-              Укажи дату рождения, чтобы я смог подобрать твои камни.
+              {t('profile.hint')}
             </div>
           ) : null}
         </div>
       </div>
 
       <div className="panel">
-        <div className="subtitle">Твои идентификаторы</div>
+        <div className="subtitle">{t('profile.identifiers')}</div>
         <div className="identity-grid">
           <div className="identity-card">
             <div className="identity-row">
-              <div className="identity-label">Telegram ID</div>
+              <div className="identity-label">{t('profile.labels.telegramId')}</div>
             </div>
             <div className="identity-value" title={telegramId}>
               {telegramId}
@@ -108,14 +100,14 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
           </div>
           <div className="identity-card">
             <div className="identity-row">
-              <div className="identity-label">Username</div>
+              <div className="identity-label">{t('profile.labels.username')}</div>
             </div>
             <div className="identity-value" title={usernameValue}>
               {usernameValue}
             </div>
           </div>
           <div className="identity-card wide">
-            <div className="identity-label">Имя</div>
+            <div className="identity-label">{t('profile.labels.name')}</div>
             <div className="identity-value" title={fullName}>
               {fullName}
             </div>
@@ -124,17 +116,17 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
       </div>
 
       <div className="panel energy-panel">
-        <div className="subtitle">Энергетический блок</div>
+        <div className="subtitle">{t('profile.energyBlock')}</div>
         <div className="energy-stack">
           <div className="energy-card energy-input-card">
-            <div className="energy-label">Дата рождения</div>
+            <div className="energy-label">{t('profile.birthdateLabel')}</div>
             <div className="energy-input-line">
               <input
                 className="input energy-date-input"
                 type="date"
                 value={birthdate}
                 onChange={(e) => setBirthdate(e.target.value)}
-                placeholder="ДД.ММ.ГГГГ"
+                placeholder={t('profile.birthdatePlaceholder')}
               />
               <button
                 className="button minimal energy-primary-btn"
@@ -142,21 +134,21 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
                 onClick={handleSave}
               >
                 <img className="btn-icon" src={calendarIcon} alt="" />
-                {saving ? 'Сохраняю...' : 'Обновить'}
+                {saving ? t('common.saving') : t('common.update')}
               </button>
             </div>
             {note ? (
               <p className="muted profile-note success mt-8">
-                Данные обновлены.
+                {t('profile.noteSaved')}
               </p>
             ) : null}
           </div>
           <div className="energy-card energy-result-card">
-            <div className="energy-label">Число пути</div>
+            <div className="energy-label">{t('common.lifePathShort')}</div>
             <div className="energy-life">
               <div className="energy-life-number">{hasLifePath ? user?.life_path : '—'}</div>
               <p className="muted energy-life-desc">
-                {lifePathDescription(user?.life_path)}
+                {lifePathDescription(user?.life_path, t)}
               </p>
             </div>
           </div>
@@ -169,13 +161,13 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
                 <circle cx="12" cy="15" r="1.5" fill="currentColor" />
               </svg>
             </span>
-            <span>Эти данные используются только для персонального подбора камней и не передаются третьим лицам.</span>
+            <span>{t('profile.trustNote')}</span>
           </div>
 
           <div className="profile-actions compact">
             <button className="button minimal ghost menu-back" onClick={onBack}>
               <img className="btn-icon" src={backIcon} alt="" />
-              В меню
+              {t('common.menu')}
             </button>
           </div>
         </div>

@@ -5,6 +5,7 @@ import { normalizeStone, type NormalizedStone } from '../utils/stone';
 import StoneDetails from './StoneDetails';
 import backIcon from '../assets/icon-arrow-left.svg';
 import SectionHeader from './SectionHeader';
+import { useI18n } from '../i18n';
 
 type Props = {
   stones: Stone[];
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
+  const { t } = useI18n();
   const [openedId, setOpenedId] = useState<number | null>(null);
   const [selected, setSelected] = useState<NormalizedStone | null>(null);
 
@@ -31,29 +33,29 @@ export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
           <div className="logo-mark" />
           <SectionHeader
             align="center"
-            kicker="Энергия камней"
-            title="Справочник минералов"
-            subtitle="Краткие заметки о том, что усиливает каждый камень."
+            kicker={t('library.kicker')}
+            title={t('library.title')}
+            subtitle={t('library.subtitle')}
           />
         </div>
       </div>
 
       <div className="panel">
-        <div className="subtitle">Поиск</div>
-        <input className="input" placeholder="Например: турмалин, защита, любовь" onChange={(e) => onSearch(e.target.value)} />
+        <div className="subtitle">{t('common.search')}</div>
+        <input className="input" placeholder={t('library.searchPlaceholder')} onChange={(e) => onSearch(e.target.value)} />
       </div>
 
       <div className="panel">
-        <div className="subtitle">Камни</div>
+        <div className="subtitle">{t('common.stones')}</div>
         {loading ? (
           <div className="inline-row">
             <div className="spinner small" />
-            <div className="muted">Загружаю...</div>
+            <div className="muted">{t('common.loading')}</div>
           </div>
         ) : null}
         <div className="stone-accordion">
           {isEmpty ? (
-            <div className="muted mb-10">Не удалось загрузить список камней. Попробуй позже.</div>
+            <div className="muted mb-10">{t('library.loadError')}</div>
           ) : null}
           {displayStones.map((stone) => {
             const opened = openedId === stone.id;
@@ -72,7 +74,7 @@ export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
                 {opened ? (
                   <div className="stone-body">
                     <p className="muted stone-description">
-                      {stone.description_short ?? 'Описание появится позже.'}
+                      {stone.description_short ?? t('common.descriptionPlaceholder')}
                     </p>
                     <div className="chips">
                       {stone.chakra_list.map((chakra) => (
@@ -87,12 +89,12 @@ export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
                       ))}
                       {stone.life_path_list.map((lp) => (
                         <span key={`l-${lp}`} className="tag">
-                          Путь {lp}
+                          {t('common.pathLabel', { value: lp })}
                         </span>
                       ))}
                     </div>
                     <button className="stone-cta" type="button" onClick={() => setSelected(stone)}>
-                      Подробнее
+                      {t('common.details')}
                     </button>
                   </div>
                 ) : null}
@@ -105,7 +107,7 @@ export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
       <div className="action-row">
         <button className="button minimal ghost menu-back" onClick={onBack}>
           <img className="btn-icon" src={backIcon} alt="" />
-          В меню
+          {t('common.menu')}
         </button>
       </div>
 

@@ -1,19 +1,19 @@
 export const themes = [
-  { code: 'energy_resource', label: 'Энергия и ресурс' },
-  { code: 'inner_strength', label: 'Внутренняя сила' },
-  { code: 'clarity_focus', label: 'Ясность и фокус' },
-  { code: 'intuition_path', label: 'Интуиция и путь' },
-  { code: 'confidence_charisma', label: 'Уверенность и харизма' },
-  { code: 'balance_harmony', label: 'Баланс и гармония' },
-  { code: 'healing_restore', label: 'Исцеление и восстановление' },
-  { code: 'luck_flow', label: 'Удача и поток' },
-  { code: 'energy_protection', label: 'Защита энергии' },
-  { code: 'selflove', label: 'Самооценка и любовь к себе' },
+  { code: 'energy_resource', labelKey: 'themes.energy_resource' },
+  { code: 'inner_strength', labelKey: 'themes.inner_strength' },
+  { code: 'clarity_focus', labelKey: 'themes.clarity_focus' },
+  { code: 'intuition_path', labelKey: 'themes.intuition_path' },
+  { code: 'confidence_charisma', labelKey: 'themes.confidence_charisma' },
+  { code: 'balance_harmony', labelKey: 'themes.balance_harmony' },
+  { code: 'healing_restore', labelKey: 'themes.healing_restore' },
+  { code: 'luck_flow', labelKey: 'themes.luck_flow' },
+  { code: 'energy_protection', labelKey: 'themes.energy_protection' },
+  { code: 'selflove', labelKey: 'themes.selflove' },
 ];
 
 export const catalogTypes = [
-  { code: 'bracelet', label: 'Браслет' },
-  { code: 'necklace', label: 'Колье' },
-  { code: 'ring', label: 'Кольцо' },
-  { code: 'talisman', label: 'Талисман' },
+  { code: 'bracelet', labelKey: 'types.bracelet' },
+  { code: 'necklace', labelKey: 'types.necklace' },
+  { code: 'ring', labelKey: 'types.ring' },
+  { code: 'talisman', labelKey: 'types.talisman' },
 ];

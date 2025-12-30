@@ -5,6 +5,7 @@ import type { CustomRequestPayload, Stone } from '../types';
 import sendIcon from '../assets/icon-send.svg';
 import backIcon from '../assets/icon-arrow-left.svg';
 import SectionHeader from './SectionHeader';
+import { useI18n } from '../i18n';
 
 type Props = {
   stones: Stone[];
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
+  const { t } = useI18n();
   const [selectedStones, setSelectedStones] = useState<number[]>([]);
   const [type, setType] = useState<string>('bracelet');
   const [budgetFrom, setBudgetFrom] = useState('');
@@ -50,15 +52,15 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
           <div className="logo-mark" />
           <SectionHeader
             align="center"
-            kicker="Индивидуальное украшение"
-            title="Соберём под твой запрос"
-            subtitle="Выбери камни, тип украшения и бюджет. Мастер получит заявку в Telegram."
+            kicker={t('custom.kicker')}
+            title={t('custom.title')}
+            subtitle={t('custom.subtitle')}
           />
         </div>
       </div>
 
       <div className="panel">
-        <div className="subtitle">Камни</div>
+        <div className="subtitle">{t('common.stones')}</div>
         <div
           className="input stone-select stone-select-list"
           role="listbox"
@@ -89,35 +91,35 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
             ))}
           </div>
         ) : null}
-        <p className="muted mt-6">Можно выбрать несколько камней — просто нажимай по пунктам.</p>
+        <p className="muted mt-6">{t('custom.stoneHint')}</p>
       </div>
 
       <div className="panel">
         <div className="grid two">
           <div>
-            <div className="subtitle">Тип</div>
+            <div className="subtitle">{t('common.type')}</div>
             <select className="input" value={type} onChange={(e) => setType(e.target.value)}>
               {catalogTypes.map((item) => (
                 <option key={item.code} value={item.code}>
-                  {item.label}
+                  {t(item.labelKey)}
                 </option>
               ))}
-              <option value="other">Другое</option>
+              <option value="other">{t('types.other')}</option>
             </select>
           </div>
           <div>
-            <div className="subtitle">Бюджет</div>
+            <div className="subtitle">{t('common.budget')}</div>
             <div className="input-row">
               <input
                 className="input"
-                placeholder="от"
+                placeholder={t('common.from')}
                 type="number"
                 value={budgetFrom}
                 onChange={(e) => setBudgetFrom(e.target.value)}
               />
               <input
                 className="input"
-                placeholder="до"
+                placeholder={t('common.to')}
                 type="number"
                 value={budgetTo}
                 onChange={(e) => setBudgetTo(e.target.value)}
@@ -126,11 +128,11 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
           </div>
         </div>
         <div>
-          <div className="subtitle">Комментарий</div>
+          <div className="subtitle">{t('common.comment')}</div>
           <textarea
             className="input"
             rows={4}
-            placeholder="Опиши запрос, ощущения, цвета, важные детали"
+            placeholder={t('custom.commentPlaceholder')}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           />
@@ -138,11 +140,11 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
         <div className="action-row">
           <button className="button minimal primary menu-back" onClick={handleSubmit} disabled={loading}>
             <img className="btn-icon" src={sendIcon} alt="" />
-            {loading ? 'Отправляю...' : 'Отправить заявку'}
+            {loading ? t('common.sending') : t('common.send')}
           </button>
           <button className="button minimal ghost menu-back" onClick={onBack}>
             <img className="btn-icon" src={backIcon} alt="" />
-            В меню
+            {t('common.menu')}
           </button>
         </div>
       </div>

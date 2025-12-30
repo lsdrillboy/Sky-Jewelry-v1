@@ -1,4 +1,5 @@
 import '../App.css';
+import { useI18n } from '../i18n';
 
 type Props = {
   title: string;
@@ -7,6 +8,8 @@ type Props = {
 };
 
 export default function ConfirmModal({ title, text, onClose }: Props) {
+  const { t } = useI18n();
+
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-card confirm-modal" onClick={(event) => event.stopPropagation()}>
@@ -25,7 +28,7 @@ export default function ConfirmModal({ title, text, onClose }: Props) {
         <h3 className="confirm-title">{title}</h3>
         <p className="muted confirm-text">{text}</p>
         <button className="button minimal primary full confirm-action" type="button" onClick={onClose}>
-          Ок
+          {t('confirm.ok')}
         </button>
       </div>
     </div>

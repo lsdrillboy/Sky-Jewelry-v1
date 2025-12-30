@@ -37,6 +37,47 @@
   margin-top: 4px;
 }
 
+.language-switcher {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(216, 177, 92, 0.35);
+  background: rgba(8, 6, 4, 0.55);
+  backdrop-filter: blur(10px);
+  z-index: 5;
+}
+
+.language-pill {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-family: var(--font-main);
+  color: var(--color-gold-soft);
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.language-pill:hover {
+  border-color: rgba(216, 177, 92, 0.45);
+}
+
+.language-pill.active {
+  background: linear-gradient(135deg, rgba(216, 177, 92, 0.55), rgba(255, 231, 199, 0.6));
+  color: #0b0804;
+  border-color: rgba(216, 177, 92, 0.7);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
 .section-header {
   display: flex;
   flex-direction: column;
@@ -813,6 +854,13 @@
 @media (max-width: 640px) {
   .flow-card {
     padding: 20px;
+  }
+}
+
+@media (max-width: 720px) {
+  .language-switcher {
+    top: 12px;
+    right: 12px;
   }
 }
 

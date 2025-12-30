@@ -6,6 +6,7 @@ import searchIcon from '../assets/icon-search.svg';
 import backIcon from '../assets/icon-arrow-left.svg';
 import customIcon from '../assets/icon-custom.svg';
 import SectionHeader from './SectionHeader';
+import { useI18n } from '../i18n';
 
 type Filters = {
   stone_ids?: number[];
@@ -26,14 +27,14 @@ type Props = {
   onCustomRequest: () => void;
 };
 
-function formatPrice(product: Product) {
+function formatPrice(product: Product, t: (key: string) => string) {
   const currency = product.currency ?? 'USD';
   if (product.price_min && product.price_max && product.price_min !== product.price_max) {
     return `${product.price_min}–${product.price_max} ${currency}`;
   }
   if (product.price_min) return `${product.price_min} ${currency}`;
   if (product.price) return `${product.price} ${currency}`;
-  return 'Цена по запросу';
+  return t('common.priceOnRequest');
 }
 
 export function Catalog({
@@ -49,8 +50,11 @@ export function Catalog({
   onBack,
   onCustomRequest,
 }: Props) {
+  const { t } = useI18n();
   const [expanded, setExpanded] = useState<Set<number>>(() => new Set());
   const selectedStoneIds = filters.stone_ids ?? [];
+  const resolveProductType = (type?: string | null) =>
+    type ? t(`types.${type}`, { defaultValue: type }) : null;
 
   const toggleExpanded = (id: number) => {
     setExpanded((prev) => {
@@ -93,9 +97,9 @@ export function Catalog({
           <div className="logo-mark" />
           <SectionHeader
             align="center"
-            kicker="Каталог"
-            title="Украшения с твоими камнями"
-            subtitle="Фильтруй по камню и типу. Нажми на карточку, чтобы оставить заявку через бота."
+            kicker={t('catalog.kicker')}
+            title={t('catalog.title')}
+            subtitle={t('catalog.subtitle')}
           />
         </div>
       </div>
@@ -103,7 +107,7 @@ export function Catalog({
       <div className="panel">
         <div className="grid two">
           <div>
-            <div className="subtitle">Камни</div>
+            <div className="subtitle">{t('common.stones')}</div>
             <div className="input stone-select stone-select-list" role="listbox" aria-multiselectable="true">
               <button
                 type="button"
@@ -111,7 +115,7 @@ export function Catalog({
                 onClick={clearStones}
                 aria-selected={selectedStoneIds.length === 0}
               >
-                <span className="stone-select-option-label">Любой</span>
+                <span className="stone-select-option-label">{t('common.any')}</span>
                 <span className="stone-select-check" aria-hidden />
               </button>
               {stones.map((stone) => {
@@ -139,10 +143,10 @@ export function Catalog({
                 ))}
               </div>
             ) : null}
-            <p className="muted mt-6">Можно выбрать несколько камней — просто нажимай по пунктам.</p>
+            <p className="muted mt-6">{t('catalog.stoneHint')}</p>
           </div>
           <div>
-            <div className="subtitle">Тип украшения</div>
+            <div className="subtitle">{t('catalog.typeLabel')}</div>
             <select
               className="input"
               value={filters.type ?? ''}
@@ -153,10 +157,10 @@ export function Catalog({
                 })
               }
             >
-              <option value="">Любой</option>
+              <option value="">{t('common.any')}</option>
               {catalogTypes.map((type) => (
                 <option key={type.code} value={type.code}>
-                  {type.label}
+                  {t(type.labelKey)}
                 </option>
               ))}
             </select>
@@ -165,29 +169,29 @@ export function Catalog({
         <div className="action-row mt-10">
           <button className="button minimal primary menu-back" onClick={onRefresh}>
             <img className="btn-icon" src={searchIcon} alt="" />
-            Применить
+            {t('common.apply')}
           </button>
           <button className="button minimal ghost menu-back" onClick={onBack}>
             <img className="btn-icon" src={backIcon} alt="" />
-            В меню
+            {t('common.menu')}
           </button>
         </div>
       </div>
 
       <div className="panel">
-        <div className="subtitle">Украшения</div>
+        <div className="subtitle">{t('catalog.itemsTitle')}</div>
         {loading ? (
           <div className="inline-row">
             <div className="spinner small" />
-            <div className="muted">Загружаю...</div>
+            <div className="muted">{t('common.loading')}</div>
           </div>
         ) : null}
         {!loading && !products.length ? (
           <div className="stack">
-            <p className="muted">Не нашел украшения под этот фильтр.</p>
+            <p className="muted">{t('catalog.empty')}</p>
             <button className="button minimal primary menu-back" onClick={onCustomRequest}>
               <img className="btn-icon" src={customIcon} alt="" />
-              Собрать индивидуально
+              {t('catalog.customCta')}
             </button>
           </div>
         ) : null}
@@ -196,12 +200,13 @@ export function Catalog({
             const image = product.main_photo_url ?? product.photo_url ?? '';
             const isExpanded = expanded.has(product.id);
             const isFav = favorites.has(product.id);
-            const price = formatPrice(product);
+            const price = formatPrice(product, t);
+            const productTypeLabel = resolveProductType(product.type);
             return (
               <div key={product.id} className="card product-card premium-product">
                 <div className="product-cover">
-                  {image ? <img src={image} alt={product.name} loading="lazy" /> : <div className="product-placeholder">Фото скоро</div>}
-                  {product.type ? <span className="floating-badge product-type">{product.type}</span> : null}
+                  {image ? <img src={image} alt={product.name} loading="lazy" /> : <div className="product-placeholder">{t('common.photoSoon')}</div>}
+                  {productTypeLabel ? <span className="floating-badge product-type">{productTypeLabel}</span> : null}
                   <div className="product-overlay" />
                 </div>
                 <div className="product-body">
@@ -210,11 +215,11 @@ export function Catalog({
                     {price ? <div className="product-price">{price.replace('BHT', 'THB')}</div> : null}
                   </div>
                   <p className={`muted product-description ${isExpanded ? 'expanded' : ''}`}>
-                    {product.description ?? 'Описание появится позже.'}
+                    {product.description ?? t('common.descriptionPlaceholder')}
                   </p>
                   {product.description ? (
                     <button className="link-button" onClick={() => toggleExpanded(product.id)}>
-                      {isExpanded ? 'Свернуть ▲' : 'Показать больше ▼'}
+                      {isExpanded ? t('common.showLess') : t('common.showMore')}
                     </button>
                   ) : null}
                   <div className="product-actions">
@@ -222,10 +227,10 @@ export function Catalog({
                       className={`button ghost minimal fav ${isFav ? 'active' : ''}`}
                       onClick={() => onToggleFavorite(product)}
                     >
-                      {isFav ? '♥ В избранном' : '♡ В избранное'}
+                      {isFav ? t('common.favoriteAdded') : t('common.favoriteAdd')}
                     </button>
                     <button className="button minimal primary" onClick={() => onOrder(product)}>
-                      Заказать
+                      {t('common.order')}
                     </button>
                   </div>
                 </div>
