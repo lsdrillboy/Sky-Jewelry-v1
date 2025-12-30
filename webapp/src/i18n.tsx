@@ -484,7 +484,7 @@ const translations = {
       title: 'Sky Jewelry',
       subtitle: 'Handcrafted meaning and energy — lived in silence and ready for your story.',
       authorLabel: 'Author',
-      authorName: 'Евгений Пламеннов',
+      authorName: 'Evgeny Plamennov',
       authorNote: 'Living mineral tester. Magic and jewelry craft as a single language.',
       blocks: [
         {
@@ -532,27 +532,27 @@ const translations = {
       hide: 'Hide',
       items: [
         {
-          author: 'Кира',
+          author: 'Kira',
           text:
             'Working with Evgeny was a real pleasure. In his presence I felt at home, felt his support, sincere presence, and deep attention to my words. That allowed me to relax and open up fully — to myself and to him.\n\nEvgeny spent a lot of time with me, talking about different stones, how they work and how they affect our state and life in general. He patiently answered all my many questions and opened a new dimension of minerals for me.\n\nI really enjoyed working with stones! ... I chose 3 stones, and later it turned out that these stones have exactly the qualities I felt I was missing.\n\nIn the end I chose one stone and together we assembled a blue bracelet! It felt like we were putting our hearts and intention into my bracelet. It is almost alive :)\n\nThank you for the time, the warm atmosphere, and the charged bracelet!',
         },
         {
-          author: 'Андрей и команда',
+          author: 'Andrey and team',
           text:
             "Today we spent half a day with unique masters! Looking, feeling, and choosing your stone is a whole journey.\n\nThe spirit of the stone and the master's energy are felt from the first step inside. You reach a new energetic level and will surely find your crystal. The master will make jewelry from your stone and put knowledge and energy into it so it works for you and protects you.\n\nThank you to the team for their creativity, knowledge, and warm welcome!",
         },
         {
-          author: 'Екатерина Кузьмина',
+          author: 'Ekaterina Kuzmina',
           text:
             "Meeting Zhenya was an event. In Saint Petersburg I wanted to get to know stones, but it didn't work out, and on Phangan life brought me to a master who believes in and loves his craft.\n\nI understood the taste of things made by a master's hands. Zhenya showed the stones, let me feel and choose. We assembled a bracelet, then another one and earrings.\n\nI feel the influence of stones: an agate bracelet — makes me want to sing, rhodochrosite — warms the heart, charoite — connects with space, moonstone — helps reveal femininity. I recommend Zhenya as a master and stones as a tool. Gift yourself beauty!",
         },
         {
-          author: 'Диана',
+          author: 'Diana',
           text:
             'Zhenya told me about stones in a way that I understood their effect, power, and beauty. Thank you for that!\n\nI used to buy only labradorite, and now I see the depth of minerals. Zhenya took time to explain and help me feel the stones.',
         },
         {
-          author: 'Катя',
+          author: 'Katya',
           text:
             'I wanted to get to know stones, see how they grow and what qualities they give. During the session we selected 3 stones for my request — from them you can make any jewelry, custom-made. Thank you!',
         },
