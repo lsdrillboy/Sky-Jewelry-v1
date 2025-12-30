@@ -40,7 +40,8 @@ export function StonePicker({
   const isThemeLoading = themesLoading && !themes.length;
   const resolveThemeLabel = (theme: Theme | (typeof themeFallback)[number]) => {
     if ('labelKey' in theme && theme.labelKey) return t(theme.labelKey);
-    return t(`themes.${theme.code}`, { defaultValue: theme.label ?? theme.code });
+    const defaultLabel = 'label' in theme && theme.label ? theme.label : theme.code;
+    return t(`themes.${theme.code}`, { defaultValue: defaultLabel });
   };
 
   return (
