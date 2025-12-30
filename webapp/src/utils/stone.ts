@@ -1,3 +1,4 @@
+import type { Locale } from '../i18n';
 import type { Stone } from '../types';
 
 export function normalizeToArray(value?: string[] | string | null): string[] {
@@ -41,6 +42,23 @@ export type NormalizedStone = Stone & {
   planet_list: string[];
   life_path_list: number[];
 };
+
+function pickLocalized(locale: Locale, enValue?: string | null, ruValue?: string | null) {
+  if (locale === 'en') return enValue ?? ruValue;
+  return ruValue ?? enValue;
+}
+
+export function getStoneName(stone: Stone, locale: Locale) {
+  return pickLocalized(locale, stone.name_en, stone.name_ru) ?? '';
+}
+
+export function getStoneDescriptionShort(stone: Stone, locale: Locale) {
+  return pickLocalized(locale, stone.description_short_en, stone.description_short);
+}
+
+export function getStoneDescriptionLong(stone: Stone, locale: Locale) {
+  return pickLocalized(locale, stone.description_long_en, stone.description_long);
+}
 
 export function normalizeStone(stone: Stone): NormalizedStone {
   const chakra_list = normalizeToArray(stone.chakra);

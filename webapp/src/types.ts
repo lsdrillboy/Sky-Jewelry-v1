@@ -13,8 +13,11 @@ export type User = {
 export type Stone = {
   id: number;
   name_ru: string;
+  name_en?: string | null;
   description_short?: string | null;
+  description_short_en?: string | null;
   description_long?: string | null;
+  description_long_en?: string | null;
   photo_url?: string | null;
   themes?: string[] | null;
   zodiac?: string[] | null;

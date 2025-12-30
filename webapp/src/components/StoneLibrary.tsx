@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import '../App.css';
 import type { Stone } from '../types';
-import { normalizeStone, type NormalizedStone } from '../utils/stone';
+import { getStoneDescriptionShort, getStoneName, normalizeStone, type NormalizedStone } from '../utils/stone';
 import StoneDetails from './StoneDetails';
 import backIcon from '../assets/icon-arrow-left.svg';
 import SectionHeader from './SectionHeader';
@@ -15,7 +15,7 @@ type Props = {
 };
 
 export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [openedId, setOpenedId] = useState<number | null>(null);
   const [selected, setSelected] = useState<NormalizedStone | null>(null);
 
@@ -59,6 +59,8 @@ export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
           ) : null}
           {displayStones.map((stone) => {
             const opened = openedId === stone.id;
+            const stoneName = getStoneName(stone, locale);
+            const stoneDescription = getStoneDescriptionShort(stone, locale);
             return (
               <div key={stone.id} className={`stone-item ${opened ? 'opened' : ''}`}>
                 <button className="stone-head" onClick={() => toggle(stone.id)}>
@@ -67,14 +69,14 @@ export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
                       className="stone-chip crystal-icon small"
                       style={{ ['--stone-color' as string]: stone.color ?? '#d6a85a' }}
                     />
-                    <span className="stone-title">{stone.name_ru}</span>
+                    <span className="stone-title">{stoneName}</span>
                   </div>
                   <span className="stone-toggle">{opened ? '−' : '+'}</span>
                 </button>
                 {opened ? (
                   <div className="stone-body">
                     <p className="muted stone-description">
-                      {stone.description_short ?? t('common.descriptionPlaceholder')}
+                      {stoneDescription ?? t('common.descriptionPlaceholder')}
                     </p>
                     <div className="chips">
                       {stone.chakra_list.map((chakra) => (

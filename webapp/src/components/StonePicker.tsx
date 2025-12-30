@@ -4,7 +4,7 @@ import { themes as themeFallback } from '../data/themes';
 import type { StonePickerResult, Theme } from '../types';
 import ringIcon from '../assets/icon-ring.svg';
 import backIcon from '../assets/icon-arrow-left.svg';
-import { normalizeStone, type NormalizedStone } from '../utils/stone';
+import { getStoneDescriptionShort, getStoneName, normalizeStone, type NormalizedStone } from '../utils/stone';
 import StoneDetails from './StoneDetails';
 import SectionHeader from './SectionHeader';
 import { useI18n } from '../i18n';
@@ -30,7 +30,7 @@ export function StonePicker({
   onOpenCatalog,
   onBack,
 }: Props) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [selected, setSelected] = useState<NormalizedStone | null>(null);
   const normalizedResult = useMemo(
     () => (result ? { ...result, stones: result.stones.map(normalizeStone) } : null),
@@ -96,50 +96,54 @@ export function StonePicker({
         {!result && <p className="muted">{t('stonePicker.resultEmpty')}</p>}
         {normalizedResult && (
           <div className="grid two">
-            {normalizedResult.stones.map((stone: NormalizedStone, idx) => (
-              <div key={stone.id} className="card stone-card">
-                <div className="floating-badge">
-                  {idx === 0 ? t('stonePicker.primary') : t('stonePicker.secondary')}
+            {normalizedResult.stones.map((stone: NormalizedStone, idx) => {
+              const stoneName = getStoneName(stone, locale);
+              const stoneDescription = getStoneDescriptionShort(stone, locale);
+              return (
+                <div key={stone.id} className="card stone-card">
+                  <div className="floating-badge">
+                    {idx === 0 ? t('stonePicker.primary') : t('stonePicker.secondary')}
+                  </div>
+                  {stone.photo_url ? <img src={stone.photo_url} alt={stoneName} /> : null}
+                  <div className="stone-meta">
+                    <div
+                      className="stone-thumb crystal-icon"
+                      style={{ ['--stone-color' as string]: stone.color ?? '#d6a85a' }}
+                    />
+                    <h3>{stoneName}</h3>
+                  </div>
+                  <p className="muted min-h-48">
+                    {stoneDescription ?? t('common.descriptionPlaceholder')}
+                  </p>
+                  <div className="chips">
+                    {stone.chakra_list.map((chakra) => (
+                      <span key={`c-${chakra}`} className="tag">
+                        {chakra}
+                      </span>
+                    ))}
+                    {stone.planet_list.map((planet) => (
+                      <span key={`p-${planet}`} className="tag">
+                        {planet}
+                      </span>
+                    ))}
+                    {stone.life_path_list.map((lp) => (
+                      <span key={`l-${lp}`} className="tag">
+                        {t('common.pathLabel', { value: lp })}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="stack">
+                    <button className="stone-cta" type="button" onClick={() => onOpenCatalog(stone.id)}>
+                      <img className="btn-icon" src={ringIcon} alt="" />
+                      {t('stonePicker.showProducts')}
+                    </button>
+                    <button className="button minimal ghost" type="button" onClick={() => setSelected(stone)}>
+                      {t('common.details')}
+                    </button>
+                  </div>
                 </div>
-                {stone.photo_url ? <img src={stone.photo_url} alt={stone.name_ru} /> : null}
-                <div className="stone-meta">
-                  <div
-                    className="stone-thumb crystal-icon"
-                    style={{ ['--stone-color' as string]: stone.color ?? '#d6a85a' }}
-                  />
-                  <h3>{stone.name_ru}</h3>
-                </div>
-                <p className="muted min-h-48">
-                  {stone.description_short ?? t('common.descriptionPlaceholder')}
-                </p>
-                <div className="chips">
-                  {stone.chakra_list.map((chakra) => (
-                    <span key={`c-${chakra}`} className="tag">
-                      {chakra}
-                    </span>
-                  ))}
-                  {stone.planet_list.map((planet) => (
-                    <span key={`p-${planet}`} className="tag">
-                      {planet}
-                    </span>
-                  ))}
-                  {stone.life_path_list.map((lp) => (
-                    <span key={`l-${lp}`} className="tag">
-                      {t('common.pathLabel', { value: lp })}
-                    </span>
-                  ))}
-                </div>
-                <div className="stack">
-                  <button className="stone-cta" type="button" onClick={() => onOpenCatalog(stone.id)}>
-                    <img className="btn-icon" src={ringIcon} alt="" />
-                    {t('stonePicker.showProducts')}
-                  </button>
-                  <button className="button minimal ghost" type="button" onClick={() => setSelected(stone)}>
-                    {t('common.details')}
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

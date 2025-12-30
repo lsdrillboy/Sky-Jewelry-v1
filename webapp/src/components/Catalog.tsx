@@ -7,6 +7,7 @@ import backIcon from '../assets/icon-arrow-left.svg';
 import customIcon from '../assets/icon-custom.svg';
 import SectionHeader from './SectionHeader';
 import { useI18n } from '../i18n';
+import { getStoneName } from '../utils/stone';
 
 type Filters = {
   stone_ids?: number[];
@@ -50,7 +51,7 @@ export function Catalog({
   onBack,
   onCustomRequest,
 }: Props) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [expanded, setExpanded] = useState<Set<number>>(() => new Set());
   const selectedStoneIds = filters.stone_ids ?? [];
   const resolveProductType = (type?: string | null) =>
@@ -86,8 +87,8 @@ export function Catalog({
     () =>
       stones
         .filter((stone) => selectedStoneIds.includes(stone.id))
-        .map((stone) => ({ id: stone.id, label: stone.name_ru })),
-    [stones, selectedStoneIds],
+        .map((stone) => ({ id: stone.id, label: getStoneName(stone, locale) })),
+    [locale, stones, selectedStoneIds],
   );
 
   return (
@@ -120,6 +121,7 @@ export function Catalog({
               </button>
               {stones.map((stone) => {
                 const isSelected = selectedStoneIds.includes(stone.id);
+                const stoneName = getStoneName(stone, locale);
                 return (
                   <button
                     key={stone.id}
@@ -128,7 +130,7 @@ export function Catalog({
                     onClick={() => toggleStone(stone.id)}
                     aria-selected={isSelected}
                   >
-                    <span className="stone-select-option-label">{stone.name_ru}</span>
+                    <span className="stone-select-option-label">{stoneName}</span>
                     <span className="stone-select-check" aria-hidden />
                   </button>
                 );

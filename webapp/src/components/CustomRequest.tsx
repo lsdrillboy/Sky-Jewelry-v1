@@ -6,6 +6,7 @@ import sendIcon from '../assets/icon-send.svg';
 import backIcon from '../assets/icon-arrow-left.svg';
 import SectionHeader from './SectionHeader';
 import { useI18n } from '../i18n';
+import { getStoneName } from '../utils/stone';
 
 type Props = {
   stones: Stone[];
@@ -15,7 +16,7 @@ type Props = {
 };
 
 export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [selectedStones, setSelectedStones] = useState<number[]>([]);
   const [type, setType] = useState<string>('bracelet');
   const [budgetFrom, setBudgetFrom] = useState('');
@@ -43,7 +44,7 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
 
   const selectedStoneLabels = stones
     .filter((stone) => selectedStones.includes(stone.id))
-    .map((stone) => ({ id: stone.id, label: stone.name_ru }));
+    .map((stone) => ({ id: stone.id, label: getStoneName(stone, locale) }));
 
   return (
     <div className="screen">
@@ -68,6 +69,7 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
         >
           {stones.map((stone) => {
             const isSelected = selectedStones.includes(stone.id);
+            const stoneName = getStoneName(stone, locale);
             return (
               <button
                 key={stone.id}
@@ -76,7 +78,7 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
                 onClick={() => toggleStone(stone.id)}
                 aria-selected={isSelected}
               >
-                <span className="stone-select-option-label">{stone.name_ru}</span>
+                <span className="stone-select-option-label">{stoneName}</span>
                 <span className="stone-select-check" aria-hidden />
               </button>
             );
