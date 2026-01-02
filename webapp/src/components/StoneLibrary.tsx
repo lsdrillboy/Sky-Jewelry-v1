@@ -16,12 +16,7 @@ type Props = {
 
 export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
   const { t, locale } = useI18n();
-  const [openedId, setOpenedId] = useState<number | null>(null);
   const [selected, setSelected] = useState<NormalizedStone | null>(null);
-
-  const toggle = (id: number) => {
-    setOpenedId((prev) => (prev === id ? null : id));
-  };
 
   const isEmpty = !loading && stones.length === 0;
   const displayStones = useMemo(() => stones.map(normalizeStone), [stones]);
@@ -58,48 +53,46 @@ export function StoneLibrary({ stones, loading, onSearch, onBack }: Props) {
             <div className="muted mb-10">{t('library.loadError')}</div>
           ) : null}
           {displayStones.map((stone) => {
-            const opened = openedId === stone.id;
             const stoneName = getStoneName(stone, locale);
             const stoneDescription = getStoneDescriptionShort(stone, locale);
             return (
-              <div key={stone.id} className={`stone-item ${opened ? 'opened' : ''}`}>
-                <button className="stone-head" onClick={() => toggle(stone.id)}>
+              <div key={stone.id} className="stone-item">
+                <div className="stone-head">
                   <div className="stone-head-left">
                     <div
                       className="stone-chip crystal-icon small"
                       style={{ ['--stone-color' as string]: stone.color ?? '#d6a85a' }}
                     />
-                    <span className="stone-title">{stoneName}</span>
-                  </div>
-                  <span className="stone-toggle">{opened ? '−' : '+'}</span>
-                </button>
-                {opened ? (
-                  <div className="stone-body">
-                    <p className="muted stone-description">
-                      {stoneDescription ?? t('common.descriptionPlaceholder')}
-                    </p>
-                    <div className="chips">
-                      {stone.chakra_list.map((chakra) => (
-                        <span key={`c-${chakra}`} className="tag">
-                          {chakra}
-                        </span>
-                      ))}
-                      {stone.planet_list.map((planet) => (
-                        <span key={`p-${planet}`} className="tag">
-                          {planet}
-                        </span>
-                      ))}
-                      {stone.life_path_list.map((lp) => (
-                        <span key={`l-${lp}`} className="tag">
-                          {t('common.pathLabel', { value: lp })}
-                        </span>
-                      ))}
+                    <div className="stone-head-text">
+                      <span className="stone-title">{stoneName}</span>
+                      <span className="stone-subtitle">
+                        {stoneDescription ?? t('common.descriptionPlaceholder')}
+                      </span>
                     </div>
-                    <button className="stone-cta" type="button" onClick={() => setSelected(stone)}>
-                      {t('common.details')}
-                    </button>
                   </div>
-                ) : null}
+                </div>
+                <div className="stone-body">
+                  <div className="chips">
+                    {stone.chakra_list.map((chakra) => (
+                      <span key={`c-${chakra}`} className="tag">
+                        {chakra}
+                      </span>
+                    ))}
+                    {stone.planet_list.map((planet) => (
+                      <span key={`p-${planet}`} className="tag">
+                        {planet}
+                      </span>
+                    ))}
+                    {stone.life_path_list.map((lp) => (
+                      <span key={`l-${lp}`} className="tag">
+                        {t('common.pathLabel', { value: lp })}
+                      </span>
+                    ))}
+                  </div>
+                  <button className="stone-cta" type="button" onClick={() => setSelected(stone)}>
+                    {t('common.details')}
+                  </button>
+                </div>
               </div>
             );
           })}

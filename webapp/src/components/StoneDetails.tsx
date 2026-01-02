@@ -7,6 +7,62 @@ type Props = {
   onClose: () => void;
 };
 
+const hasLetters = (value: string) => /[A-Za-z\u0410-\u042f\u0430-\u044f]/.test(value);
+
+const isHeadingLine = (value: string) => {
+  if (!value) return false;
+  const trimmed = value.trim();
+  if (!trimmed || !hasLetters(trimmed)) return false;
+  return trimmed === trimmed.toUpperCase();
+};
+
+const renderStoneLong = (text: string) => {
+  const lines = text.split('\n');
+  const blocks: JSX.Element[] = [];
+  let listItems: string[] = [];
+  let index = 0;
+
+  const flushList = () => {
+    if (!listItems.length) return;
+    const items = listItems;
+    listItems = [];
+    const listKey = index++;
+    blocks.push(
+      <ul key={`list-${listKey}`} className="stone-list">
+        {items.map((item, itemIndex) => (
+          <li key={`item-${listKey}-${itemIndex}`}>{item}</li>
+        ))}
+      </ul>,
+    );
+  };
+
+  lines.forEach((line) => {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      flushList();
+      return;
+    }
+    const bulletMatch = /^[-\u2022]\s+(.+)$/.exec(trimmed);
+    if (bulletMatch) {
+      listItems.push(bulletMatch[1]);
+      return;
+    }
+    flushList();
+    if (isHeadingLine(trimmed)) {
+      blocks.push(
+        <h4 key={`heading-${index++}`} className="stone-section-title">
+          {trimmed}
+        </h4>,
+      );
+      return;
+    }
+    blocks.push(<p key={`para-${index++}`}>{trimmed}</p>);
+  });
+
+  flushList();
+  return blocks;
+};
+
 export function StoneDetails({ stone, onClose }: Props) {
   const { t, locale } = useI18n();
   if (!stone) return null;
@@ -15,7 +71,7 @@ export function StoneDetails({ stone, onClose }: Props) {
   const stoneLong = getStoneDescriptionLong(stone, locale);
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-card stone-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
           <h3>{stoneName}</h3>
           <button className="icon-button" type="button" onClick={onClose} aria-label={t('common.close')}>
@@ -23,14 +79,10 @@ export function StoneDetails({ stone, onClose }: Props) {
           </button>
         </div>
         {stoneShort ? (
-          <p className="muted stone-description">{stoneShort}</p>
+          <p className="stone-subtitle">{stoneShort}</p>
         ) : null}
         {stoneLong ? (
-          <div className="stone-fulltext">
-            {stoneLong.split(/\n+/).map((para, idx) => (
-              <p key={idx}>{para}</p>
-            ))}
-          </div>
+          <div className="stone-fulltext">{renderStoneLong(stoneLong)}</div>
         ) : null}
         <div className="chips">
           {stone.chakra_list.map((chakra) => (

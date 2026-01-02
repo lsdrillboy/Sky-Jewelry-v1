@@ -1,5 +1,6 @@
 import type { Locale } from '../i18n';
 import type { Stone } from '../types';
+import { stoneTranslations } from '../data/stone-translations';
 
 export function normalizeToArray(value?: string[] | string | null): string[] {
   if (!value) return [];
@@ -53,11 +54,13 @@ export function getStoneName(stone: Stone, locale: Locale) {
 }
 
 export function getStoneDescriptionShort(stone: Stone, locale: Locale) {
-  return pickLocalized(locale, stone.description_short_en, stone.description_short);
+  const fallbackEn = stoneTranslations[stone.id]?.short ?? null;
+  return pickLocalized(locale, stone.description_short_en ?? fallbackEn, stone.description_short);
 }
 
 export function getStoneDescriptionLong(stone: Stone, locale: Locale) {
-  return pickLocalized(locale, stone.description_long_en, stone.description_long);
+  const fallbackEn = stoneTranslations[stone.id]?.long ?? null;
+  return pickLocalized(locale, stone.description_long_en ?? fallbackEn, stone.description_long);
 }
 
 export function normalizeStone(stone: Stone): NormalizedStone {
