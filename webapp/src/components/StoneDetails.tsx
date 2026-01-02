@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import '../App.css';
 import { getStoneDescriptionLong, getStoneDescriptionShort, getStoneName, type NormalizedStone } from '../utils/stone';
 import { useI18n } from '../i18n';
@@ -18,7 +19,7 @@ const isHeadingLine = (value: string) => {
 
 const renderStoneLong = (text: string) => {
   const lines = text.split('\n');
-  const blocks: JSX.Element[] = [];
+  const blocks: ReactNode[] = [];
   let listItems: string[] = [];
   let index = 0;
 
