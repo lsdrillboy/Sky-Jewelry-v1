@@ -143,6 +143,10 @@ textarea {
   margin: 0 auto;
 }
 
+.app-shell.with-bottom-nav {
+  padding-bottom: calc(20px + 96px + env(safe-area-inset-bottom, 0px));
+}
+
 .app-shell::before,
 .app-shell::after {
   content: '';

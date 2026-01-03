@@ -25,6 +25,7 @@ import Reviews from './components/Reviews';
 import PreAuth from './components/PreAuth';
 import ConfirmModal from './components/ConfirmModal';
 import LanguageSwitcher from './components/LanguageSwitcher';
+import BottomNav from './components/BottomNav';
 import { useI18n } from './i18n';
 
 function extractInitData() {
@@ -406,11 +407,15 @@ function App() {
     t,
   ]);
 
+  const showBottomNav = preAuthStage === 'done' && screen !== 'cover' && screen !== 'main';
+  const activeNav = screen === 'birthdate' ? 'profile' : screen;
+
   return (
-    <div className="app-shell">
+    <div className={`app-shell${showBottomNav ? ' with-bottom-nav' : ''}`}>
       <LanguageSwitcher />
       {preAuthStage !== 'done' ? <PreAuth stage={preAuthStage} /> : null}
       {content}
+      {showBottomNav ? <BottomNav active={activeNav} onNavigate={setScreen} /> : null}
       {orderModal ? (
         <ConfirmModal
           title={t(orderModal.titleKey)}
