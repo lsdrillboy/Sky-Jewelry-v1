@@ -3,7 +3,6 @@ import '../App.css';
 import { catalogTypes } from '../data/themes';
 import type { CustomRequestPayload, Stone } from '../types';
 import sendIcon from '../assets/icon-send.svg';
-import backIcon from '../assets/icon-arrow-left.svg';
 import SectionHeader from './SectionHeader';
 import { useI18n } from '../i18n';
 import { getStoneName } from '../utils/stone';
@@ -48,6 +47,9 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
 
   return (
     <div className="screen">
+      <button className="back-fab" type="button" onClick={onBack} aria-label={t('common.menu')}>
+        <span />
+      </button>
       <div className="hero center-hero">
         <div className="app-header">
           <div className="logo-mark" />
@@ -143,10 +145,6 @@ export function CustomRequest({ stones, onSubmit, loading, onBack }: Props) {
           <button className="button minimal primary menu-back" onClick={handleSubmit} disabled={loading}>
             <img className="btn-icon" src={sendIcon} alt="" />
             {loading ? t('common.sending') : t('common.send')}
-          </button>
-          <button className="button minimal ghost menu-back" onClick={onBack}>
-            <img className="btn-icon" src={backIcon} alt="" />
-            {t('common.menu')}
           </button>
         </div>
       </div>

@@ -3,8 +3,14 @@ import { useMemo, useState } from 'react';
 import { themes as themeFallback } from '../data/themes';
 import type { StonePickerResult, Theme } from '../types';
 import ringIcon from '../assets/icon-ring.svg';
-import backIcon from '../assets/icon-arrow-left.svg';
-import { getStoneDescriptionShort, getStoneName, normalizeStone, type NormalizedStone } from '../utils/stone';
+import {
+  getStoneChakraLabel,
+  getStoneDescriptionShort,
+  getStoneName,
+  getStonePlanetLabel,
+  normalizeStone,
+  type NormalizedStone,
+} from '../utils/stone';
 import StoneDetails from './StoneDetails';
 import SectionHeader from './SectionHeader';
 import { useI18n } from '../i18n';
@@ -46,6 +52,9 @@ export function StonePicker({
 
   return (
     <div className="screen">
+      <button className="back-fab" type="button" onClick={onBack} aria-label={t('common.menu')}>
+        <span />
+      </button>
       <div className="hero center-hero">
         <div className="app-header">
           <div className="logo-mark" />
@@ -118,12 +127,12 @@ export function StonePicker({
                   <div className="chips">
                     {stone.chakra_list.map((chakra) => (
                       <span key={`c-${chakra}`} className="tag">
-                        {chakra}
+                        {getStoneChakraLabel(chakra, locale)}
                       </span>
                     ))}
                     {stone.planet_list.map((planet) => (
                       <span key={`p-${planet}`} className="tag">
-                        {planet}
+                        {getStonePlanetLabel(planet, locale)}
                       </span>
                     ))}
                     {stone.life_path_list.map((lp) => (
@@ -146,13 +155,6 @@ export function StonePicker({
             })}
           </div>
         )}
-      </div>
-
-      <div className="action-row">
-        <button className="button minimal ghost menu-back" onClick={onBack}>
-          <img className="btn-icon" src={backIcon} alt="" />
-          {t('common.menu')}
-        </button>
       </div>
 
       <StoneDetails stone={selected} onClose={() => setSelected(null)} />

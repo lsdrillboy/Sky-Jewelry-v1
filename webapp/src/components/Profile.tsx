@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import '../App.css';
 import type { User } from '../types';
 import calendarIcon from '../assets/icon-calendar.svg';
-import backIcon from '../assets/icon-arrow-left.svg';
 import { useI18n } from '../i18n';
 
 type Props = {
@@ -68,6 +67,9 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
 
   return (
     <div className="screen">
+      <button className="back-fab" type="button" onClick={onBack} aria-label={t('common.menu')}>
+        <span />
+      </button>
       <div className="hero profile-hero-card">
         <div className="profile-avatar-wrap">
           <div className="profile-avatar-circle" style={{ backgroundImage: avatarBackground }} />
@@ -164,12 +166,6 @@ export default function Profile({ user, onSaveBirthdate, onBack }: Props) {
             <span>{t('profile.trustNote')}</span>
           </div>
 
-          <div className="profile-actions compact">
-            <button className="button minimal ghost menu-back" onClick={onBack}>
-              <img className="btn-icon" src={backIcon} alt="" />
-              {t('common.menu')}
-            </button>
-          </div>
         </div>
       </div>
     </div>

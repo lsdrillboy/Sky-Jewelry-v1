@@ -1,6 +1,13 @@
 import type { ReactNode } from 'react';
 import '../App.css';
-import { getStoneDescriptionLong, getStoneDescriptionShort, getStoneName, type NormalizedStone } from '../utils/stone';
+import {
+  getStoneChakraLabel,
+  getStoneDescriptionLong,
+  getStoneDescriptionShort,
+  getStoneName,
+  getStonePlanetLabel,
+  type NormalizedStone,
+} from '../utils/stone';
 import { useI18n } from '../i18n';
 
 type Props = {
@@ -88,12 +95,12 @@ export function StoneDetails({ stone, onClose }: Props) {
         <div className="chips">
           {stone.chakra_list.map((chakra) => (
             <span key={`mc-${chakra}`} className="tag">
-              {chakra}
+              {getStoneChakraLabel(chakra, locale)}
             </span>
           ))}
           {stone.planet_list.map((planet) => (
             <span key={`mp-${planet}`} className="tag">
-              {planet}
+              {getStonePlanetLabel(planet, locale)}
             </span>
           ))}
           {stone.life_path_list.map((lp) => (

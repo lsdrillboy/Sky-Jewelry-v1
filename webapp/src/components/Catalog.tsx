@@ -3,7 +3,6 @@ import { useMemo, useState } from 'react';
 import { catalogTypes } from '../data/themes';
 import type { Product, Stone } from '../types';
 import searchIcon from '../assets/icon-search.svg';
-import backIcon from '../assets/icon-arrow-left.svg';
 import customIcon from '../assets/icon-custom.svg';
 import SectionHeader from './SectionHeader';
 import { useI18n } from '../i18n';
@@ -93,6 +92,9 @@ export function Catalog({
 
   return (
     <div className="screen">
+      <button className="back-fab" type="button" onClick={onBack} aria-label={t('common.menu')}>
+        <span />
+      </button>
       <div className="hero">
         <div className="app-header">
           <div className="logo-mark" />
@@ -172,10 +174,6 @@ export function Catalog({
           <button className="button minimal primary menu-back" onClick={onRefresh}>
             <img className="btn-icon" src={searchIcon} alt="" />
             {t('common.apply')}
-          </button>
-          <button className="button minimal ghost menu-back" onClick={onBack}>
-            <img className="btn-icon" src={backIcon} alt="" />
-            {t('common.menu')}
           </button>
         </div>
       </div>

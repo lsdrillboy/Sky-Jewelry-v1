@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Mandali:wght@400;600;700&family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
 
 :root {
   --color-bg: #050403;
@@ -21,6 +21,7 @@
   --border-gold-strong: rgba(216, 177, 92, 0.45);
   --border-gold-soft: rgba(216, 177, 92, 0.18);
   --font-main: 'Playfair Display', 'Times New Roman', serif;
+  --font-heading: 'Mandali', 'Playfair Display', 'Times New Roman', serif;
   --font-premium: var(--font-main);
   --font-serif: var(--font-main);
   --font-sans: 'Montserrat', 'Manrope', 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
@@ -93,8 +94,9 @@ textarea {
 
 #root h1,
 #root h2,
-#root h3 {
-  font-family: var(--font-main);
+#root h3,
+#root h4 {
+  font-family: var(--font-heading);
   color: var(--color-gold-soft);
   margin: 0;
   text-wrap: balance;
@@ -303,7 +305,7 @@ textarea {
   font-size: var(--type-small-size);
   font-weight: 600;
   text-transform: uppercase;
-  font-family: var(--font-main);
+  font-family: var(--font-heading);
   text-wrap: balance;
 }
 
@@ -570,6 +572,7 @@ select.input:focus {
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--color-gold-soft);
+  font-family: var(--font-heading);
 }
 
 .stone-list {
@@ -634,7 +637,7 @@ select.input:focus {
 .stone-title {
   font-size: clamp(15px, 2.8vw, 18px);
   font-weight: 700;
-  font-family: var(--font-main);
+  font-family: var(--font-heading);
   letter-spacing: 0.02em;
   min-width: 0;
   overflow: hidden;

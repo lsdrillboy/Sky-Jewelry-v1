@@ -1,6 +1,5 @@
 import '../App.css';
 import type { Product } from '../types';
-import backIcon from '../assets/icon-arrow-left.svg';
 import SectionHeader from './SectionHeader';
 import { useI18n } from '../i18n';
 
@@ -18,6 +17,9 @@ export default function Favorites({ products, onBack, onOrder, onToggleFavorite 
 
   return (
     <div className="screen">
+      <button className="back-fab" type="button" onClick={onBack} aria-label={t('common.menu')}>
+        <span />
+      </button>
       <div className="hero">
         <SectionHeader
           align="center"
@@ -55,12 +57,6 @@ export default function Favorites({ products, onBack, onOrder, onToggleFavorite 
               </div>
             );
           })}
-        </div>
-        <div className="mt-14">
-          <button className="button minimal ghost menu-back" onClick={onBack}>
-            <img className="btn-icon" src={backIcon} alt="" />
-            {t('common.menu')}
-          </button>
         </div>
       </div>
     </div>

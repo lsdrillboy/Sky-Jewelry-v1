@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import '../App.css';
-import backIcon from '../assets/icon-arrow-left.svg';
 import SectionHeader from './SectionHeader';
 import { useI18n } from '../i18n';
 
@@ -24,6 +23,9 @@ export default function Reviews({ onBack }: Props) {
 
   return (
     <div className="screen">
+      <button className="back-fab" type="button" onClick={onBack} aria-label={t('common.menu')}>
+        <span />
+      </button>
       <div className="hero center-hero">
         <div className="app-header">
           <div className="logo-mark" />
@@ -54,12 +56,6 @@ export default function Reviews({ onBack }: Props) {
               </div>
             );
           })}
-        </div>
-        <div className="mt-14">
-          <button className="button minimal ghost menu-back" onClick={onBack}>
-            <img className="btn-icon" src={backIcon} alt="" />
-            {t('common.menu')}
-          </button>
         </div>
       </div>
     </div>

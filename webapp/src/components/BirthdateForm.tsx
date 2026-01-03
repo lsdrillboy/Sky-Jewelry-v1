@@ -2,7 +2,6 @@ import { useState } from 'react';
 import '../App.css';
 import type { User } from '../types';
 import calendarIcon from '../assets/icon-calendar.svg';
-import backIcon from '../assets/icon-arrow-left.svg';
 import SectionHeader from './SectionHeader';
 import { useI18n } from '../i18n';
 
@@ -32,6 +31,9 @@ export function BirthdateForm({ user, onSubmit, onBack }: Props) {
 
   return (
     <div className="screen">
+      <button className="back-fab" type="button" onClick={onBack} aria-label={t('common.menu')}>
+        <span />
+      </button>
       <div className="hero">
         <div className="app-header">
           <div className="logo-mark" />
@@ -60,10 +62,6 @@ export function BirthdateForm({ user, onSubmit, onBack }: Props) {
           <button className="button" onClick={handleSubmit} disabled={saving || !value}>
             <img className="btn-icon" src={calendarIcon} alt="" />
             {saving ? t('common.saving') : t('birthdate.save')}
-          </button>
-          <button className="button minimal ghost menu-back" onClick={onBack}>
-            <img className="btn-icon" src={backIcon} alt="" />
-            {t('common.menu')}
           </button>
         </div>
       </div>

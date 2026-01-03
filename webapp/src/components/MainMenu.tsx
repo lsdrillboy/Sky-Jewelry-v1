@@ -23,6 +23,11 @@ export function MainMenu({ user, onNavigate, onBackToCover }: Props) {
 
   return (
     <div className="screen">
+      {onBackToCover ? (
+        <button className="back-fab" type="button" onClick={onBackToCover} aria-label={t('mainMenu.backAria')}>
+          <span />
+        </button>
+      ) : null}
       <div className="hero">
         <div className="app-header">
           <div className="logo-mark" />
@@ -33,11 +38,6 @@ export function MainMenu({ user, onNavigate, onBackToCover }: Props) {
             subtitle={t('mainMenu.subtitle')}
           />
         </div>
-        {onBackToCover ? (
-          <button className="back-fab" aria-label={t('mainMenu.backAria')}>
-            <span onClick={onBackToCover} />
-          </button>
-        ) : null}
       </div>
 
       <div className="panel">

@@ -1,5 +1,4 @@
 import '../App.css';
-import backIcon from '../assets/icon-arrow-left.svg';
 import SectionHeader from './SectionHeader';
 import { useI18n } from '../i18n';
 
@@ -16,6 +15,9 @@ export default function InfoSection({ title, subtitle, bullets = [], note, onBac
 
   return (
     <div className="screen">
+      <button className="back-fab" type="button" onClick={onBack} aria-label={t('common.menu')}>
+        <span />
+      </button>
       <div className="hero">
         <SectionHeader align="center" title={title} subtitle={subtitle} />
       </div>
@@ -28,12 +30,6 @@ export default function InfoSection({ title, subtitle, bullets = [], note, onBac
           ))}
         </div>
         {note ? <p className="muted mt-12">{note}</p> : null}
-        <div className="mt-14">
-          <button className="button minimal ghost menu-back" onClick={onBack}>
-            <img className="btn-icon" src={backIcon} alt="" />
-            {t('common.menu')}
-          </button>
-        </div>
       </div>
     </div>
   );

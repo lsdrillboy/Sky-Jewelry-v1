@@ -1,5 +1,4 @@
 import '../App.css';
-import backIcon from '../assets/icon-arrow-left.svg';
 import SectionHeader from './SectionHeader';
 import { useI18n } from '../i18n';
 
@@ -16,6 +15,9 @@ export default function BrandStory({ onBack }: Props) {
 
   return (
     <div className="screen story-screen">
+      <button className="back-fab" type="button" onClick={onBack} aria-label={t('common.menu')}>
+        <span />
+      </button>
       <div className="hero story-hero">
         <div className="story-hero-text">
           <SectionHeader
@@ -48,12 +50,6 @@ export default function BrandStory({ onBack }: Props) {
               <p className="story-card-text">{block.text}</p>
             </div>
           ))}
-        </div>
-        <div className="mt-18">
-          <button className="button minimal ghost menu-back" onClick={onBack}>
-            <img className="btn-icon" src={backIcon} alt="" />
-            {t('common.menu')}
-          </button>
         </div>
       </div>
     </div>

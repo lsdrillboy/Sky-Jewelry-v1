@@ -103,6 +103,7 @@
   line-height: var(--type-small-line);
   text-transform: uppercase;
   color: var(--color-gold-muted);
+  font-family: var(--font-heading);
 }
 
 .section-title {
@@ -227,29 +228,44 @@
 
 .back-fab {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  width: 36px;
-  height: 36px;
+  top: 10px;
+  left: 10px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  border: 1px solid rgba(216, 177, 92, 0.5);
-  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(216, 177, 92, 0.25);
+  background: rgba(0, 0, 0, 0.25);
   display: grid;
   place-items: center;
   box-shadow:
-    0 10px 24px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 8px 20px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
   cursor: pointer;
+  opacity: 0.3;
+  transition: opacity 0.18s ease, border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
 }
 
 .back-fab span {
   display: block;
   width: 10px;
   height: 10px;
-  border-left: 2px solid rgba(216, 177, 92, 0.9);
-  border-bottom: 2px solid rgba(216, 177, 92, 0.9);
+  border-left: 2px solid rgba(216, 177, 92, 0.7);
+  border-bottom: 2px solid rgba(216, 177, 92, 0.7);
   transform: rotate(45deg);
   margin-left: 2px;
+}
+
+.back-fab:hover {
+  opacity: 0.75;
+  border-color: rgba(216, 177, 92, 0.45);
+  background: rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+}
+
+.back-fab:focus-visible {
+  opacity: 0.8;
+  outline: 1px solid rgba(216, 177, 92, 0.35);
+  outline-offset: 2px;
 }
 
 .stone-select {
@@ -400,7 +416,7 @@
   color: var(--color-gold-primary);
   font-weight: 700;
   margin-bottom: 4px;
-  font-family: var(--font-main);
+  font-family: var(--font-heading);
   font-size: 15px;
 }
 
@@ -537,7 +553,7 @@
   text-transform: uppercase;
   margin-bottom: 12px;
   opacity: 0.95;
-  font-family: var(--font-main);
+  font-family: var(--font-heading);
   display: block;
 }
 
@@ -552,7 +568,7 @@
     0 0 24px rgba(255, 231, 199, 0.35),
     0 4px 15px rgba(0, 0, 0, 0.8);
   line-height: var(--type-h1-line);
-  font-family: var(--font-main);
+  font-family: var(--font-heading);
   text-align: center;
   position: relative;
   z-index: 2;
@@ -686,7 +702,7 @@
   line-height: var(--type-h3-line);
   font-weight: var(--type-h3-weight);
   letter-spacing: var(--type-h3-letter);
-  font-family: var(--font-main);
+  font-family: var(--font-heading);
   text-shadow: 0 6px 18px rgba(216, 177, 92, 0.28);
   text-wrap: balance;
   hyphens: auto;
@@ -751,6 +767,7 @@
   color: rgba(216, 177, 92, 0.65);
   text-transform: uppercase;
   font-weight: 600;
+  font-family: var(--font-heading);
 }
 
 .flow-step-pill {
@@ -1088,6 +1105,7 @@
   text-transform: uppercase;
   color: var(--color-gold-muted);
   font-weight: 700;
+  font-family: var(--font-heading);
 }
 
 .profile-hero-title {
@@ -1772,6 +1790,7 @@
   font-weight: 700;
   font-size: var(--type-h3-size);
   color: var(--color-gold-primary);
+  font-family: var(--font-heading);
 }
 
 .story-panel {
@@ -1802,6 +1821,7 @@
   margin-bottom: 6px;
   font-size: var(--type-h3-size);
   letter-spacing: var(--type-h3-letter);
+  font-family: var(--font-heading);
 }
 
 .story-card h3,
@@ -1914,7 +1934,7 @@
   color: var(--color-gold-soft, #f5dfa8);
   letter-spacing: var(--type-h2-letter);
   margin-bottom: 8px;
-  font-family: var(--font-main);
+  font-family: var(--font-heading);
 }
 
 .preauth-subtitle {
